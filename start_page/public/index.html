@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/style/main.css">
+    <title>Sign up</title>
+</head>
+
+<body>
+
+    <h1>Sign up</h1>
+
+    <div class="container right-panel-active">
+
+        <div class="container__form container--signup">
+            <form method="post" action="/registration" class="form" id="form1">
+                <h2 class="form__title">Sign Up</h2>
+                <input type="text" placeholder="User" class="input" name="nickname_signup">
+                <input type="email" placeholder="Email" class="input" name="email_signup">
+                <input type="password" placeholder="Password" class="input" name="password_signup">
+                <input type="password" placeholder="Password" class="input" name="password_check_signup">
+                <input type="submit" class="btn" value="Sign Up">
+            </form>
+        </div>
+
+        <div class="container__form container--signin">
+            <form method="post" action="/login" class="form" id="form2">
+                <h2 class="form__title">Sign In</h2>
+                <input type="email" placeholder="qweEmail" class="input" name="email_signin">
+                <input type="password" placeholder="qwePassword" class="input" name="password_signin">
+                <a href="#" class="link" id="forgotPassword">Forgot your password?</a>
+                <input type="submit" class="btn" value="Sign In">
+            </form>
+        </div>
+
+        <div class="container__form container--forgot">
+            <form method="post" action="/send_email" class="form" id="form3">
+                <h2 class="form__title">Enter your email address</h2>
+                <input type="email" placeholder="Email" class="input" name="email_forgot">
+                <button class="btn" id="send">Send</button>
+            </form>
+        </div>
+
+        <div class="container__overlay">
+            <div class="overlay">
+                <div class="overlay__panel overlay--left">
+                    <button class="btn" id="signIn">Sign In</button>
+                </div>
+                <div class="overlay__panel overlay--right">
+                    <button class="btn" id="signUp">Sign Up</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<script src="/js/index.js"></script>
+
+</body>
+
+</html>

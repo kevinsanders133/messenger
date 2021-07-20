@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<script>
+	const roomName = "<%= roomName %>";
+	const nickname = "<%= nickname %>";
+</script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="/chat/public/js/script.js"></script>
+<link rel="stylesheet" href="/chat/public/css/style.css">
+
+<div style="float:left;width:300px;height:250px;overflow:scroll-y;padding:10px;">
+
+	<div id="conversation">
+		<div id="history"></div>
+	</div>
+
+	<input id="data" style="width:200px;">
+	<input type="button" id="send" value="send">
+
+
+	<input type="file" class="files" multiple>
+	<input type="button" id="upload" value="Upload" onclick="upload()">
+
+
+	<div class="progress-bar" id="progress-bar">
+		<div class="progress-bar-fill">
+			<span class="progress-bar-text">0%</span>
+		</div>
+	</div>
+	
+</div>

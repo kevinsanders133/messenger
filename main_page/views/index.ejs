@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script>
+
+	$(function(){
+
+	});
+
+</script>
+<div style="float:left;width:100px;border-right:1px solid black;height:300px;padding:10px;overflow:scroll-y;">
+	<b>Chats</b>
+	<div id="chats">
+		<ul>
+			<% chats.forEach(function( eachChat ){ %>
+				<li> 
+					<form action="/chat" method="POST">
+						<input name="nickname" type="hidden" value="<%= nickname %>">
+						<input name="chat" type="hidden" value="<%= eachChat.chat_id %>">
+						<button type="submit"><%= eachChat.chat_name %></button>
+					</form>
+				</li>
+			<% }) %>
+		</ul>
+	</div>
+</div>
+<div style="float:left;width:300px;height:250px;overflow:scroll-y;padding:10px;">
+	<div id="conversation"></div>
+	<input id="data" style="width:200px;" />
+	<input type="button" id="datasend" value="send" />
+</div>
+
+<form method="POST" action="/add_friend" class="addFriend">
+	<label for="reciever_nickname">Nickname</label>
+	<input type="text" placeholder="user_12345" name="reciever_nickname">
+	<label for="reciever_tag">Tag</label>
+	<input type="text" placeholder="#9999" name="reciever_tag">
+	<input type="hidden" value="<%= _id %>" name="sender_id">
+	<input name="sender_nickname" type="hidden" value="<%= nickname %>">
+	<input type="submit" value="Add">
+</form><br><br>
+
+
+<form method="POST" action="/create_chat" class="createChat">
+	<input type="text" name="name" placeholder="Name of a chat">
+	<% friends.forEach(function( eachChat ){ %>
+		<input type="checkbox" name="reciever_id" value="<%= eachChat.friend_id %>"><%= eachChat.nickname %><br>
+	<% }) %>
+	<input type="hidden" value="<%= _id %>" name="sender_id">
+	<input type="submit" value="Create">
+</form>
+
+
