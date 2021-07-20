@@ -26,10 +26,10 @@ services:
         ports:
             - "3004:3000"
 
-    #upload_avatar:
-    #    build: './upload_avatar'
-    #    ports:
-    #        - "3005:3000"
+    upload_avatar:
+        build: './upload_avatar'
+        ports:
+            - "3005:3000"
 
     add_friend:
         build: './add_friend'
@@ -74,6 +74,7 @@ services:
             #- registration
             - send_email
             - main_page
+            - upload_avatar
             - add_friend
             #- create_chat
             #- chat
