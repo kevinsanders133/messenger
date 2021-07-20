@@ -10,7 +10,7 @@ const user_chat_schema = require("./models/user_chat_schema");
 app.set('view engine', 'ejs')
 app.use('views', express.static(__dirname + '/views'));
 
-//app.use(express.static(__dirname + '/public'));
+app.use('/main_page/public', express.static(__dirname + '/public'));
 
 app.use(express.urlencoded({ extended: false }));
 
