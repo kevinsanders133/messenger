@@ -30,6 +30,8 @@ services:
         build: './upload_avatar'
         ports:
             - "3005:3000"
+        volumes: 
+            - ./main_page/uploads/avatars:/src/uploads/avatars
 
     add_friend:
         build: './add_friend'

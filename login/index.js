@@ -28,7 +28,7 @@ app.post('/login', async (req, res) => {
         if(doc)
         {
             console.log(doc._id);
-            res.redirect('/main_page?id=' + doc._id);
+            res.redirect('/pre_main_page?id=' + doc._id);
         }
         else if(!doc) {
             res.redirect('/');
