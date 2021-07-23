@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
+const fs = require("fs");
 
 app.use(express.urlencoded({ extended: false }));
 
@@ -17,11 +18,10 @@ try {
 }
 
 const User = require("./models/User");
-
-app.get('/registration', (req, res) => {});
   
 app.post('/registration', async (req, res) => {
     if (req.body.password_signup == req.body.password_check_signup) {
+
         const tag = await User.countDocuments({ nickname: req.body.nickname_signup }, function(err, c) {
             return c;
         }) + 1;
@@ -33,7 +33,23 @@ app.post('/registration', async (req, res) => {
             password: req.body.password_signup
         });
     
-        user.save();
+        await user.save();
+
+        var _id;
+        await User.findOne({ nickname: req.body.nickname_signup, tag: "#" + String(tag) }, '_id', function(err, doc) {
+            _id = doc._id;
+            console.log(doc._id);
+        });
+
+        const dir = __dirname + '/uploads/avatars/' + _id;
+        fs.mkdirSync(dir);
+        const src = __dirname + '/uploads/no-avatar.png';
+        const dest =  dir + '/no-avatar.png';
+        fs.copyFile(src, dest, (err) => {
+            if (err) {
+            console.log("Error Found:", err);
+            }
+        });
     }
     res.redirect("/");
 });

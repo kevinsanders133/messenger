@@ -11,37 +11,41 @@ services:
         ports:
             - "3001:3000"
 
-    #registration:
-    #    build: './registration'
-    #    ports:
-    #        - "3002:3000"
-
-    send_email:
-        build: './send_email'
+    registration:
+        build: './registration'
         ports:
-            - "3003:3000"
+            - "3002:3000"
+        volumes: 
+            - ./main_page/uploads:/src/uploads
+
+    #send_email:
+    #    build: './send_email'
+    #    ports:
+    #        - "3003:3000"
 
     main_page:
         build: './main_page'
         ports:
             - "3004:3000"
+        volumes: 
+            - ./main_page/uploads:/src/uploads
 
     upload_avatar:
         build: './upload_avatar'
         ports:
             - "3005:3000"
         volumes: 
-            - ./main_page/uploads/avatars:/src/uploads/avatars
+            - ./main_page/uploads/avatars:/src/avatars
 
     add_friend:
         build: './add_friend'
         ports:
             - "3006:3000"
 
-    #create_chat:
-    #    build: './create_chat'
-    #    ports:
-    #        - "3007:3000"
+    create_chat:
+        build: './create_chat'
+        ports:
+            - "3007:3000"
 
     #delete_chat:
     #    build: './delete_chat'
@@ -49,18 +53,18 @@ services:
     #        - "3008:3000"
 
     #chat:
-    #    build: './chat'
+    #   build: './chat'
     #    ports:
     #        - "3009:3000"
     #    volumes: 
-    #        - ./chat/histories:/src/histories
+    #        - ./main_page/uploads/groupchats:/src/groupchats
 
-    #send_files:
-    #    build: './send_files'
-    #    ports:
-    #        - "3010:3000"
-    #    volumes:
-    #        - ./chat/histories:/src/histories
+    send_files:
+        build: './send_files'
+        ports:
+            - "3010:3000"
+        volumes:
+            - ./main_page/uploads/groupchats:/src/groupchats
 
 
     nginx:
@@ -69,16 +73,15 @@ services:
             - "8080:8080"
         volumes:
             - ./default.conf:/etc/nginx/conf.d/default.conf
-           # - ./chat/public:/static
         depends_on:
             - start_page
             - login
-            #- registration
-            - send_email
+            - registration
+            #- send_email
             - main_page
             - upload_avatar
             - add_friend
-            #- create_chat
+            - create_chat
             #- chat
-            #- send_files
+            - send_files
             

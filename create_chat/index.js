@@ -56,9 +56,11 @@ app.post("/create_chat", async (req, res) => {
     const recievers_ids = req.body.reciever_id;
     const name = req.body.name;
 
-    await runMongo(sender_id, recievers_ids, name).catch(console.error);
+    if (recievers_ids != undefined) {
+        await runMongo(sender_id, recievers_ids, name).catch(console.error);
+    }
 
-    res.redirect("/main_page?id=" + sender_id);
+    res.redirect("/pre_main_page?id=" + sender_id);
 });
 
 app.listen(3000, () => {

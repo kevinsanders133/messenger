@@ -1,9 +1,9 @@
 const express = require('express')
 const app = express()
-const path = require("path");
 const mongoose = require('mongoose')
-const fs = require("fs")
+const fs = require('fs')
 var _id;
+var avatar;
 
 const user_schema = require("./models/user_schema");
 const chat_schema = require("./models/chat_schema");
@@ -12,27 +12,24 @@ const user_chat_schema = require("./models/user_chat_schema");
 app.set('view engine', 'ejs')
 app.use('views', express.static(__dirname + '/views'));
 
+app.use('/main_page/uploads', express.static(__dirname + '/uploads'));
 app.use('/main_page/public', express.static(__dirname + '/public'));
-app.use('/uploads/avatars', express.static(__dirname + '/uploads/avatars'));
 
 app.use(express.urlencoded({ extended: false }));
 
 const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
 
-function create_dir(_id) {
-	const dir = './uploads/avatars/' + String(_id);
-	try {
-		if (!fs.existsSync(dir)) {
-		  	fs.mkdirSync(dir)
-		}
-	} catch (err) {
-		console.error(err)
-	}
-}
-
 app.get('/pre_main_page', function (req, res) {
 	_id = req.query.id;
-	create_dir(_id);
+
+	const dir = __dirname + '/uploads/avatars/' + _id;
+
+	fs.readdirSync(dir).forEach(file => {
+		avatar = file;
+	});
+
+	console.log(avatar);
+
 	res.redirect('/main_page');
 })
 
@@ -41,7 +38,7 @@ app.get('/main_page', async function (req, res) {
 	var nickname;
 	var chats = [];
 	var private_chats = [];
-	var friends = [];
+	var group_chats = [];
 	var query = [];
 
 	try {
@@ -54,7 +51,7 @@ app.get('/main_page', async function (req, res) {
 		console.log("could not connect");
 	}
 
-	await user_schema.findOne({_id: _id}, '-_id nickname', async function(err, doc)
+	await user_schema.findOne({_id: _id}, '-_id nickname', function(err, doc)
 		{
 			nickname = doc.nickname;
 		});
@@ -63,26 +60,47 @@ app.get('/main_page', async function (req, res) {
 	{
 		if(doc)
 		{
-			chats = doc;
 			for (var i = 0; i < doc.length; i++) {
 				if (doc[i]["chat_id"].split("_")[0] == "private") {
-					private_chats.push({ chat_id: doc[i]["chat_id"], chat_name: doc[i]["chat_name"] });
+					private_chats.push({chat_id: doc[i]["chat_id"], chat_name: doc[i]["chat_name"]});
 					query.push({chat_id: doc[i]["chat_id"]});
+				} else {
+					group_chats.push(doc[i]);
+
+					const path = __dirname + '/uploads/groupchats/' + group_chats[i]["chat_id"] + '/avatar';
+					fs.readdirSync(path).forEach(file => {
+						group_chats[i]["avatar"] = file;
+					});
 				}
 			}
-		} 
-		else if(!doc) {}
-	});
-
-	await user_chat_schema.find({ user_id: {$ne: _id}, $or: query }, '-_id user_id', function(err, doc) {
-		for (var i = 0; i < private_chats.length; i++) {
-			friends.push({ friend_id: doc[i].user_id, nickname: private_chats[i].chat_name });
 		}
 	});
 
+	if (query.length != 0) {
+		await user_chat_schema.find({ user_id: { $ne: _id }, $or: query }, '-_id user_id', function(err, doc)
+		{
+			if(doc)
+			{
+				for (var i = 0; i < doc.length; i++) {
+					const path = __dirname + '/uploads/avatars/' + doc[i]["user_id"];
+					fs.readdirSync(path).forEach(file => {
+						private_chats[i]["avatar"] = file;
+					});
+
+					private_chats[i]["user_id"] = doc[i]["user_id"];
+					console.log(private_chats[i]);
+				}
+			}
+		});
+	}
+
+	chats = private_chats.concat(group_chats);
+	console.log(chats);
+
+
 	await mongoose.connection.close();
 
-	res.render('index', { chats: chats, friends: friends, _id: _id, nickname: nickname });
+	res.render('index', { chats: chats, friends: private_chats, _id: _id, nickname: nickname, avatar: avatar });
 
 });
 
@@ -90,3 +108,30 @@ app.listen(3000, () => {
 	console.log("running on port 3000");
 	console.log("--------------------------");
   });
+
+
+/*
+
+for (var i = 0; i < doc.length; i++) {
+	if (doc[i]["chat_id"].split("_")[0] == "private") {
+		await user_chat_schema.findOne({ user_id: {$ne :_id}, chat_id: doc[i]["chat_id"] }, '-_id user_id', function(e, c) {
+			doc[i]["user_id"] = c.user_id;
+		});
+
+		const path = __dirname + '/uploads/avatars/' + doc[i]["user_id"];
+		fs.readdirSync(path).forEach(file => {
+			doc[i]["avatar"] = file;
+		});
+	
+		private_chats.push({ chat_id: doc[i]["chat_id"], chat_name: doc[i]["chat_name"] });
+		query.push({chat_id: doc[i]["chat_id"]});
+	} else {
+		const path = __dirname + '/uploads/groupchats/' + doc[i]["chat_id"] + '/avatar';
+		fs.readdirSync(path).forEach(file => {
+			doc[i]["avatar"] = file;
+		});
+	
+	}
+}
+
+*/

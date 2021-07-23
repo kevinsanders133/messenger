@@ -51,20 +51,14 @@ function upload() {
 			progressBarText.textContent = percentCompleted + "%";
 		},
 		headers: {
-			"content-type" : "multipart/form-data"
+			"content-type" : "multipart/form-data",
 		}
 	}
 
 	var myFile = document.querySelector(".files").files
-	console.log(myFile)
 	var formData = new FormData()
-	var names = [];
-	var milis = [];
 		
 	for (var i = 0; i < myFile.length; i++) {
-		names.push(myFile[i].name);
-		milis.push(Date.now());
-		myFile[i].name = milis[i] + myFile[i].name;
 		formData.append("myFile", myFile[i])
 	}
 
@@ -74,8 +68,8 @@ function upload() {
 		if (res.status == 200) {
 			var message = '<b>'+ nickname + ':</b> ';
 			for (var i = 0; i < myFile.length; i++) {
-				message += '<a href="/chat/histories/' + roomName + '/files/' + 
-				myFile[i].name + '" download="' + names[i] + '">' + names[i] + '</a><br>';
+				message += '<img src="/main_page/uploads/groupchats/' + roomName + '/files/' + 
+				res.data + myFile[i].name + '"><br>';
 			}
 			// tell server to execute 'sendchat' and send along one parameter
 			socket.emit('sendchat', message, roomName);

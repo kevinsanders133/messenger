@@ -5,23 +5,19 @@ const multer = require('multer');
 app.use(express.json({limit: '1000mb'}));
 app.use(express.urlencoded({extended: false, limit: '1000mb'}));
 
-//app.use(express.static(__dirname + '/uploads'));
-
 app.post('/send_files', (req, res) => {
     const chatName = req.query.chatName;
     const nickname = req.query.nickname;
+    const milis = String(Date.now());
 
     var storage = multer.diskStorage({
         destination: function (req, file, cb) {
-            console.log(__dirname);
-            cb(null, __dirname + "/histories/" + chatName + "/files")
+            cb(null, __dirname + "/groupchats/" + chatName + "/files")
         },
         filename: function (req, file, cb) {
-            cb(null, file.originalname)
+            cb(null, milis + file.originalname)
         }
     })
-
-    //const url = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
        
     var upload = multer({ storage: storage }).array("myFile", 4)
 
@@ -36,7 +32,7 @@ app.post('/send_files', (req, res) => {
      
         // Everything went fine.
         console.log("Everything went fine.", req.files)
-        res.send("Everything went fine.")
+        res.send(milis);
     })
 
 });

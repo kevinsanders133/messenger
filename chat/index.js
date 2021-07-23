@@ -7,7 +7,6 @@ const fs = require('fs')
 server.listen(3000);
 
 app.use('/chat/public', express.static(__dirname + '/public'));
-app.use('/chat/histories', express.static(__dirname + '/histories'));
 
 app.set('views', './views')
 app.set('view engine', 'ejs')
@@ -30,17 +29,25 @@ io.sockets.on('connection', function (socket) {
 	// when the client emits 'adduser', this listens and executes
 	socket.on('adduser', function(username, roomName){
 		// creating directories for chat 
-		const dir_main = './histories/' + roomName;
+		const dir_main = './groupchats/' + roomName;
 		if (!fs.existsSync(dir_main)){
 			fs.mkdirSync(dir_main);
 		}
-		const history_file = './histories/' + roomName + '/history.html';
-		fs.appendFile(history_file, '', function (err) {
+		const dir_history = './groupchats/' + roomName + '/history';
+		if (!fs.existsSync(dir_history)){
+			fs.mkdirSync(dir_history);
+		}
+		const file_history = './groupchats/' + roomName + '/history/history.html';
+		fs.appendFile(file_history, '', function (err) {
 			if (err) throw err;
 		}); 
-		const dir_files = './histories/' + roomName + '/files';
+		const dir_files = './groupchats/' + roomName + '/files';
 		if (!fs.existsSync(dir_files)){
 			fs.mkdirSync(dir_files);
+		}
+		const dir_avatar = './groupchats/' + roomName + '/avatar';
+		if (!fs.existsSync(dir_avatar)){
+			fs.mkdirSync(dir_avatar);
 		}
 		// store the username in the socket session for this client
 		socket.username = username;
@@ -51,7 +58,7 @@ io.sockets.on('connection', function (socket) {
 		// send client to room 1
 		socket.join(roomName);
 		// echo to room history path
-		socket.emit('loadhistory', "/chat/histories/" + roomName + "/history.html");
+		socket.emit('loadhistory', "/main_page/uploads/groupchats/" + roomName + "/history/history.html");
 		// echo to client they've connected
 		socket.emit('updatechat', 'You have connected to ' + roomName);
 		// echo to room 1 that a person has connected to their room
@@ -62,7 +69,7 @@ io.sockets.on('connection', function (socket) {
 	// when the client emits 'sendchat', this listens and executes
 	socket.on('sendchat', function (data, chat) {
 		// insert data into history file
-		const history = __dirname + "/histories/" + chat + "/history.html";
+		const history = __dirname + "/groupchats/" + chat + "/history/history.html";
 		fs.appendFileSync(history, data);
 		// we tell the client to execute 'updatechat' with 2 parameters
 		io.sockets.in(socket.room).emit('updatechat', data);

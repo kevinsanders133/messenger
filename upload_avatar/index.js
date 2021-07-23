@@ -1,26 +1,26 @@
 const express = require('express');
 const app = express();
 const multer = require('multer');
+const fsExtra = require('fs-extra')
 
 app.use(express.json({limit: '1000mb'}));
 app.use(express.urlencoded({extended: false, limit: '1000mb'}));
 
-//app.use(express.static(__dirname + '/uploads'));
-
 app.post('/upload_avatar', (req, res) => {
     const _id = req.query._id;
 
+    fsExtra.emptyDirSync(__dirname + "/avatars/" + _id);
+
     var storage = multer.diskStorage({
         destination: function (req, file, cb) {
-            console.log(__dirname);
-            cb(null, __dirname + "/uploads/avatars/" + _id);
+            cb(null, __dirname + "/avatars/" + _id);
         },
         filename: function (req, file, cb) {
             cb(null, file.originalname);
         }
     })
        
-    var upload = multer({ storage: storage }).single("myFile");
+    var upload = multer({ storage: storage }).array("myFile", 1);
 
     upload(req, res, function (err) {
         if (err instanceof multer.MulterError) {
