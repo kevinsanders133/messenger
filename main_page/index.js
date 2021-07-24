@@ -67,9 +67,11 @@ app.get('/main_page', async function (req, res) {
 				} else {
 					group_chats.push(doc[i]);
 
-					const path = __dirname + '/uploads/groupchats/' + group_chats[i]["chat_id"] + '/avatar';
+					console.log();
+
+					const path = __dirname + '/uploads/groupchats/' + doc[i]["chat_id"] + '/avatar';
 					fs.readdirSync(path).forEach(file => {
-						group_chats[i]["avatar"] = file;
+						group_chats[group_chats.length - 1]["avatar"] = file;
 					});
 				}
 			}
@@ -108,30 +110,3 @@ app.listen(3000, () => {
 	console.log("running on port 3000");
 	console.log("--------------------------");
   });
-
-
-/*
-
-for (var i = 0; i < doc.length; i++) {
-	if (doc[i]["chat_id"].split("_")[0] == "private") {
-		await user_chat_schema.findOne({ user_id: {$ne :_id}, chat_id: doc[i]["chat_id"] }, '-_id user_id', function(e, c) {
-			doc[i]["user_id"] = c.user_id;
-		});
-
-		const path = __dirname + '/uploads/avatars/' + doc[i]["user_id"];
-		fs.readdirSync(path).forEach(file => {
-			doc[i]["avatar"] = file;
-		});
-	
-		private_chats.push({ chat_id: doc[i]["chat_id"], chat_name: doc[i]["chat_name"] });
-		query.push({chat_id: doc[i]["chat_id"]});
-	} else {
-		const path = __dirname + '/uploads/groupchats/' + doc[i]["chat_id"] + '/avatar';
-		fs.readdirSync(path).forEach(file => {
-			doc[i]["avatar"] = file;
-		});
-	
-	}
-}
-
-*/

@@ -15,10 +15,13 @@
 					<form action="/chat" method="POST">
 						<input name="nickname" type="hidden" value="<%= nickname %>">
 						<input name="chat" type="hidden" value="<%= eachChat.chat_id %>">
+						<input name="avatar" type="hidden" value="<%= eachChat.avatar %>">
 						<% if (eachChat.chat_id.split("_")[0] == "private") { %>
 							<img src="/main_page/uploads/avatars/<%= eachChat.user_id %>/<%= eachChat.avatar %>" width="50px" height="50px">
+							<input name="user_id" type="hidden" value="<%= eachChat.user_id %>">
 						<% } else { %>
 							<img src="/main_page/uploads/groupchats/<%= eachChat.chat_id %>/avatar/<%= eachChat.avatar %>" width="50px" height="50px">
+							<input name="user_id" type="hidden" value="null">
 						<% } %>
 						<button type="submit"><%= eachChat.chat_name %></button>
 					</form>

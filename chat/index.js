@@ -21,34 +21,16 @@ var rooms = [];
 
 // routing
 app.post('/chat', function (req, res) {
-	res.render('index', { roomName: req.body.chat, nickname: req.body.nickname })
+	res.render('index', { roomName: req.body.chat, 
+						  nickname: req.body.nickname, 
+						  avatar: req.body.avatar, 
+						  user_id: req.body.user_id })
 });
 
 io.sockets.on('connection', function (socket) {
 	
 	// when the client emits 'adduser', this listens and executes
 	socket.on('adduser', function(username, roomName){
-		// creating directories for chat 
-		const dir_main = './groupchats/' + roomName;
-		if (!fs.existsSync(dir_main)){
-			fs.mkdirSync(dir_main);
-		}
-		const dir_history = './groupchats/' + roomName + '/history';
-		if (!fs.existsSync(dir_history)){
-			fs.mkdirSync(dir_history);
-		}
-		const file_history = './groupchats/' + roomName + '/history/history.html';
-		fs.appendFile(file_history, '', function (err) {
-			if (err) throw err;
-		}); 
-		const dir_files = './groupchats/' + roomName + '/files';
-		if (!fs.existsSync(dir_files)){
-			fs.mkdirSync(dir_files);
-		}
-		const dir_avatar = './groupchats/' + roomName + '/avatar';
-		if (!fs.existsSync(dir_avatar)){
-			fs.mkdirSync(dir_avatar);
-		}
 		// store the username in the socket session for this client
 		socket.username = username;
 		// store the room name in the socket session for this client
@@ -73,6 +55,14 @@ io.sockets.on('connection', function (socket) {
 		fs.appendFileSync(history, data);
 		// we tell the client to execute 'updatechat' with 2 parameters
 		io.sockets.in(socket.room).emit('updatechat', data);
+	});	
+
+	socket.on('changeAvatar', function (data, chat) {
+		// insert data into history file
+		const history = __dirname + "/groupchats/" + chat + "/history/history.html";
+		fs.appendFileSync(history, data);
+		// we tell the client to execute 'updatechat' with 2 parameters
+		io.sockets.in(socket.room).emit('updateAvatar', data);
 	});	
 
 	// when the user disconnects.. perform this

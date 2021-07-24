@@ -16,6 +16,10 @@ socket.on('updatechat', function (data) {
 	$('#conversation').append(data);
 });
 
+socket.on('updateAvatar', function (data) {
+	$('#avatar').append(data);
+});
+
 
 // on load of page
 $(function(){
@@ -39,7 +43,7 @@ $(function(){
 
 //const upload_submit = document.querySelector("#upload");
 
-function upload() {
+function uploadFiles() {
 
 	const progressBarFill = document.querySelector(".progress-bar-fill");
 	const progressBarText = document.querySelector(".progress-bar-text");
@@ -73,6 +77,35 @@ function upload() {
 			}
 			// tell server to execute 'sendchat' and send along one parameter
 			socket.emit('sendchat', message, roomName);
+		}
+	})
+	.catch(function (err) {
+		console.log(err)
+	})
+};
+
+
+function uploadAvatar() {
+
+	const config = {
+		headers: {
+			"content-type" : "multipart/form-data",
+		}
+	}
+
+	var myFile = document.querySelector(".avatar_input").files
+	var formData = new FormData()
+	formData.append("myFile", myFile[0])
+
+	axios.post("/upload_group_avatar?chat_id=" + roomName, formData, config)
+	.then(function (res) {
+		console.log(res)
+		if (res.status == 200) {
+			var message = '<b>'+ nickname + ' changed group avatar</b> ';
+			message += '<img src="/main_page/uploads/groupchats/' + roomName + '/avatar/' + 
+			myFile[i].name + '"><br>';
+			// tell server to execute 'sendchat' and send along one parameter
+			socket.emit('changeAvatar', message, roomName);
 		}
 	})
 	.catch(function (err) {

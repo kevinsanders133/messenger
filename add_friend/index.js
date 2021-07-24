@@ -15,6 +15,8 @@ app.post("/add_friend", async (req, res) => {
     const reciever_nickname = req.body.reciever_nickname;
     const sender_id = req.body.sender_id;
     const reciever_tag = req.body.reciever_tag;
+    var query = [];
+    var ids = [];
 
     try {
 		mongoose.connect(
@@ -33,29 +35,57 @@ app.post("/add_friend", async (req, res) => {
         }
     });
 
+
     if (reciever_id != null) {
-        const index = await chat_schema.countDocuments({}) + 1;
 
-        const name = "private_" + String(index);
-
-        const chat = new chat_schema({ _id: index, name: name });
-
-        await chat.save();
-
-        let sender = new user_chat_schema({
-            user_id: sender_id,
-            chat_id: name,
-            chat_name: reciever_nickname
+        await user_chat_schema.find({ user_id: sender_id, chat_id: { $regex: '^private.*' } }, '-_id chat_id', function(err, doc)
+        {
+            if(doc)
+            {
+                query = doc;
+            }
         });
 
-        let reciever = new user_chat_schema({
-            user_id: reciever_id,
-            chat_id: name,
-            chat_name: sender_nickname
-        });
+        if (query.length != 0) {
 
-        await sender.save();
-        await reciever.save();
+            await user_chat_schema.find({ user_id: { $ne: sender_id }, $or: query }, '-_id user_id', function(err, doc)
+            {
+                if(doc)
+                {
+                    for (var i = 0; i < doc.length; i++) {
+                        ids.push(doc[i]["user_id"]);
+                    }
+                }
+            });
+
+            if (!ids.includes(reciever_id)) {
+
+                console.log("OKKKKKKKKKK");
+
+                const index = await chat_schema.countDocuments({}) + 1;
+
+                const name = "private_" + String(index);
+
+                const chat = new chat_schema({ _id: index, name: name });
+
+                await chat.save();
+
+                let sender = new user_chat_schema({
+                    user_id: sender_id,
+                    chat_id: name,
+                    chat_name: reciever_nickname
+                });
+
+                let reciever = new user_chat_schema({
+                    user_id: reciever_id,
+                    chat_id: name,
+                    chat_name: sender_nickname
+                });
+
+                await sender.save();
+                await reciever.save();
+            }
+        }
     }
 
     console.log("enddddddddddddddddddddddddddddddddddddddddddddddd");

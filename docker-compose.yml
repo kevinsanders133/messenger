@@ -35,7 +35,7 @@ services:
         ports:
             - "3005:3000"
         volumes: 
-            - ./main_page/uploads/avatars:/src/avatars
+            - ./main_page/uploads:/src/uploads
 
     add_friend:
         build: './add_friend'
@@ -46,18 +46,20 @@ services:
         build: './create_chat'
         ports:
             - "3007:3000"
+        volumes: 
+            - ./main_page/uploads:/src/uploads
 
     #delete_chat:
     #    build: './delete_chat'
     #    ports:
     #        - "3008:3000"
 
-    #chat:
-    #   build: './chat'
-    #    ports:
-    #        - "3009:3000"
-    #    volumes: 
-    #        - ./main_page/uploads/groupchats:/src/groupchats
+    chat:
+        build: './chat'
+        ports:
+            - "3009:3000"
+        volumes: 
+            - ./main_page/uploads/groupchats:/src/groupchats
 
     send_files:
         build: './send_files'
@@ -82,6 +84,6 @@ services:
             - upload_avatar
             - add_friend
             - create_chat
-            #- chat
+            - chat
             - send_files
             
