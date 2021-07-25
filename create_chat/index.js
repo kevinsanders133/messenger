@@ -32,25 +32,25 @@ app.post("/create_chat", async (req, res) => {
 
         const chat_id = "group_" + String(index);
 
-        const dir_main = __dirname + '/uploads/groupchats/' + chat_id;
+        const dir_main = `${__dirname}/uploads/groupchats/${chat_id}`;
 		fs.mkdirSync(dir_main);
 
-		const dir_history = __dirname + '/uploads/groupchats/' + chat_id + '/history';
+		const dir_history = `${__dirname}/uploads/groupchats/${chat_id}/history`;
 		fs.mkdirSync(dir_history);
         
-		const file_history = __dirname + '/uploads/groupchats/' + chat_id + '/history/history.html';
+		const file_history = `${__dirname}/uploads/groupchats/${chat_id}/history/history.html`;
 		fs.appendFile(file_history, '', function (err) {
 			if (err) throw err;
 		}); 
 
-		const dir_files = __dirname + '/uploads/groupchats/' + chat_id + '/files';
+		const dir_files = `${__dirname}/uploads/groupchats/${chat_id}/files`;
 		fs.mkdirSync(dir_files);
 
-		const dir_avatar = __dirname + '/uploads/groupchats/' + chat_id + '/avatar';
+		const dir_avatar = `${__dirname}/uploads/groupchats/${chat_id}/avatar`;
 		fs.mkdirSync(dir_avatar);
 
-        const src = __dirname + '/uploads/no-avatar.png';
-        const dest =  dir_avatar + '/no-avatar.png';
+        const src = `${__dirname}/uploads/no-avatar.png`;
+        const dest =  `${dir_avatar}/no-avatar.png`;
         fs.copyFile(src, dest, (err) => {
             if (err) {
             console.log("Error Found:", err);

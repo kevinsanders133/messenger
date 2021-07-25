@@ -74,8 +74,11 @@ function uploadFiles() {
 		if (res.status == 200) {
 			var message = '<b>'+ nickname + ':</b> ';
 			for (var i = 0; i < myFile.length; i++) {
-				message += '<img src="/main_page/uploads/groupchats/' + roomName + '/files/' + 
-				res.data + myFile[i].name + '" width="100px" height="100px"><br>';
+				if (roomName.split("_")[0] == "private") {
+					message += `<img src="/main_page/uploads/privatechats/${roomName}/files/${res.data}${myFile[i].name}" width="100px" height="100px"><br>`;
+				} else {
+					message += `<img src="/main_page/uploads/groupchats/${roomName}/files/${res.data}${myFile[i].name}" width="100px" height="100px"><br>`;
+				}
 			}
 			// tell server to execute 'sendchat' and send along one parameter
 			socket.emit('sendchat', message, roomName);

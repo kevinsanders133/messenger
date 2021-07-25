@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+const fs = require("fs")
 
 const user_schema = require("./models/user_schema");
 const chat_schema = require("./models/chat_schema");
@@ -60,11 +61,23 @@ app.post("/add_friend", async (req, res) => {
 
             if (!ids.includes(reciever_id)) {
 
-                console.log("OKKKKKKKKKK");
-
                 const index = await chat_schema.countDocuments({}) + 1;
 
-                const name = "private_" + String(index);
+                const name = `private_${String(index)}`;
+
+                const dir_main = `${__dirname}/uploads/privatechats/${name}`;
+                fs.mkdirSync(dir_main);
+
+                const dir_history = `${__dirname}/uploads/privatechats/${name}/${history}`;
+                fs.mkdirSync(dir_history);
+                
+                const file_history = `${__dirname}/uploads/privatechats/${name}/history/history.html`;
+                fs.appendFile(file_history, '', function (err) {
+                    if (err) throw err;
+                }); 
+
+                const dir_files = `${__dirname}/uploads/privatechats/${name}/files`;
+                fs.mkdirSync(dir_files);
 
                 const chat = new chat_schema({ _id: index, name: name });
 

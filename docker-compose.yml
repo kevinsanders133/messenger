@@ -11,12 +11,12 @@ services:
         ports:
             - "3001:3000"
 
-    registration:
-        build: './registration'
-        ports:
-            - "3002:3000"
-        volumes: 
-            - ./main_page/uploads:/src/uploads
+    #registration:
+    #    build: './registration'
+    #    ports:
+    #        - "3002:3000"
+    #    volumes: 
+    #        - ./main_page/uploads:/src/uploads
 
     #send_email:
     #    build: './send_email'
@@ -41,6 +41,8 @@ services:
         build: './add_friend'
         ports:
             - "3006:3000"
+        volumes: 
+            - ./main_page/uploads:/src/uploads
 
     create_chat:
         build: './create_chat'
@@ -49,24 +51,24 @@ services:
         volumes: 
             - ./main_page/uploads:/src/uploads
 
-    #delete_chat:
-    #    build: './delete_chat'
+    delete_chat:
+        build: './delete_chat'
+        ports:
+            - "3008:3000"
+
+    #chat:
+    #    build: './chat'
     #    ports:
-    #        - "3008:3000"
+    #        - "3009:3000"
+    #    volumes: 
+    #        - ./main_page/uploads/groupchats:/src/groupchats
 
-    chat:
-        build: './chat'
-        ports:
-            - "3009:3000"
-        volumes: 
-            - ./main_page/uploads/groupchats:/src/groupchats
-
-    send_files:
-        build: './send_files'
-        ports:
-            - "3010:3000"
-        volumes:
-            - ./main_page/uploads/groupchats:/src/groupchats
+    #send_files:
+    #    build: './send_files'
+    #    ports:
+    #        - "3010:3000"
+    #    volumes:
+    #        - ./main_page/uploads/groupchats:/src/groupchats
 
 
     nginx:
@@ -78,12 +80,13 @@ services:
         depends_on:
             - start_page
             - login
-            - registration
+            #- registration
             #- send_email
             - main_page
             - upload_avatar
             - add_friend
             - create_chat
-            - chat
-            - send_files
+            - delete_chat
+            #- chat
+            #- send_files
             
