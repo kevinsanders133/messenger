@@ -22,7 +22,8 @@ var rooms = [];
 // routing
 app.post('/chat', function (req, res) {
 	res.render('index', { roomName: req.body.chat, 
-						  nickname: req.body.nickname, 
+						  nickname: req.body.nickname,
+						  _id: req.body._id, 
 						  avatar: req.body.avatar, 
 						  user_id: req.body.user_id })
 });
@@ -51,18 +52,20 @@ io.sockets.on('connection', function (socket) {
 	// when the client emits 'sendchat', this listens and executes
 	socket.on('sendchat', function (data, chat) {
 		// insert data into history file
-		const history = __dirname + "/groupchats/" + chat + "/history/history.html";
+		const history = `${__dirname}/groupchats/${chat}/history/history.html`;
 		fs.appendFileSync(history, data);
 		// we tell the client to execute 'updatechat' with 2 parameters
 		io.sockets.in(socket.room).emit('updatechat', data);
 	});	
 
-	socket.on('changeAvatar', function (data, chat) {
+	socket.on('changeAvatar', function (message, image, chat) {
 		// insert data into history file
-		const history = __dirname + "/groupchats/" + chat + "/history/history.html";
-		fs.appendFileSync(history, data);
+		const history = `${__dirname}/groupchats/${chat}/history/history.html`;
+		fs.appendFileSync(history, message);
 		// we tell the client to execute 'updatechat' with 2 parameters
-		io.sockets.in(socket.room).emit('updateAvatar', data);
+		io.sockets.in(socket.room).emit('updateAvatar', image);
+
+		io.sockets.in(socket.room).emit('updatechat', message);
 	});	
 
 	// when the user disconnects.. perform this

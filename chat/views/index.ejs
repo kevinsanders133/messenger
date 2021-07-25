@@ -11,17 +11,20 @@
 <script src="/chat/public/js/script.js"></script>
 <link rel="stylesheet" href="/chat/public/css/style.css">
 
+<a href="/pre_main_page?id=<%= _id %>">Leave</a>
+
 <div style="float:left;width:300px;height:250px;overflow:scroll-y;padding:10px;">
 
 	<div class="avatar">
 		<% if (avatar.split("_")[0] == "private") { %>
 			<img src="/main_page/uploads/avatars/<%= user_id %>/<%= avatar %>" width="50px" height="50px">
+		</div>
 		<% } else { %>
 			<img src="/main_page/uploads/groupchats/<%= roomName %>/avatar/<%= avatar %>" width="50px" height="50px">
+		</div>
 			<input type="file" class="avatar_input">
 			<input type="button" id="upload_avatar" value="Set" onclick="uploadAvatar()">
 		<% } %>
-	</div>
 
 	<div id="conversation">
 		<div id="history"></div>

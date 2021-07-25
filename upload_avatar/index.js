@@ -41,11 +41,11 @@ app.post('/upload_avatar', (req, res) => {
 app.post('/upload_group_avatar', (req, res) => {
     const chat_id = req.query.chat_id;
     
-    fsExtra.emptyDirSync(__dirname + "/uploads/groupchats/" + chat_id + "/avatar");
+    fsExtra.emptyDirSync(`${__dirname}/uploads/groupchats/${chat_id}/avatar`);
 
     var storage = multer.diskStorage({
         destination: function (req, file, cb) {
-            cb(null, __dirname + "/uploads/groupchats/" + chat_id + "/avatar");
+            cb(null, `${__dirname}/uploads/groupchats/${chat_id}/avatar`);
         },
         filename: function (req, file, cb) {
             cb(null, file.originalname);

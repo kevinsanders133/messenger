@@ -17,7 +17,9 @@ socket.on('updatechat', function (data) {
 });
 
 socket.on('updateAvatar', function (data) {
-	$('#avatar').append(data);
+	console.log(data);
+	$('.avatar').empty();
+	$('.avatar').append(data);
 });
 
 
@@ -73,7 +75,7 @@ function uploadFiles() {
 			var message = '<b>'+ nickname + ':</b> ';
 			for (var i = 0; i < myFile.length; i++) {
 				message += '<img src="/main_page/uploads/groupchats/' + roomName + '/files/' + 
-				res.data + myFile[i].name + '"><br>';
+				res.data + myFile[i].name + '" width="100px" height="100px"><br>';
 			}
 			// tell server to execute 'sendchat' and send along one parameter
 			socket.emit('sendchat', message, roomName);
@@ -101,11 +103,10 @@ function uploadAvatar() {
 	.then(function (res) {
 		console.log(res)
 		if (res.status == 200) {
-			var message = '<b>'+ nickname + ' changed group avatar</b> ';
-			message += '<img src="/main_page/uploads/groupchats/' + roomName + '/avatar/' + 
-			myFile[i].name + '"><br>';
+			var message = `<b>${nickname} changed group avatar</b>`;
+			var image = `<img src="/main_page/uploads/groupchats/${roomName}/avatar/${myFile[0].name}" width="50px" height="50px">`;
 			// tell server to execute 'sendchat' and send along one parameter
-			socket.emit('changeAvatar', message, roomName);
+			socket.emit('changeAvatar', message, image, roomName);
 		}
 	})
 	.catch(function (err) {

@@ -6,6 +6,9 @@
 	const _id = "<%= _id %>";
 	const avatar = "<%= avatar %>";
 </script>
+
+<a href="/">Log out</a><br>
+
 <div style="float:left;width:100px;border-right:1px solid black;height:300px;padding:10px;overflow:scroll-y;">
 	<b>Chats</b>
 	<div id="chats">
@@ -13,6 +16,7 @@
 			<% chats.forEach(function( eachChat ){ %>
 				<li> 
 					<form action="/chat" method="POST">
+						<input name="_id" type="hidden" value="<%= _id %>">
 						<input name="nickname" type="hidden" value="<%= nickname %>">
 						<input name="chat" type="hidden" value="<%= eachChat.chat_id %>">
 						<input name="avatar" type="hidden" value="<%= eachChat.avatar %>">
