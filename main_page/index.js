@@ -1,11 +1,23 @@
 const express = require('express')
 const app = express()
-const server = require('http').Server(app)
-const io = require('socket.io')(server);
 const mongoose = require('mongoose')
 const fs = require('fs')
 var _id;
 var avatar;
+
+const io = require("socket.io")({
+	path: "/node1/socket.io",
+	transports: ["polling", "websocket"]
+});
+
+// either
+const server = require("http").Server(app);
+
+io.attach(server, {
+	pingInterval: 10000,
+	pingTimeout: 5000,
+	cookie: false
+});
 
 server.listen(3000);
 
@@ -116,6 +128,7 @@ io.sockets.on('connection', function (socket) {
 	
 	// when the client emits 'adduser', this listens and executes
 	socket.on('adduser', function(username, roomName){
+		console.log("DA JEST' JE!!!!!!!!!!!!!");
 		// store the username in the socket session for this client
 		socket.username = username;
 		// store the room name in the socket session for this client
@@ -150,10 +163,9 @@ io.sockets.on('connection', function (socket) {
 	socket.on('disconnect', function(){
 		// remove the username from global usernames list
 		delete usernames[socket.username];
-		// update list of users in chat, client-side
-		io.sockets.emit('updateusers', usernames);
-		// echo globally that this client has left
-		socket.broadcast.emit('updatechat', 'SERVER', socket.username + ' has disconnected');
+		
+		console.log("User left.");
+
 		socket.leave(socket.room);
 	});
 });

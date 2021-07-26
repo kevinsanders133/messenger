@@ -63,7 +63,7 @@ services:
         ports:
             - "3009:3000"
         volumes: 
-            - ./main_page/uploads/groupchats:/src/groupchats
+            - ./main_page/uploads:/src/uploads
 
     send_files:
         build: './send_files'

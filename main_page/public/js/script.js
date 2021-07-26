@@ -1,9 +1,11 @@
-var socket = io();
+var socket = io.connect("http://localhost:8080", {
+							path: "/node1/socket.io",
+							transports: ["polling", "websocket"]});
 
 // on connection to server, ask for user's name with an anonymous callback
 socket.on('connect', function(){
 	// call the server-side function 'adduser' and send one parameter (value of prompt)
-	socket.emit('adduser', nickname, _id);
+	socket.emit('adduser', "nickname", _id);
 });
 
 socket.on('updateAvatar', function (data) {

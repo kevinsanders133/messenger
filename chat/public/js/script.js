@@ -1,4 +1,8 @@
-var socket = io();
+var socket = io.connect("http://localhost:8080", 
+{
+	path: "/node2/socket.io",
+	transports: ["polling", "websocket"]
+});
 
 // on connection to server, ask for user's name with an anonymous callback
 socket.on('connect', function(){

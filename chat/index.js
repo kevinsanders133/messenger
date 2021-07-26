@@ -1,8 +1,20 @@
 const express = require('express')
 const app = express()
-const server = require('http').Server(app)
-const io = require('socket.io')(server);
 const fs = require('fs')
+
+const io = require("socket.io")({
+	path: "/node2/socket.io",
+	transports: ["polling", "websocket"]
+});
+
+// either
+const server = require("http").Server(app);
+
+io.attach(server, {
+	pingInterval: 10000,
+	pingTimeout: 5000,
+	cookie: false
+});
 
 server.listen(3000);
 
@@ -57,8 +69,14 @@ io.sockets.on('connection', function (socket) {
 	
 	// when the client emits 'sendchat', this listens and executes
 	socket.on('sendchat', function (data, chat) {
+		console.log("ZDAROVA");
 		// insert data into history file
-		const history = `${__dirname}/groupchats/${chat}/history/history.html`;
+		var history;
+		if (socket.room.split("_")[0] == "private") {
+			history = `${__dirname}/uploads/privatechats/${chat}/history/history.html`;
+		} else {
+			history = `${__dirname}/uploads/groupchats/${chat}/history/history.html`;
+		}
 		fs.appendFileSync(history, data);
 		// we tell the client to execute 'updatechat' with 2 parameters
 		io.sockets.in(socket.room).emit('updatechat', data);
@@ -66,8 +84,13 @@ io.sockets.on('connection', function (socket) {
 
 	socket.on('changeAvatar', function (message, image, chat) {
 		// insert data into history file
-		const history = `${__dirname}/groupchats/${chat}/history/history.html`;
-		fs.appendFileSync(history, message);
+		var history;
+		if (socket.room.split("_")[0] == "private") {
+			history = `${__dirname}/uploads/privatechats/${chat}/history/history.html`;
+		} else {
+			history = `${__dirname}/uploads/groupchats/${chat}/history/history.html`;
+		}
+		fs.appendFileSync(history, data);
 		// we tell the client to execute 'updatechat' with 2 parameters
 		io.sockets.in(socket.room).emit('updateAvatar', image);
 
