@@ -1,7 +1,7 @@
-const express = require('express')
-const app = express()
-const mongoose = require('mongoose')
-const fs = require('fs')
+const express = require('express');
+const app = express();
+const mongoose = require('mongoose');
+const del = require('del');
 
 const chat_schema = require("./models/chat_schema");
 const user_chat_schema = require("./models/user_chat_schema");
@@ -17,12 +17,18 @@ app.get('/delete_chat', async function (req, res) {
 	var dir;
 
 	if (chat_id.split("_")[0] == "private") {
-		dir = `${__dirname}/uploads/private_chats/${chat_id}`;
+		dir = `${__dirname}/uploads/privatechats/${chat_id}`;
 	} else {
-		dir = `${__dirname}/uploads/group_chats/${chat_id}`;
+		dir = `${__dirname}/uploads/groupchats/${chat_id}`;
 	}
 
-	fs.rmdirSync(dir, { recursive: true });
+	try {
+        await del(dir);
+
+        console.log(`${dir} is deleted!`);
+    } catch (err) {
+        console.error(`Error while deleting ${dir}.`);
+    }
 
 	try {
 		mongoose.connect(
@@ -34,17 +40,17 @@ app.get('/delete_chat', async function (req, res) {
 		console.log("could not connect");
 	}
 
-	await chat_schema.deleteOne({ chat_id: chat_id }, function (err) {
+	await chat_schema.deleteOne({ name: chat_id }, function (err) {
 		if (err) return handleError(err);
 	});
 
-	await user_chat_schema.deleteMany({ name: chat_id }, function (err) {
+	await user_chat_schema.deleteMany({ chat_id: chat_id }, function (err) {
 		if (err) return handleError(err);
 	});
 
 	await mongoose.connection.close();
 
-	res.redirect("/pre_main_page?id=" + _id);
+	res.redirect("/main_page?id=" + _id);
 
 });
 

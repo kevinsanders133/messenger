@@ -28,7 +28,7 @@ app.post("/create_chat", async (req, res) => {
             console.log("could not connect");
         }
     
-        const index = await chat_schema.countDocuments({}) + 1;
+        const index = await chat_schema.countDocuments({name: { $regex: '^group.*' }}) + 1;
 
         const chat_id = "group_" + String(index);
 
@@ -57,10 +57,7 @@ app.post("/create_chat", async (req, res) => {
             }
         });
 
-        const chat = new chat_schema({
-            _id: index, 
-            name: chat_id
-        });
+        const chat = new chat_schema({ name: chat_id });
 
         await chat.save();
 
@@ -89,7 +86,7 @@ app.post("/create_chat", async (req, res) => {
         await mongoose.connection.close();
     }
 
-    res.redirect("/pre_main_page?id=" + sender_id);
+    res.redirect("/main_page?id=" + sender_id);
 });
 
 app.listen(3000, () => {

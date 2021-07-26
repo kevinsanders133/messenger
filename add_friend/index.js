@@ -39,6 +39,8 @@ app.post("/add_friend", async (req, res) => {
 
     if (reciever_id != null) {
 
+        console.log("1111111111111111");
+
         await user_chat_schema.find({ user_id: sender_id, chat_id: { $regex: '^private.*' } }, '-_id chat_id', function(err, doc)
         {
             if(doc)
@@ -49,6 +51,8 @@ app.post("/add_friend", async (req, res) => {
 
         if (query.length != 0) {
 
+            console.log("2222222222222222");
+
             await user_chat_schema.find({ user_id: { $ne: sender_id }, $or: query }, '-_id user_id', function(err, doc)
             {
                 if(doc)
@@ -58,52 +62,54 @@ app.post("/add_friend", async (req, res) => {
                     }
                 }
             });
+        }
 
-            if (!ids.includes(reciever_id)) {
+        if (!ids.includes(reciever_id)) {
 
-                const index = await chat_schema.countDocuments({}) + 1;
+            console.log("3333333333333333333333333");
 
-                const name = `private_${String(index)}`;
+            const index = await chat_schema.countDocuments({name: { $regex: '^private.*' }}) + 1;
 
-                const dir_main = `${__dirname}/uploads/privatechats/${name}`;
-                fs.mkdirSync(dir_main);
+            const name = `private_${String(index)}`;
 
-                const dir_history = `${__dirname}/uploads/privatechats/${name}/${history}`;
-                fs.mkdirSync(dir_history);
-                
-                const file_history = `${__dirname}/uploads/privatechats/${name}/history/history.html`;
-                fs.appendFile(file_history, '', function (err) {
-                    if (err) throw err;
-                }); 
+            const dir_main = `${__dirname}/uploads/privatechats/${name}`;
+            fs.mkdirSync(dir_main);
 
-                const dir_files = `${__dirname}/uploads/privatechats/${name}/files`;
-                fs.mkdirSync(dir_files);
+            const dir_history = `${__dirname}/uploads/privatechats/${name}/history`;
+            fs.mkdirSync(dir_history);
+            
+            const file_history = `${__dirname}/uploads/privatechats/${name}/history/history.html`;
+            fs.appendFile(file_history, '', function (err) {
+                if (err) throw err;
+            }); 
 
-                const chat = new chat_schema({ _id: index, name: name });
+            const dir_files = `${__dirname}/uploads/privatechats/${name}/files`;
+            fs.mkdirSync(dir_files);
 
-                await chat.save();
+            const chat = new chat_schema({ name: name });
 
-                let sender = new user_chat_schema({
-                    user_id: sender_id,
-                    chat_id: name,
-                    chat_name: reciever_nickname
-                });
+            await chat.save();
 
-                let reciever = new user_chat_schema({
-                    user_id: reciever_id,
-                    chat_id: name,
-                    chat_name: sender_nickname
-                });
+            let sender = new user_chat_schema({
+                user_id: sender_id,
+                chat_id: name,
+                chat_name: reciever_nickname
+            });
 
-                await sender.save();
-                await reciever.save();
-            }
+            let reciever = new user_chat_schema({
+                user_id: reciever_id,
+                chat_id: name,
+                chat_name: sender_nickname
+            });
+
+            await sender.save();
+            await reciever.save();
         }
     }
 
     console.log("enddddddddddddddddddddddddddddddddddddddddddddddd");
     await mongoose.connection.close();
-    res.redirect("/pre_main_page?id=" + sender_id);
+    res.redirect("/main_page?id=" + sender_id);
 });
 
 app.listen(3000, () => {
