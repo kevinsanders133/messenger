@@ -8,12 +8,14 @@ const user_chat_schema = require("./models/user_chat_schema");
 
 app.use(express.urlencoded({ extended: false }));
 
+const jsonParser = express.json();
+
 const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
 
 
-app.get('/delete_chat', async function (req, res) {
-	var _id = req.query.id;
-	var chat_id = req.query.chat_id;
+app.post('/delete_chat', jsonParser, async function (req, res) {
+	var _id = req.body.id;
+	var chat_id = req.body.chat_id;
 	var dir;
 
 	if (chat_id.split("_")[0] == "private") {
@@ -40,6 +42,11 @@ app.get('/delete_chat', async function (req, res) {
 		console.log("could not connect");
 	}
 
+	var members;
+	await user_chat_schema.find({ chat_id: chat_id }, '-_id user_id', function (err, doc) {
+		members = doc;
+	});
+
 	await chat_schema.deleteOne({ name: chat_id }, function (err) {
 		if (err) return handleError(err);
 	});
@@ -50,7 +57,7 @@ app.get('/delete_chat', async function (req, res) {
 
 	await mongoose.connection.close();
 
-	res.redirect("/main_page?id=" + _id);
+	res.json({ members: members });
 
 });
 

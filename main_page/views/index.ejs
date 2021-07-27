@@ -2,10 +2,10 @@
 <script src="/node1/socket.io/socket.io.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="/main_page/public/js/script.js"></script>
 <script>
 	const _id = "<%= _id %>";
 	const avatar = "<%= avatar %>";
+    const nickname = "<%= nickname %>"; 
 </script>
 
 <a href="/">Log out</a><br>
@@ -28,7 +28,7 @@
 							<img src="/main_page/uploads/groupchats/<%= eachChat.chat_id %>/avatar/<%= eachChat.avatar %>" width="50px" height="50px">
 							<input name="user_id" type="hidden" value="null">
 						<% } %>
-						<a href="/delete_chat?chat_id=<%= eachChat.chat_id %>&id=<%= _id %>">Delete</a>
+						<input type="button" value="Delete" class="deleteChat">
 						<button type="submit"><%= eachChat.chat_name %></button>
 					</form>
 				</li>
@@ -37,14 +37,12 @@
 	</div>
 </div>
 
-<form method="POST" action="/add_friend" class="addFriend">
+<form name="addFriend">
 	<label for="reciever_nickname">Nickname</label>
 	<input type="text" placeholder="user_12345" name="reciever_nickname">
 	<label for="reciever_tag">Tag</label>
 	<input type="text" placeholder="#9999" name="reciever_tag">
-	<input type="hidden" value="<%= _id %>" name="sender_id">
-	<input name="sender_nickname" type="hidden" value="<%= nickname %>">
-	<input type="submit" value="Add">
+	<input type="submit" value="Add" class="addFriendSubmit">
 </form><br><br>
 
 
@@ -62,4 +60,7 @@
 <input type="button" id="upload" value="Upload" onclick="upload()">
 
 <div class="avatar"></div>
+
+
+<script src="/main_page/public/js/script.js"></script>
 

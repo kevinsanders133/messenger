@@ -26,7 +26,6 @@ socket.on('updateAvatar', function (data) {
 	$('.avatar').append(data);
 });
 
-
 // on load of page
 $(function(){
 

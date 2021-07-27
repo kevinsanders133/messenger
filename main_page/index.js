@@ -2,8 +2,6 @@ const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
 const fs = require('fs')
-var _id;
-var avatar;
 
 const io = require("socket.io")({
 	path: "/node1/socket.io",
@@ -43,13 +41,14 @@ const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb
 
 // routing
 app.get('/main_page', async function (req, res) {
+	const _id = req.query.id;
+
 	var nickname;
 	var chats = [];
 	var private_chats = [];
 	var group_chats = [];
 	var query = [];
-
-	_id = req.query.id;
+	var avatar;
 
 	const dir = __dirname + '/uploads/avatars/' + _id;
 
@@ -120,7 +119,12 @@ app.get('/main_page', async function (req, res) {
 
 	await mongoose.connection.close();
 
-	res.render('index', { chats: chats, friends: private_chats, _id: _id, nickname: nickname, avatar: avatar });
+	res.render('index', {   
+		chats: chats, 
+	    friends: private_chats,
+		_id: _id, 
+		nickname: nickname, 
+		avatar: avatar });
 
 });
 
@@ -139,14 +143,15 @@ io.sockets.on('connection', function (socket) {
 		socket.join(roomName);
 		// echo to room 1 that a person has connected to their room
 	});
-	
-	// when the client emits 'sendchat', this listens and executes
-	socket.on('sendchat', function (data, chat) {
-		// insert data into history file
-		const history = `${__dirname}/groupchats/${chat}/history/history.html`;
-		fs.appendFileSync(history, data);
-		// we tell the client to execute 'updatechat' with 2 parameters
-		io.sockets.in(socket.room).emit('updatechat', data);
+
+	socket.on('sendFriendRequest', function (sender_id, nickname, avatar, chat_id, reciever_id) {
+		socket.broadcast.to(reciever_id).emit('recieveFriendRequest', sender_id, nickname, avatar, chat_id);
+	});	
+
+	socket.on('sendDeleteChat', function (chat_id, members) {
+		members.forEach(member => {
+			socket.broadcast.to(member["user_id"]).emit('deleteChat', chat_id);
+		});
 	});	
 
 	socket.on('changeAvatar', function (message, image, chat) {

@@ -9,15 +9,21 @@ const user_chat_schema = require("./models/user_chat_schema");
 
 app.use(express.urlencoded({ extended: false }));
 
+const jsonParser = express.json();
+
 const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
 
-app.post("/add_friend", async (req, res) => {
+app.post("/add_friend", jsonParser, async (req, res) => {
     const sender_nickname = req.body.sender_nickname;
     const reciever_nickname = req.body.reciever_nickname;
     const sender_id = req.body.sender_id;
     const reciever_tag = req.body.reciever_tag;
     var query = [];
     var ids = [];
+    var name = null;
+    var avatar;
+
+    console.log(sender_nickname + "\n" + reciever_nickname + "\n" + sender_id + "\n" + reciever_tag);
 
     try {
 		mongoose.connect(
@@ -68,9 +74,14 @@ app.post("/add_friend", async (req, res) => {
 
             console.log("3333333333333333333333333");
 
+            const path = `${__dirname}/uploads/avatars/${reciever_id}`;
+				fs.readdirSync(path).forEach(file => {
+				avatar = file;
+			});
+
             const index = await chat_schema.countDocuments({name: { $regex: '^private.*' }}) + 1;
 
-            const name = `private_${String(index)}`;
+            name = `private_${String(index)}`;
 
             const dir_main = `${__dirname}/uploads/privatechats/${name}`;
             fs.mkdirSync(dir_main);
@@ -89,6 +100,8 @@ app.post("/add_friend", async (req, res) => {
             const chat = new chat_schema({ name: name });
 
             await chat.save();
+
+            console.log(sender_id + "  " + reciever_id);
 
             let sender = new user_chat_schema({
                 user_id: sender_id,
@@ -109,7 +122,9 @@ app.post("/add_friend", async (req, res) => {
 
     console.log("enddddddddddddddddddddddddddddddddddddddddddddddd");
     await mongoose.connection.close();
-    res.redirect("/main_page?id=" + sender_id);
+    res.json({ chat_id: name,
+               reciever_id: reciever_id,
+               avatar: avatar});
 });
 
 app.listen(3000, () => {

@@ -64,7 +64,6 @@ io.sockets.on('connection', function (socket) {
 		socket.emit('updatechat', 'You have connected to ' + roomName);
 		// echo to room 1 that a person has connected to their room
 		socket.broadcast.to(roomName).emit('updatechat', username + ' has connected to this room');
-		//socket.emit('updaterooms', rooms, roomName);
 	});
 	
 	// when the client emits 'sendchat', this listens and executes
