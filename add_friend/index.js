@@ -42,7 +42,10 @@ app.post("/add_friend", jsonParser, async (req, res) => {
         }
     });
 
-
+    if (reciever_id == sender_id) {
+        reciever_id = null;
+    }
+    
     if (reciever_id != null) {
 
         console.log("1111111111111111");
@@ -70,7 +73,11 @@ app.post("/add_friend", jsonParser, async (req, res) => {
             });
         }
 
-        if (!ids.includes(reciever_id)) {
+        if (ids.includes(reciever_id)) {
+            reciever_id = null;
+        }
+
+        if (reciever_id != null) {
 
             console.log("3333333333333333333333333");
 
@@ -79,9 +86,7 @@ app.post("/add_friend", jsonParser, async (req, res) => {
 				avatar = file;
 			});
 
-            const index = await chat_schema.countDocuments({name: { $regex: '^private.*' }}) + 1;
-
-            name = `private_${String(index)}`;
+            name = `private_${String(Date.now())}`;
 
             const dir_main = `${__dirname}/uploads/privatechats/${name}`;
             fs.mkdirSync(dir_main);

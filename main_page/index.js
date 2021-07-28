@@ -148,9 +148,15 @@ io.sockets.on('connection', function (socket) {
 		socket.broadcast.to(reciever_id).emit('recieveFriendRequest', sender_id, nickname, avatar, chat_id);
 	});	
 
-	socket.on('sendDeleteChat', function (chat_id, members) {
+	socket.on('sendDeleteChat', function (chat_id, members, initiator_id) {
 		members.forEach(member => {
-			socket.broadcast.to(member["user_id"]).emit('deleteChat', chat_id);
+			socket.broadcast.to(member["user_id"]).emit('deleteChat', chat_id, initiator_id);
+		});
+	});
+	
+	socket.on('send-create-chat', function (recievers_ids, name, chat_id) {
+		recievers_ids.forEach(reciever => {
+			socket.broadcast.to(reciever).emit('create-chat', name, chat_id);
 		});
 	});	
 

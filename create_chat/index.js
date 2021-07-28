@@ -11,82 +11,79 @@ const user_chat_schema = require("./models/user_chat_schema");
 
 const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
 
+const jsonParser = express.json();
 
-app.post("/create_chat", async (req, res) => {
+app.post("/create_chat", jsonParser, async (req, res) => {
     const sender_id = req.body.sender_id;
-    const recievers_ids = req.body.reciever_id;
+    const recievers_ids = req.body.recievers_ids;
     const name = req.body.name;
 
-    if (recievers_ids != undefined) {
-        try {
-            mongoose.connect(
-                mongoAtlasUri,
-                { useNewUrlParser: true, useUnifiedTopology: true },
-                () => console.log("Mongoose is connected")
-            );
-        } catch (e) {
-            console.log("could not connect");
-        }
+    try {
+        mongoose.connect(
+            mongoAtlasUri,
+            { useNewUrlParser: true, useUnifiedTopology: true },
+            () => console.log("Mongoose is connected")
+        );
+    } catch (e) {
+        console.log("could not connect");
+    }
+
+    const chat_id = "group_" + String(Date.now());
+
+    const dir_main = `${__dirname}/uploads/groupchats/${chat_id}`;
+    fs.mkdirSync(dir_main);
+
+    const dir_history = `${__dirname}/uploads/groupchats/${chat_id}/history`;
+    fs.mkdirSync(dir_history);
     
-        const index = await chat_schema.countDocuments({name: { $regex: '^group.*' }}) + 1;
+    const file_history = `${__dirname}/uploads/groupchats/${chat_id}/history/history.html`;
+    fs.appendFile(file_history, '', function (err) {
+        if (err) throw err;
+    }); 
 
-        const chat_id = "group_" + String(index);
+    const dir_files = `${__dirname}/uploads/groupchats/${chat_id}/files`;
+    fs.mkdirSync(dir_files);
 
-        const dir_main = `${__dirname}/uploads/groupchats/${chat_id}`;
-		fs.mkdirSync(dir_main);
+    const dir_avatar = `${__dirname}/uploads/groupchats/${chat_id}/avatar`;
+    fs.mkdirSync(dir_avatar);
 
-		const dir_history = `${__dirname}/uploads/groupchats/${chat_id}/history`;
-		fs.mkdirSync(dir_history);
-        
-		const file_history = `${__dirname}/uploads/groupchats/${chat_id}/history/history.html`;
-		fs.appendFile(file_history, '', function (err) {
-			if (err) throw err;
-		}); 
+    const src = `${__dirname}/uploads/no-avatar.png`;
+    const dest =  `${dir_avatar}/no-avatar.png`;
+    fs.copyFile(src, dest, (err) => {
+        if (err) {
+        console.log("Error Found:", err);
+        }
+    });
 
-		const dir_files = `${__dirname}/uploads/groupchats/${chat_id}/files`;
-		fs.mkdirSync(dir_files);
+    const chat = new chat_schema({ name: chat_id });
 
-		const dir_avatar = `${__dirname}/uploads/groupchats/${chat_id}/avatar`;
-		fs.mkdirSync(dir_avatar);
+    await chat.save();
 
-        const src = `${__dirname}/uploads/no-avatar.png`;
-        const dest =  `${dir_avatar}/no-avatar.png`;
-        fs.copyFile(src, dest, (err) => {
-            if (err) {
-            console.log("Error Found:", err);
-            }
-        });
-
-        const chat = new chat_schema({ name: chat_id });
-
-        await chat.save();
-
-        var members = [];
+    var members = [];
+    members.push({
+        user_id: sender_id,
+        chat_id: chat_id,
+        chat_name: name
+    });
+    for (var i = 0; i < recievers_ids.length; i++) {
         members.push({
-            user_id: sender_id,
+            user_id: recievers_ids[i],
             chat_id: chat_id,
             chat_name: name
         });
-        for (var i = 0; i < recievers_ids.length; i++) {
-            members.push({
-                user_id: recievers_ids[i],
-                chat_id: chat_id,
-                chat_name: name
-            });
-        }
-
-        console.log(members);
-
-        await user_chat_schema.insertMany(members).then(function(){
-            console.log("Data inserted")  // Success
-        }).catch(function(error){
-            console.log(error)      // Failure
-        });
-
-        await mongoose.connection.close();
     }
 
-    res.redirect("/main_page?id=" + sender_id);
+    console.log(members);
+
+    await user_chat_schema.insertMany(members).then(function(){
+        console.log("Data inserted")  // Success
+    }).catch(function(error){
+        console.log(error)      // Failure
+    });
+
+    await mongoose.connection.close();
+
+    res.json({ chat_id: chat_id });
 });
 
 app.listen(3000, () => {

@@ -43,7 +43,7 @@ app.post('/delete_chat', jsonParser, async function (req, res) {
 	}
 
 	var members;
-	await user_chat_schema.find({ chat_id: chat_id }, '-_id user_id', function (err, doc) {
+	await user_chat_schema.find({ user_id: { $ne: _id }, chat_id: chat_id }, '-_id user_id', function (err, doc) {
 		members = doc;
 	});
 

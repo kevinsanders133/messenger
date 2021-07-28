@@ -46,13 +46,14 @@
 </form><br><br>
 
 
-<form method="POST" action="/create_chat" class="createChat">
-	<input type="text" name="name" placeholder="Name of a chat">
+<form name="create-chat">
+	<input type="text" name="name" placeholder="Name of a chat"><br>
 	<% friends.forEach(function( eachChat ){ %>
-		<input type="checkbox" name="reciever_id" value="<%= eachChat.user_id %>"><%= eachChat.chat_name %><br>
+		<input type="checkbox" name="reciever_id" value="<%= eachChat.user_id %>">
+		<span id="<%= eachChat.user_id %>"><%= eachChat.chat_name %></span><br>
 	<% }) %>
 	<input type="hidden" value="<%= _id %>" name="sender_id">
-	<input type="submit" value="Create">
+	<input type="submit" value="Create" class="create-chat-submit">
 </form>
 
 
