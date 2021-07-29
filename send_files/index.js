@@ -9,17 +9,24 @@ app.post('/send_files', (req, res) => {
     const chatName = req.query.chatName;
     const nickname = req.query.nickname;
     const milis = String(Date.now());
+    let path;
+
+    if (chatName.split("_")[0] == "private") {
+        path = `${__dirname}/uploads/privatechats/${chatName}/files`;
+    } else {
+        path = `${__dirname}/uploads/groupchats/${chatName}/files`;
+    }
 
     var storage = multer.diskStorage({
         destination: function (req, file, cb) {
-            cb(null, __dirname + "/groupchats/" + chatName + "/files")
+            cb(null, path)
         },
         filename: function (req, file, cb) {
-            cb(null, milis + file.originalname)
+            cb(null, `${milis}${file.originalname}`)
         }
     })
        
-    var upload = multer({ storage: storage }).array("myFile", 4)
+    var upload = multer({ storage: storage }).array("myFile", 10)
 
     upload(req, res, function (err) {
         if (err instanceof multer.MulterError) {

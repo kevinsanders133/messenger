@@ -11,12 +11,12 @@ services:
         ports:
             - "3001:3000"
 
-    #registration:
-    #    build: './registration'
-    #    ports:
-    #        - "3002:3000"
-    #    volumes: 
-    #        - ./main_page/uploads:/src/uploads
+    registration:
+        build: './registration'
+        ports:
+            - "3002:3000"
+        volumes: 
+            - ./main_page/uploads:/src/uploads
 
     #send_email:
     #    build: './send_email'
@@ -30,12 +30,12 @@ services:
         volumes: 
             - ./main_page/uploads:/src/uploads
 
-    #upload_avatar:
-    #    build: './upload_avatar'
-    #    ports:
-    #        - "3005:3000"
-    #    volumes: 
-    #        - ./main_page/uploads:/src/uploads
+    upload_avatar:
+        build: './upload_avatar'
+        ports:
+            - "3005:3000"
+        volumes: 
+            - ./main_page/uploads:/src/uploads
 
     add_friend:
         build: './add_friend'
@@ -58,19 +58,19 @@ services:
         volumes: 
             - ./main_page/uploads:/src/uploads
 
-    #chat:
-    #    build: './chat'
-    #    ports:
-    #        - "3009:3000"
-    #    volumes: 
-    #        - ./main_page/uploads:/src/uploads
+    chat:
+        build: './chat'
+        ports:
+            - "3009:3000"
+        volumes: 
+            - ./main_page/uploads:/src/uploads
 
-    #send_files:
-    #    build: './send_files'
-    #    ports:
-    #        - "3010:3000"
-    #    volumes:
-    #        - ./main_page/uploads/groupchats:/src/groupchats
+    send_files:
+        build: './send_files'
+        ports:
+            - "3010:3000"
+        volumes:
+            - ./main_page/uploads:/src/uploads
 
 
     nginx:
@@ -82,13 +82,13 @@ services:
         depends_on:
             - start_page
             - login
-            #- registration
+            - registration
             #- send_email
             - main_page
-            #- upload_avatar
+            - upload_avatar
             - add_friend
             - create_chat
             - delete_chat
-            #- chat
-            #- send_files
+            - chat
+            - send_files
             
