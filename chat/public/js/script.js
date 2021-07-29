@@ -12,12 +12,52 @@ socket.on('connect', function(){
 
 // load history
 socket.on('loadhistory', function (history) {
-	$('#history').load(history);
+	let history_to_append = "";
+	console.log(history);
+	history.forEach(message => {
+		if (message.type == "text") {
+			if (_id == message.user_id) {
+				history_to_append += 
+					`<div class="right-message-container message-container">
+						${message.content}
+					</div>`;
+			} else {
+				history_to_append += 
+					`<div class="left-message-container message-container">
+						${message.content}
+					</div>`;
+			}
+		} else if (type == "image") {
+
+		} else {
+
+		}
+	});
+	$('#conversation').append(history_to_append);
 });
 
 // listener, whenever the server emits 'updatechat', this updates the chat body
-socket.on('updatechat', function (data) {
-	$('#conversation').append(data);
+socket.on('updatechat', function (type, message, user_id, sender_nickname) {
+	let element_to_append;
+	if (type == "text") {
+		if (_id == user_id) {
+			element_to_append = 
+				`<div class="right-message-container message-container">
+					${message}
+				</div>`;
+		} else {
+			element_to_append = 
+				`<div class="left-message-container message-container">
+					${message}
+				</div>`;
+		}
+	} else if (type == "image") {
+
+	} else {
+
+	}
+
+	$('#conversation').append(element_to_append);
 });
 
 socket.on('updateAvatar', function (data) {
@@ -26,15 +66,20 @@ socket.on('updateAvatar', function (data) {
 	$('.avatar').append(data);
 });
 
+// set scroll to the bottom of scroll div 
+var myDiv = document.getElementById("conversation");
+console.log(myDiv.scrollHeight);
+myDiv.scrollTop = myDiv.scrollHeight;
+
 // on load of page
 $(function(){
 
 	// when the client clicks SEND
 	$('#send').click( function() {
-		var message = '<b>'+ nickname + ':</b> ' + $('#data').val() + '<br>\n'
+		var message = $('#data').val();
 		$('#data').val('');
 		// tell server to execute 'sendchat' and send along one parameter
-		socket.emit('sendchat', message, roomName);
+		socket.emit('sendchat', "text", message, _id, nickname);
 	});
 
 	// when the client hits ENTER on their keyboard

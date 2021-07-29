@@ -1,49 +1,72 @@
 <!DOCTYPE html>
-<script>
-	const roomName = "<%= roomName %>";
-	const nickname = "<%= nickname %>";
-	const avatar = "<%= avatar %>";
-	const user_id = "<%= user_id %>";
-	const _id = "<%= _id %>";
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <link rel="stylesheet" href="/chat/public/css/style.css">
+</head>
+
+<body>
+    <div class="body-container">
+        <header>
+            Tom_JackSON#9562
+        </header>
+        <main>
+            <div id="conversation">
+                <div class="left-message-container message-container">
+                    Hello, How are ya?
+                    What are you dowing man????/
+                </div>
+                <div class="right-message-container message-container">
+                    Hello, How are ya?
+                    What are you dowing man????/
+                </div>
+            </div>
+        </main>
+        <footer>
+            <label for="files" class="custom-file-upload">
+                <img id="attach-files-image" src="sk.png">
+            </label>
+            <input type="file" class="files" multiple value="F">
+            <!--<input type="button" id="upload" value="Upload" onclick="uploadFiles()">-->
+
+            <input type="text" id="data" placeholder="Write a message...">
+            <input type="button" id="send" value="send">
+
+            <div class="progress-bar" id="progress-bar">
+                <div class="progress-bar-fill">
+                    <span class="progress-bar-text">0%</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <aside>
+        <div id="chat-info-container">
+
+            <% if (roomName.split("_")[0] == "private") { %>
+            <img id="avatar" src="/main_page/uploads/avatars/<%= user_id %>/<%= avatar %>">
+            <% } else { %>
+            <img id="avatar" src="/main_page/uploads/groupchats/<%= roomName %>/avatar/<%= avatar %>">
+            <input type="file" class="avatar_input">
+            <input type="button" id="upload_avatar" value="Set" onclick="uploadAvatar()">
+            <% } %>
+
+            <h3 id="nickname-tag">Tom_JackSON#9562</h3>
+        </div>
+    </aside>
+</body>
+<script defer>
+    const roomName = "<%= roomName %>";
+    const nickname = "<%= nickname %>";
+    const avatar = "<%= avatar %>";
+    const user_id = "<%= user_id %>";
+    const _id = "<%= _id %>";
 </script>
-<script src="/node2/socket.io/socket.io.js"></script>
-<script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="/chat/public/js/script.js"></script>
-<link rel="stylesheet" href="/chat/public/css/style.css">
+<script defer src="/node2/socket.io/socket.io.js"></script>
+<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script defer src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script defer src="/chat/public/js/script.js"></script>
+</html>
 
-<a href="/main_page?id=<%= _id %>">Leave</a>
-
-<div style="float:left;width:300px;height:250px;overflow:scroll-y;padding:10px;">
-
-	<div class="avatar">
-		<% if (roomName.split("_")[0] == "private") { %>
-			<img src="/main_page/uploads/avatars/<%= user_id %>/<%= avatar %>" width="50px" height="50px">
-		</div>
-		<% } else { %>
-			<img src="/main_page/uploads/groupchats/<%= roomName %>/avatar/<%= avatar %>" width="50px" height="50px">
-		</div>
-			<input type="file" class="avatar_input">
-			<input type="button" id="upload_avatar" value="Set" onclick="uploadAvatar()">
-		<% } %>
-
-	<div id="conversation">
-		<div id="history"></div>
-	</div>
-
-	<input id="data" style="width:200px;">
-	<input type="button" id="send" value="send">
-
-
-	<input type="file" class="files" multiple>
-	<input type="button" id="upload" value="Upload" onclick="uploadFiles()">
-
-
-	<div class="progress-bar" id="progress-bar">
-		<div class="progress-bar-fill">
-			<span class="progress-bar-text">0%</span>
-		</div>
-	</div>
-	
-</div>

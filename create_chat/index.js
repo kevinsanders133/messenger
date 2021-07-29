@@ -6,7 +6,6 @@ const fs = require("fs")
 app.use(express.urlencoded({ extended: false }));
 
 const user_schema = require("./models/user_schema");
-const chat_schema = require("./models/chat_schema");
 const user_chat_schema = require("./models/user_chat_schema");
 
 const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
@@ -28,18 +27,10 @@ app.post("/create_chat", jsonParser, async (req, res) => {
         console.log("could not connect");
     }
 
-    const chat_id = "group_" + String(Date.now());
+    const chat_id = `group_${String(Date.now())}`;
 
     const dir_main = `${__dirname}/uploads/groupchats/${chat_id}`;
     fs.mkdirSync(dir_main);
-
-    const dir_history = `${__dirname}/uploads/groupchats/${chat_id}/history`;
-    fs.mkdirSync(dir_history);
-    
-    const file_history = `${__dirname}/uploads/groupchats/${chat_id}/history/history.html`;
-    fs.appendFile(file_history, '', function (err) {
-        if (err) throw err;
-    }); 
 
     const dir_files = `${__dirname}/uploads/groupchats/${chat_id}/files`;
     fs.mkdirSync(dir_files);
@@ -54,10 +45,6 @@ app.post("/create_chat", jsonParser, async (req, res) => {
         console.log("Error Found:", err);
         }
     });
-
-    const chat = new chat_schema({ name: chat_id });
-
-    await chat.save();
 
     var members = [];
     members.push({
@@ -76,9 +63,9 @@ app.post("/create_chat", jsonParser, async (req, res) => {
     console.log(members);
 
     await user_chat_schema.insertMany(members).then(function(){
-        console.log("Data inserted")  // Success
+        console.log("Data inserted");
     }).catch(function(error){
-        console.log(error)      // Failure
+        console.log(error);
     });
 
     await mongoose.connection.close();
@@ -87,7 +74,6 @@ app.post("/create_chat", jsonParser, async (req, res) => {
 });
 
 app.listen(3000, () => {
-    console.log(`running on port 7777`);
-    console.log("--------------------------");
+    console.log(`running`);
 });
 

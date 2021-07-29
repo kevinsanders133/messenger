@@ -20,7 +20,6 @@ io.attach(server, {
 server.listen(3000);
 
 const user_schema = require("./models/user_schema");
-const chat_schema = require("./models/chat_schema");
 const user_chat_schema = require("./models/user_chat_schema");
 
 app.set('view engine', 'ejs')

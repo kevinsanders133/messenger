@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 const fs = require("fs")
 
 const user_schema = require("./models/user_schema");
-const chat_schema = require("./models/chat_schema");
 const user_chat_schema = require("./models/user_chat_schema");
 
 app.use(express.urlencoded({ extended: false }));
@@ -91,22 +90,8 @@ app.post("/add_friend", jsonParser, async (req, res) => {
             const dir_main = `${__dirname}/uploads/privatechats/${name}`;
             fs.mkdirSync(dir_main);
 
-            const dir_history = `${__dirname}/uploads/privatechats/${name}/history`;
-            fs.mkdirSync(dir_history);
-            
-            const file_history = `${__dirname}/uploads/privatechats/${name}/history/history.html`;
-            fs.appendFile(file_history, '', function (err) {
-                if (err) throw err;
-            }); 
-
             const dir_files = `${__dirname}/uploads/privatechats/${name}/files`;
             fs.mkdirSync(dir_files);
-
-            const chat = new chat_schema({ name: name });
-
-            await chat.save();
-
-            console.log(sender_id + "  " + reciever_id);
 
             let sender = new user_chat_schema({
                 user_id: sender_id,
@@ -125,7 +110,6 @@ app.post("/add_friend", jsonParser, async (req, res) => {
         }
     }
 
-    console.log("enddddddddddddddddddddddddddddddddddddddddddddddd");
     await mongoose.connection.close();
     res.json({ chat_id: name,
                reciever_id: reciever_id,
@@ -133,6 +117,5 @@ app.post("/add_friend", jsonParser, async (req, res) => {
 });
 
 app.listen(3000, () => {
-    console.log(`running on port 7777`);
-    console.log("--------------------------");
+    console.log(`running`);
 });
