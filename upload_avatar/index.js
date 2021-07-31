@@ -8,6 +8,7 @@ app.use(express.urlencoded({extended: false, limit: '1000mb'}));
 
 app.post('/upload_avatar', (req, res) => {
     const _id = req.query._id;
+    const nickname = req.query.nickname;
 
     fsExtra.emptyDirSync(__dirname + "/uploads/avatars/" + _id);
 
@@ -16,7 +17,7 @@ app.post('/upload_avatar', (req, res) => {
             cb(null, __dirname + "/uploads/avatars/" + _id);
         },
         filename: function (req, file, cb) {
-            cb(null, file.originalname);
+            cb(null, `${nickname}.png`);
         }
     })
        
@@ -48,7 +49,7 @@ app.post('/upload_group_avatar', (req, res) => {
             cb(null, `${__dirname}/uploads/groupchats/${chat_id}/avatar`);
         },
         filename: function (req, file, cb) {
-            cb(null, file.originalname);
+            cb(null, `${chat_id}.png`);
         }
     })
        

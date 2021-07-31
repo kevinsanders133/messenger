@@ -3,7 +3,6 @@ const app = express();
 const mongoose = require('mongoose');
 const del = require('del');
 
-const chat_schema = require("./models/chat_schema");
 const user_chat_schema = require("./models/user_chat_schema");
 
 app.use(express.urlencoded({ extended: false }));
@@ -47,10 +46,6 @@ app.post('/delete_chat', jsonParser, async function (req, res) {
 		members = doc;
 	});
 
-	await chat_schema.deleteOne({ name: chat_id }, function (err) {
-		if (err) return handleError(err);
-	});
-
 	await user_chat_schema.deleteMany({ chat_id: chat_id }, function (err) {
 		if (err) return handleError(err);
 	});
@@ -62,6 +57,5 @@ app.post('/delete_chat', jsonParser, async function (req, res) {
 });
 
 app.listen(3000, () => {
-	console.log("running on port 3000");
-	console.log("--------------------------");
+	console.log("running");
 });

@@ -44,7 +44,7 @@ app.post('/registration', async (req, res) => {
         const dir = __dirname + '/uploads/avatars/' + _id;
         fs.mkdirSync(dir);
         const src = __dirname + '/uploads/no-avatar.png';
-        const dest =  dir + '/no-avatar.png';
+        const dest =  `${dir}/${req.body.nickname_signup}.png`;
         fs.copyFile(src, dest, (err) => {
             if (err) {
             console.log("Error Found:", err);

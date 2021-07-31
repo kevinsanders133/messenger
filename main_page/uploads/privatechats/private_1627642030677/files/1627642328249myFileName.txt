@@ -1,0 +1,61 @@
+select count(film_id), actor_id from film_actor group by actor_id;
+
+select a.city, b.country
+from city a, country b
+where a.country_id = b.country_id 
+and a.city like 'p%';
+
+select count(rating), rating
+from film
+where rating = 'PG' or rating = 'G' or rating = 'NC-17'
+group by rating;
+
+select max(length), title
+from film;
+
+select a.first_name, a.last_name, b.city
+from customer a, city b, country c, address d
+where d.address_id = a.address_id and a.address_id = b.city_id
+and b.country_id = c.country_id and c.country = 'Brazil'; 
+
+
+select count(b.payment_id), avg(b.amount), a.first_name, a.last_name
+from customer a, payment b
+where a.customer_id = b.customer_id;
+
+select sum(b.amount) as av, a.first_name
+from customer a, payment b
+where a.customer_id = b.customer_id
+group by a.first_name
+order by av asc;
+
+select avg(length) as `avg`, title
+from film;
+
+select a.first_name, a.last_name, c.title
+from actor a, film_actor b, film c
+where a.actor_id = b.actor_id
+and b.film_id = c.film_id;
+
+select a.first_name, a.last_name, b.address
+from customer a, address b
+where a.address_id = b.address_id;
+
+
+select a.dzial_id, a.dzial_nazwa, b.imie, b.nazwisko 
+from dzialy a, pracownicy b 
+where a.szef_id = b.szef_id;
+
+
+
+
+
+
+
+
+
+
+
+
+
+

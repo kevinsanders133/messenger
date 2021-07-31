@@ -4,60 +4,61 @@ var socket = io.connect("http://localhost:8080",
 	transports: ["polling", "websocket"]
 });
 
-// on connection to server, ask for user's name with an anonymous callback
 socket.on('connect', function(){
-	// call the server-side function 'adduser' and send one parameter (value of prompt)
 	socket.emit('adduser', nickname, roomName);
 });
 
-// load history
-socket.on('loadhistory', function (history) {
-	let history_to_append = "";
-	console.log(history);
-	history.forEach(message => {
+socket.on('updatechat', function (messages, type) {
+	let elements_to_append = "";
+	messages.forEach(message => {
 		if (message.type == "text") {
+			console.log("text");
 			if (_id == message.user_id) {
-				history_to_append += 
+				elements_to_append += 
 					`<div class="right-message-container message-container">
 						${message.content}
-					</div>`;
+					</div>\n`;
 			} else {
-				history_to_append += 
+				if (type == "group") {
+					elements_to_append += `<img class="conversation-avatar" src="/main_page/uploads/avatars/${message.user_id}/${message.nickname}.png">`
+				}
+				elements_to_append += 
 					`<div class="left-message-container message-container">
 						${message.content}
-					</div>`;
+					</div>\n`;
 			}
-		} else if (type == "image") {
-
+		} else if (message.type == "image") {
+			var images = message.content.split("\n");
+			if (_id == message.user_id) {
+				elements_to_append += `<div class="right-message-container message-container">`;
+			} else {
+				if (type == "group") {
+					elements_to_append += `<img class="conversation-avatar" src="/main_page/uploads/avatars/${message.user_id}/${message.nickname}.png">`
+				}
+				elements_to_append += `<div class="left-message-container message-container">`;
+			}
+			for (var i = 0; i < images.length - 1; i++) {
+				elements_to_append += `<img src="${images[i]}" width="30px" height="30px">\n`
+			}
+			elements_to_append += `</div>`;
 		} else {
-
+			var others = message.content.split("\n");
+			if (_id == message.user_id) {
+				elements_to_append += `<div class="right-message-container message-container">`;
+			} else {
+				if (type == "group") {
+					elements_to_append += `<img class="conversation-avatar" src="/main_page/uploads/avatars/${message.user_id}/${message.nickname}.png">`
+				}
+				elements_to_append += `<div class="left-message-container message-container">`;
+			}
+			for (var i = 0; i < others.length - 1; i++) {
+				splited_link = others[i].split("/");
+				elements_to_append += `<a href="${others[i]}">${splited_link[splited_link.length - 1]} target="_blank"</a><br>\n`
+			}
+			elements_to_append += `</div>`;
 		}
 	});
-	$('#conversation').append(history_to_append);
-});
-
-// listener, whenever the server emits 'updatechat', this updates the chat body
-socket.on('updatechat', function (type, message, user_id, sender_nickname) {
-	let element_to_append;
-	if (type == "text") {
-		if (_id == user_id) {
-			element_to_append = 
-				`<div class="right-message-container message-container">
-					${message}
-				</div>`;
-		} else {
-			element_to_append = 
-				`<div class="left-message-container message-container">
-					${message}
-				</div>`;
-		}
-	} else if (type == "image") {
-
-	} else {
-
-	}
-
-	$('#conversation').append(element_to_append);
+	$('#conversation').append(elements_to_append);
 });
 
 socket.on('updateAvatar', function (data) {
@@ -66,23 +67,16 @@ socket.on('updateAvatar', function (data) {
 	$('.avatar').append(data);
 });
 
-// set scroll to the bottom of scroll div 
-var myDiv = document.getElementById("conversation");
-console.log(myDiv.scrollHeight);
-myDiv.scrollTop = myDiv.scrollHeight;
+var conversation = document.getElementById("conversation");
+conversation.scrollTop = conversation.scrollHeight;
 
-// on load of page
 $(function(){
-
-	// when the client clicks SEND
-	$('#send').click( function() {
+	$('#send-message-button').click( function() {
 		var message = $('#data').val();
 		$('#data').val('');
 		// tell server to execute 'sendchat' and send along one parameter
 		socket.emit('sendchat', "text", message, _id, nickname);
 	});
-
-	// when the client hits ENTER on their keyboard
 	$('#data').keypress(function(e) {
 		if(e.which == 13) {
 			$(this).blur();
@@ -90,8 +84,6 @@ $(function(){
 		}
 	});
 });
-
-//const upload_submit = document.querySelector("#upload");
 
 function uploadFiles() {
 
@@ -120,16 +112,30 @@ function uploadFiles() {
 	.then(function (res) {
 		console.log(res)
 		if (res.status == 200) {
-			var message = '<b>'+ nickname + ':</b> ';
+			let images = "";
+			let others = "";
 			for (var i = 0; i < myFile.length; i++) {
+				console.log(myFile[i].type);
 				if (roomName.split("_")[0] == "private") {
-					message += `<img src="/main_page/uploads/privatechats/${roomName}/files/${res.data}${myFile[i].name}" width="100px" height="100px"><br>`;
+					if (/^image.*/.test(myFile[i].type)) {
+						images += `/main_page/uploads/privatechats/${roomName}/files/${res.data}${myFile[i].name}\n`;
+					} else {
+						others += `/main_page/uploads/privatechats/${roomName}/files/${res.data}${myFile[i].name}\n`;
+					}
 				} else {
-					message += `<img src="/main_page/uploads/groupchats/${roomName}/files/${res.data}${myFile[i].name}" width="100px" height="100px"><br>`;
+					if (/^image.*/.test(myFile[i].type)) {
+						images += `/main_page/uploads/groupchats/${roomName}/files/${res.data}${myFile[i].name}\n`;
+					} else {
+						others += `/main_page/uploads/groupchats/${roomName}/files/${res.data}${myFile[i].name}\n`;
+					}
 				}
 			}
-			// tell server to execute 'sendchat' and send along one parameter
-			socket.emit('sendchat', message, roomName);
+			if (images !== "") {
+				socket.emit('sendchat', "image", images, _id, nickname);
+			}
+			if (others !== "") {
+				socket.emit('sendchat', "other", others, _id, nickname);
+			}
 		}
 	})
 	.catch(function (err) {
@@ -156,7 +162,6 @@ function uploadAvatar() {
 		if (res.status == 200) {
 			var message = `<b>${nickname} changed group avatar</b>`;
 			var image = `<img src="/main_page/uploads/groupchats/${roomName}/avatar/${myFile[0].name}" width="50px" height="50px">`;
-			// tell server to execute 'sendchat' and send along one parameter
 			socket.emit('changeAvatar', message, image, roomName);
 		}
 	})

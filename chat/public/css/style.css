@@ -39,8 +39,7 @@ main {
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
-    /*background-image: url("2.jfif");*/
-    background-color: rgb(245, 211, 166);
+    background: hsl(350, 71%, 81%);;
     scroll-margin-block-end: 10px;
 }
 
@@ -72,17 +71,21 @@ main {
 }
 /* scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll */
 
+.conversation-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
 .message-container {
-    max-width: 300px;
+    
     border-radius: 15px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-top: 7px;
+    margin-bottom: 7px;
     text-align: left;
-    padding-top: 9px;
-    padding-left: 9px;
-    padding-bottom: 9px;
-    /*background-color: rgb(21, 151, 226);*/
+    padding: 9px 9px 9px 9px;
     font-family: sans-serif;
+    text-align: left;
 }
 
 .left-message-container {
@@ -99,6 +102,40 @@ main {
     box-shadow: 2.5px 5px rgb(64, 190, 102);
 }
 
+.image-container {
+    max-width: 400px;
+    border-radius: 15px;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    text-align: left;
+    padding-top: 4px;
+    padding-right: 9px;
+    padding-bottom: 5px;
+    padding-left: 9px;
+}
+
+.left-image-container {
+    align-self: flex-start;
+    margin-left: 6px;
+    background-color: white;
+    box-shadow: 2.5px 5px rgb(197, 196, 196);
+}
+
+.right-image-container {
+    align-self: flex-end;
+    margin-right: 8px;
+    background-color: rgb(118, 252, 158);
+    box-shadow: 2.5px 5px rgb(64, 190, 102);
+    background-size: cover;
+}
+
+.uploaded-image {
+    width: 100%;    /* RESPONSIVE IMAGE SIZE !!!!!!!!!!!!!!!!!!! */
+    height: auto;   /* RESPONSIVE IMAGE SIZE !!!!!!!!!!!!!!!!!!! */
+    border-radius: 14px;
+    margin-top: 5px;
+}
+
 /*----------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------
@@ -112,29 +149,61 @@ footer {
     border: solid white;
     display: flex;
     flex-direction: row;
+    position: relative;
 }
 
 #data {
-    width: 600px;
-    height: 50px;
+    width: 550px;
+    height: 40px;
     font-size: 16px;
     font-family: sans-serif;
+    background: transparent;
+    border: transparent;
+    color: black;
 }
 
 .custom-file-upload {
-    border: 1px solid #ccc;
-    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
     padding: 6px 12px;
-    cursor: pointer;
-}
-
-#attach-files-image {
-    width: 50px;
-    height: 50px;
+    display: inline-block;
+    mix-blend-mode:darken;
+    background: url(sk.png);
+    background-size: cover;
 }
 
 .files {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 7px;
+    left: 13px;
+    opacity: 0;
+    overflow: hidden;
+}
+
+#upload-files-button {
     display: none;
+}
+
+.custom-send-button {
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    padding: 6px 12px;
+    display: inline-block;
+    /*mix-blend-mode:darken;
+    background: url(send.png) no-repeat;
+    background-size: 50px;
+    margin-top: 10px;*/
+}
+
+#send-message-button {
+    width: 50px;
+    height: 50px;
+    /*opacity: 0;
+    overflow: hidden;*/
 }
 
 .progress-bar {
@@ -192,6 +261,7 @@ aside {
     height: 200px;
     margin: 0 auto;
     margin-top: 30px;
+    border-radius: 50%;
 }
 
 #nickname-tag {
