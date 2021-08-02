@@ -12,7 +12,6 @@ socket.on('updatechat', function (messages, type) {
 	let elements_to_append = "";
 	messages.forEach(message => {
 		if (message.type == "text") {
-			console.log("text");
 			if (_id == message.user_id) {
 				elements_to_append += 
 					`<div class="right-message-container message-container">
@@ -20,42 +19,54 @@ socket.on('updatechat', function (messages, type) {
 					</div>\n`;
 			} else {
 				if (type == "group") {
-					elements_to_append += `<img class="conversation-avatar" src="/main_page/uploads/avatars/${message.user_id}/${message.nickname}.png">`
+					elements_to_append += 
+					`<div class="left-groupchat-message-container">\n
+					<img class="conversation-avatar" src="/main_page/uploads/avatars/${message.user_id}/${message.nickname}.png">`
 				}
 				elements_to_append += 
 					`<div class="left-message-container message-container">
 						${message.content}
-					</div>\n`;
+					</div>\n</div>`;
 			}
 		} else if (message.type == "image") {
 			var images = message.content.split("\n");
+			let images_container = "";
 			if (_id == message.user_id) {
-				elements_to_append += `<div class="right-message-container message-container">`;
+				elements_to_append += `<div class="right-image-container image-container">`;
 			} else {
 				if (type == "group") {
-					elements_to_append += `<img class="conversation-avatar" src="/main_page/uploads/avatars/${message.user_id}/${message.nickname}.png">`
+					elements_to_append += 
+					`<div class="left-groupchat-message-container">\n
+					<img class="conversation-avatar" src="/main_page/uploads/avatars/${message.user_id}/${message.nickname}.png">`
 				}
-				elements_to_append += `<div class="left-message-container message-container">`;
+				elements_to_append += `<div class="left-image-container image-container">`;
 			}
 			for (var i = 0; i < images.length - 1; i++) {
-				elements_to_append += `<img src="${images[i]}" width="30px" height="30px">\n`
+				elements_to_append += `<img src="${images[i]}" class="uploaded-image">\n`;
+				images_container += `<img src="${images[i]}" class="images-container-image">\n`;
 			}
-			elements_to_append += `</div>`;
+			elements_to_append += `</div>\n</div>`;
+			$("#images-container").append(images_container);
 		} else {
 			var others = message.content.split("\n");
+			let files_container = "";
 			if (_id == message.user_id) {
 				elements_to_append += `<div class="right-message-container message-container">`;
 			} else {
 				if (type == "group") {
-					elements_to_append += `<img class="conversation-avatar" src="/main_page/uploads/avatars/${message.user_id}/${message.nickname}.png">`
+					elements_to_append += 
+					`<div class="left-groupchat-message-container">\n
+					<img class="conversation-avatar" src="/main_page/uploads/avatars/${message.user_id}/${message.nickname}.png">`
 				}
 				elements_to_append += `<div class="left-message-container message-container">`;
 			}
 			for (var i = 0; i < others.length - 1; i++) {
 				splited_link = others[i].split("/");
-				elements_to_append += `<a href="${others[i]}">${splited_link[splited_link.length - 1]} target="_blank"</a><br>\n`
+				elements_to_append += `<a href="${others[i]}" target="_blank">${splited_link[splited_link.length - 1]}</a><br>\n`;
+				files_container += `<a href="${others[i]}" target="_blank" class="files-container-file" download>${splited_link[splited_link.length - 1]}</a>\n`;
 			}
-			elements_to_append += `</div>`;
+			elements_to_append += `</div>\n</div>`;
+			$("#files-container").append(files_container);
 		}
 	});
 	$('#conversation').append(elements_to_append);
@@ -69,6 +80,50 @@ socket.on('updateAvatar', function (data) {
 
 var conversation = document.getElementById("conversation");
 conversation.scrollTop = conversation.scrollHeight;
+
+let overlay = document.querySelector(".overlay");
+let files_input = document.querySelector(".files");
+let close = document.querySelector(".close");
+let data = document.querySelector("#data");
+let send_message_button = document.querySelector("#send-message-button");
+let menu_images = document.querySelector("#menu-images");
+let menu_files = document.querySelector("#menu-files");
+let images_container = document.querySelector("#images-container");
+let files_container = document.querySelector("#files-container");
+
+window.onload = function() {
+    files_container.style["display"] = "none";
+};
+
+files_input.addEventListener("change", () => {
+    overlay.style["visibility"] = "visible";
+    overlay.style["opacity"] = "1";
+});
+close.addEventListener("click", () => {
+    overlay.style.removeProperty("visibility");
+    overlay.style.removeProperty("opacity");
+    files_input.value = "";
+});
+
+data.addEventListener("keyup", checkIfEmpty);
+data.addEventListener("click", checkIfEmpty);
+function checkIfEmpty() {
+    if (data.value != "") {
+        send_message_button.style["display"] = "block";
+    } else {
+        send_message_button.style.removeProperty("display");
+    } 
+}
+
+menu_images.addEventListener("click", () => {
+    images_container.style["display"] = "flex";
+    files_container.style["display"] = "none";
+});
+
+menu_files.addEventListener("click", () => {
+    images_container.style["display"] = "none";
+    files_container.style["display"] = "flex";
+});
 
 $(function(){
 	$('#send-message-button').click( function() {

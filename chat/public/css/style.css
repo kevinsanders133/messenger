@@ -1,3 +1,9 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
 body {
     max-width: 1920px;
     margin: 40px;
@@ -14,9 +20,15 @@ body {
 header {
     max-width: 700px;
     height: 50px;
-    background-color: rgb(21, 151, 226);
+    background-color: rgb(255, 255, 255);
     border-top-left-radius: 10px;
-    border: solid white;
+    border-bottom: solid rgb(21, 151, 226);
+}
+
+#logo {
+    width: 120px;
+    height: 45px;
+    margin-left: 10px;
 }
 
 /*----------------------------------------------------------------------------------------------------------
@@ -30,7 +42,6 @@ header {
 
 main {
     max-width: 700px;
-    background-color: rgb(153, 97, 23);
 }
 
 #conversation {
@@ -39,7 +50,8 @@ main {
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
-    background: hsl(350, 71%, 81%);;
+    /*background: linear-gradient(hsl(59, 100%, 83%), hsl(59, 100%, 77%));*/
+    background-color: white;
     scroll-margin-block-end: 10px;
 }
 
@@ -71,21 +83,28 @@ main {
 }
 /* scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll */
 
+.left-groupchat-message-container {
+    display: flex;
+}
+
 .conversation-avatar {
-    width: 50px;
     height: 50px;
+    width: 50px;
     border-radius: 50%;
+    margin-left: 6px;
+    align-self: flex-end;
+    margin-bottom: 4px;
 }
 
 .message-container {
-    
     border-radius: 15px;
     margin-top: 7px;
     margin-bottom: 7px;
-    text-align: left;
     padding: 9px 9px 9px 9px;
     font-family: sans-serif;
     text-align: left;
+    max-width: 400px;
+    word-wrap: break-word;
 }
 
 .left-message-container {
@@ -98,8 +117,8 @@ main {
 .right-message-container {
     align-self: flex-end;
     margin-right: 8px;
-    background-color: rgb(118, 252, 158);
-    box-shadow: 2.5px 5px rgb(64, 190, 102);
+    background: rgb(159, 255, 188);
+    box-shadow: 2.5px 5px rgb(80, 226, 124);
 }
 
 .image-container {
@@ -150,16 +169,23 @@ footer {
     display: flex;
     flex-direction: row;
     position: relative;
+    align-items: center;
 }
 
 #data {
-    width: 550px;
+    width: 450px;
     height: 40px;
+    margin-left: 10px;
     font-size: 16px;
     font-family: sans-serif;
     background: transparent;
     border: transparent;
     color: black;
+    outline: none;
+}
+
+#data::placeholder {
+    color: white;
 }
 
 .custom-file-upload {
@@ -167,43 +193,95 @@ footer {
     height: 30px;
     border-radius: 10px;
     padding: 6px 12px;
-    display: inline-block;
-    mix-blend-mode:darken;
-    background: url(sk.png);
+    mix-blend-mode: darken;
+    background: url(/chat/public/img/sk.png);
     background-size: cover;
+    margin-bottom: 8px;
+    margin-left: 10px;
 }
 
 .files {
-    width: 50px;
-    height: 50px;
-    position: absolute;
-    top: 7px;
-    left: 13px;
+    width: 30px;
+    height: 30px;
     opacity: 0;
     overflow: hidden;
 }
 
 #upload-files-button {
-    display: none;
+    
 }
+
+/* alert alert alert alertalert alert alert alertalert alert alertalert alert alert */
+.overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    transition: opacity 500ms;
+    visibility: hidden;
+    opacity: 0;
+  }
+  .overlay:target {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+
+.send-files-confirmation {
+    margin: 70px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    width: 30%;
+    position: relative;
+    transition: all 5s ease-in-out;
+  }
+  
+  .send-files-confirmation h2 {
+    margin-top: 0;
+    color: #333;
+    font-family: Tahoma, Arial, sans-serif;
+  }
+  .send-files-confirmation .close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    transition: all 200ms;
+    font-size: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #333;
+  }
+  .send-files-confirmation .close:hover {
+    color: #06D85F;
+  }
+  .send-files-confirmation .content {
+    max-height: 30%;
+    overflow: auto;
+  }
+/* alert alert alert alertalert alert alert alertalert alert alertalert alert alert */
 
 .custom-send-button {
     width: 30px;
     height: 30px;
     border-radius: 10px;
-    padding: 6px 12px;
-    display: inline-block;
-    /*mix-blend-mode:darken;
-    background: url(send.png) no-repeat;
-    background-size: 50px;
-    margin-top: 10px;*/
 }
 
 #send-message-button {
     width: 50px;
-    height: 50px;
-    /*opacity: 0;
-    overflow: hidden;*/
+    height: 30px;
+    position: absolute;
+    right: 10px;
+    background: url(/chat/public/img/send.png);
+    background-size: cover;
+    mix-blend-mode: darken;
+    border: none;
+    display: none;
+}
+#send-message-button:active {
+    transform: scale(1.1);
 }
 
 .progress-bar {
@@ -253,7 +331,6 @@ aside {
     flex-direction: column;
     background-color: rgb(21, 151, 226);
     border-radius: 40px;
-
 }
 
 #avatar {
@@ -270,3 +347,97 @@ aside {
     color: white;
     font-family: sans-serif;
 }
+
+.menu {
+    display: flex;
+    justify-content: center;
+}
+
+.menu-item {
+    font-size: 20px;
+    font-family: sans-serif;
+}
+
+#menu-images {
+    margin-right: 50px;
+}
+
+#menu-files {
+    margin-left: 50px;
+}
+
+#images-container {
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    max-height: 200px;
+    
+    overflow-y: scroll;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.images-container-image {
+    width: 105px;
+    height: 105px;
+}
+
+/* scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll */
+/* width */
+#images-container::-webkit-scrollbar {
+    width: 10px;
+    height: auto;
+}
+  
+/* Track */
+#images-container::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255);
+}
+
+/* Handle */
+#images-container::-webkit-scrollbar-thumb {
+    background: rgb(204, 202, 202);
+    border-radius: 10px;
+}
+/* scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll */
+
+#files-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: scroll;
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    max-height: 200px;
+    width: 190px;
+    font-size: 20px;
+    align-self: center;
+}
+
+.files-container-file {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+/* scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll */
+/* width */
+#files-container::-webkit-scrollbar {
+    width: 10px;
+    height: auto;
+}
+  
+/* Track */
+#files-container::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255);
+}
+
+/* Handle */
+#files-container::-webkit-scrollbar-thumb {
+    background: rgb(204, 202, 202);
+    border-radius: 10px;
+}
+/* scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll */

@@ -10,18 +10,17 @@
 
 <body>
     <div class="body-container">
-        <a href="/main_page?id=<%= _id %>">Back</a>
+        
         <header>
-            Tom_JackSON#9562
+            <img id="logo" src="/chat/public/img/libchat2.png">
         </header>
         <main>
             <div id="conversation"></div>
         </main>
         <footer>
             <div class="custom-file-upload">
-                <input type="file" class="files" multiple value="F">
+                <input type="file" class="files" multiple>
             </div>
-            <input type="button" id="upload-files-button" value="Upload" onclick="uploadFiles()">
 
             <input type="text" id="data" placeholder="Write a message...">
             <div class="custom-send-button">
@@ -31,6 +30,17 @@
             <div class="progress-bar" id="progress-bar">
                 <div class="progress-bar-fill">
                     <span class="progress-bar-text">0%</span>
+                </div>
+            </div>
+
+            <div id="popup1" class="overlay">
+                <div class="send-files-confirmation">
+                  <h2>Here i am</h2>
+                  <a class="close" href="#">&times;</a>
+                  <div class="content">
+                    Thank to pop me out of that button, but now i'm done so you can close this window.
+                    <input type="button" id="upload-files-button" value="Upload" onclick="uploadFiles()">
+                  </div>
                 </div>
             </div>
         </footer>
@@ -48,6 +58,14 @@
 
             <h3 id="nickname-tag">Tom_JackSON#9562</h3>
         </div>
+
+        <div class="menu">
+            <span id="menu-images" class="menu-item">Images</span>
+            <span id="menu-files" class="menu-item">Files</span>
+        </div>
+
+        <div id="images-container"></div>
+        <div id="files-container"></div>
     </aside>
 </body>
 <script>

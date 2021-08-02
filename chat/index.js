@@ -85,7 +85,6 @@ io.sockets.on('connection', function (socket) {
 		let chat_schema = mongoose.model(roomName, schema, roomName);
 
 		await chat_schema.find({}, function(err, doc) {
-			console.log(doc);
 			socket.emit('updatechat', doc, roomName.split("_")[0]);
 		});
 	});
