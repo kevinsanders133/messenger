@@ -18,6 +18,41 @@ try {
 }
 
 const User = require("./models/User");
+
+app.post('/email_confirmation', async (req, res) => {
+    if (req.body.password_signup == req.body.password_check_signup) {
+
+        const tag = await User.countDocuments({ nickname: req.body.nickname_signup }, function(err, c) {
+            return c;
+        }) + 1;
+
+        const user = new User({
+            nickname: req.body.nickname_signup,
+            tag: "#" + String(tag),
+            email: req.body.email_signup,
+            password: req.body.password_signup
+        });
+    
+        await user.save();
+
+        var _id;
+        await User.findOne({ nickname: req.body.nickname_signup, tag: "#" + String(tag) }, '_id', function(err, doc) {
+            _id = doc._id;
+            console.log(doc._id);
+        });
+
+        const dir = __dirname + '/uploads/avatars/' + _id;
+        fs.mkdirSync(dir);
+        const src = __dirname + '/uploads/no-avatar.png';
+        const dest =  `${dir}/${req.body.nickname_signup}.png`;
+        fs.copyFile(src, dest, (err) => {
+            if (err) {
+            console.log("Error Found:", err);
+            }
+        });
+    }
+    res.redirect("/");
+});
   
 app.post('/registration', async (req, res) => {
     if (req.body.password_signup == req.body.password_check_signup) {

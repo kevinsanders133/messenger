@@ -76,7 +76,7 @@
 			<input type="file" class="file">
 			<input type="button" id="upload" value="Set" accept="image/png,image/jpeg,image/jpg" onclick="upload()">
 		</div>
-		<h3 id="nickname-tag"><%= nickname %></h3>
+		<h3 id="nickname-tag"><%= nickname %><%= tag %></h3>
 
 		<form action="/change_info_form" method="POST">
 			<input type="hidden" name="id" value="<%= _id %>">

@@ -48,6 +48,7 @@ app.get('/main_page', async function (req, res) {
 	var group_chats = [];
 	var query = [];
 	var avatar;
+	var tag;
 
 	const dir = __dirname + '/uploads/avatars/' + _id;
 
@@ -67,9 +68,10 @@ app.get('/main_page', async function (req, res) {
 		console.log("could not connect");
 	}
 
-	await user_schema.findOne({_id: _id}, '-_id nickname', function(err, doc)
+	await user_schema.findOne({_id: _id}, '-_id nickname tag', function(err, doc)
 		{
 			nickname = doc.nickname;
+			tag = doc.tag;
 		});
 
 	await user_chat_schema.find({ user_id: _id }, '-_id', function(err, doc)
@@ -122,7 +124,8 @@ app.get('/main_page', async function (req, res) {
 		chats: chats, 
 	    friends: private_chats,
 		_id: _id, 
-		nickname: nickname, 
+		nickname: nickname,
+		tag: tag,
 		avatar: avatar });
 
 });

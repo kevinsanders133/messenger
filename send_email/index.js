@@ -8,7 +8,7 @@ app.use(express.urlencoded({ extended: false }));
 const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
 
 const User = require("./models/User");
-  
+
 app.post('/send_email', (req, res) => {
 
     try {

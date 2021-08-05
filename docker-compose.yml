@@ -58,17 +58,24 @@ services:
         volumes: 
             - ./main_page/uploads:/src/uploads
 
+    change_info:
+        build: './change_info'
+        ports:
+            - "3009:3000"
+        volumes: 
+            - ./change_info/public:/src/public
+
     chat:
         build: './chat'
         ports:
-            - "3009:3000"
+            - "3010:3000"
         volumes: 
             - ./main_page/uploads:/src/uploads
 
     send_files:
         build: './send_files'
         ports:
-            - "3010:3000"
+            - "3011:3000"
         volumes:
             - ./main_page/uploads:/src/uploads
 
@@ -89,6 +96,7 @@ services:
             - add_friend
             - create_chat
             - delete_chat
+            - change_info
             - chat
             - send_files
             
