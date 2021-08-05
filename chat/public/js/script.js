@@ -20,7 +20,8 @@ socket.on('updatechat', function (messages, type) {
 			} else {
 				if (type == "group") {
 					elements_to_append += 
-					`<div class="left-groupchat-message-container">\n
+					`<div class="sender-nickname">${message.nickname}</div>
+					<div class="left-groupchat-message-container">\n
 					<img class="conversation-avatar" src="/main_page/uploads/avatars/${message.user_id}/${message.nickname}.png">`
 				}
 				elements_to_append += 
@@ -36,7 +37,8 @@ socket.on('updatechat', function (messages, type) {
 			} else {
 				if (type == "group") {
 					elements_to_append += 
-					`<div class="left-groupchat-message-container">\n
+					`<div class="sender-nickname">${message.nickname}</div>
+					<div class="left-groupchat-message-container">\n
 					<img class="conversation-avatar" src="/main_page/uploads/avatars/${message.user_id}/${message.nickname}.png">`
 				}
 				elements_to_append += `<div class="left-image-container image-container">`;
@@ -55,7 +57,8 @@ socket.on('updatechat', function (messages, type) {
 			} else {
 				if (type == "group") {
 					elements_to_append += 
-					`<div class="left-groupchat-message-container">\n
+					`<div class="sender-nickname">${message.nickname}</div>
+					<div class="left-groupchat-message-container">\n
 					<img class="conversation-avatar" src="/main_page/uploads/avatars/${message.user_id}/${message.nickname}.png">`
 				}
 				elements_to_append += `<div class="left-message-container message-container">`;
@@ -74,8 +77,8 @@ socket.on('updatechat', function (messages, type) {
 
 socket.on('updateAvatar', function (data) {
 	console.log(data);
-	$('.avatar').empty();
-	$('.avatar').append(data);
+	$('#avatar').remove();
+	$('#chat-info-container').prepend(data);
 });
 
 var conversation = document.getElementById("conversation");
@@ -215,9 +218,9 @@ function uploadAvatar() {
 	.then(function (res) {
 		console.log(res)
 		if (res.status == 200) {
-			var message = `<b>${nickname} changed group avatar</b>`;
-			var image = `<img src="/main_page/uploads/groupchats/${roomName}/avatar/${myFile[0].name}" width="50px" height="50px">`;
-			socket.emit('changeAvatar', message, image, roomName);
+			var name = `/main_page/uploads/groupchats/${roomName}/avatar/${roomName}.png?date=${(+new Date())}`;
+			var image = `<img id="avatar" src="${name}">`;
+			socket.emit('changeAvatar', image);
 		}
 	})
 	.catch(function (err) {

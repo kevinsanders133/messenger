@@ -31,7 +31,7 @@ app.post('/send_email', (req, res) => {
       
     var mailOptions = {
         from: 'storytelltom@gmail.com',
-        to: 'storytelltom@yahoo.com',
+        to: 'storytelltom@gmail.com',
         subject: 'Sending Email using Node.js',
         text: 'That was easy!'
     };

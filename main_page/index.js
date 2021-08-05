@@ -158,17 +158,7 @@ io.sockets.on('connection', function (socket) {
 			socket.broadcast.to(reciever).emit('create-chat', name, chat_id);
 		});
 	});	
-
-	socket.on('changeAvatar', function (message, image, chat) {
-		// insert data into history file
-		const history = `${__dirname}/groupchats/${chat}/history/history.html`;
-		fs.appendFileSync(history, message);
-		// we tell the client to execute 'updatechat' with 2 parameters
-		io.sockets.in(socket.room).emit('updateAvatar', image);
-
-		io.sockets.in(socket.room).emit('updatechat', message);
-	});	
-
+	
 	// when the user disconnects.. perform this
 	socket.on('disconnect', function(){
 		// remove the username from global usernames list

@@ -18,10 +18,10 @@ services:
     #    volumes: 
     #        - ./main_page/uploads:/src/uploads
 
-    #send_email:
-    #    build: './send_email'
-    #    ports:
-    #        - "3003:3000"
+    send_email:
+        build: './send_email'
+        ports:
+            - "3003:3000"
 
     main_page:
         build: './main_page'
@@ -83,9 +83,9 @@ services:
             - start_page
             - login
             #- registration
-            #- send_email
+            - send_email
             - main_page
-            #- upload_avatar
+            - upload_avatar
             - add_friend
             - create_chat
             - delete_chat

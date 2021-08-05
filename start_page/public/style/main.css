@@ -12,13 +12,9 @@
 body {
     align-items: center;
     background-color: var(--white);
-    background: url('../img/background.jpg');
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
     display: grid;
     height: 100vh;
+    background-color: rgb(21, 151, 226);
     place-items: center;
 }
 .form__title {

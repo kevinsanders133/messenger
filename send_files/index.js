@@ -2,12 +2,11 @@ const express = require('express');
 const app = express();
 const multer = require('multer');
 
-app.use(express.json({limit: '1000mb'}));
-app.use(express.urlencoded({extended: false, limit: '1000mb'}));
+app.use(express.json({limit: '200mb'}));
+app.use(express.urlencoded({limit: '200mb', extended: false}));
 
 app.post('/send_files', (req, res) => {
     const chatName = req.query.chatName;
-    const nickname = req.query.nickname;
     const milis = String(Date.now());
     let path;
 

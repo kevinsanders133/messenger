@@ -27,12 +27,6 @@
                 <input type="button" id="send-message-button">
             </div>
 
-            <div class="progress-bar" id="progress-bar">
-                <div class="progress-bar-fill">
-                    <span class="progress-bar-text">0%</span>
-                </div>
-            </div>
-
             <div id="popup1" class="overlay">
                 <div class="send-files-confirmation">
                   <h2>Here i am</h2>
@@ -40,6 +34,11 @@
                   <div class="content">
                     Thank to pop me out of that button, but now i'm done so you can close this window.
                     <input type="button" id="upload-files-button" value="Upload" onclick="uploadFiles()">
+                    <div class="progress-bar" id="progress-bar">
+                        <div class="progress-bar-fill">
+                            <span class="progress-bar-text">0%</span>
+                        </div>
+                    </div>        
                   </div>
                 </div>
             </div>
@@ -52,11 +51,14 @@
             <img id="avatar" src="/main_page/uploads/avatars/<%= user_id %>/<%= avatar %>">
             <% } else { %>
             <img id="avatar" src="/main_page/uploads/groupchats/<%= roomName %>/avatar/<%= avatar %>">
-            <input type="file" class="avatar_input">
-            <input type="button" id="upload_avatar" value="Set" onclick="uploadAvatar()">
+            <div id="upload-avatar-container">
+                <div for="avatar_input" class="button-avatar">Select avatar</div>
+                <input type="file" class="avatar_input">
+                <input type="button" id="upload_avatar" value="Set" onclick="uploadAvatar()">
+            </div>
             <% } %>
 
-            <h3 id="nickname-tag">Tom_JackSON#9562</h3>
+            <h3 id="nickname"><%= chat_name %></h3>
         </div>
 
         <div class="menu">
@@ -70,6 +72,7 @@
 </body>
 <script>
     const roomName = "<%= roomName %>";
+    const chat_name = "<%= chat_name %>";
     const nickname = "<%= nickname %>";
     const avatar = "<%= avatar %>";
     const user_id = "<%= user_id %>";

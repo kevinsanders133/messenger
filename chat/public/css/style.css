@@ -50,7 +50,6 @@ main {
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
-    /*background: linear-gradient(hsl(59, 100%, 83%), hsl(59, 100%, 77%));*/
     background-color: white;
     scroll-margin-block-end: 10px;
 }
@@ -61,6 +60,15 @@ main {
 
 #conversation:last-child {
     padding-bottom: 10px;
+}
+
+.sender-nickname {
+    font-size: 15px;
+    color: rgb(21, 151, 226);
+    font-family: sans-serif;
+    font-weight: 700;
+    margin-left: 63px;
+    margin-top: 5px;
 }
 
 /* scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll */
@@ -285,14 +293,14 @@ footer {
 }
 
 .progress-bar {
-    display: none;
+    
     height: 35px;
     width: 250px;
     border: 2px solid darkblue;
 }
 
 .progress-bar-fill {
-    display: none;
+    
     height: 100%;
     width: 0;
     background: lightblue;
@@ -339,12 +347,37 @@ aside {
     margin: 0 auto;
     margin-top: 30px;
     border-radius: 50%;
+    object-fit: cover;
 }
 
-#nickname-tag {
+#nickname {
     margin: 0 auto;
     padding-top: 20px;
     color: white;
+    font-family: sans-serif;
+}
+
+#upload-avatar-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.avatar_input {
+    position: absolute;
+    opacity: 0;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.button-avatar {
+    
+}
+
+#upload_avatar {
+    margin-top: 5px;
+    width: 50px;
+    border-radius: 10px;
     font-family: sans-serif;
 }
 
@@ -360,10 +393,12 @@ aside {
 
 #menu-images {
     margin-right: 50px;
+    cursor: pointer;
 }
 
 #menu-files {
     margin-left: 50px;
+    cursor: pointer;
 }
 
 #images-container {
@@ -381,6 +416,7 @@ aside {
 .images-container-image {
     width: 105px;
     height: 105px;
+    object-fit: cover;
 }
 
 /* scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll */
@@ -406,18 +442,23 @@ aside {
 #files-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items:flex-start;
     overflow-y: scroll;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
     margin-top: 20px;
     margin-left: 20px;
     margin-right: 20px;
     max-height: 200px;
-    width: 190px;
+    width: 180px;
     font-size: 20px;
     align-self: center;
+    border-left: solid white;
+    padding-left: 5px;
 }
 
 .files-container-file {
+    text-decoration: none;
     margin-top: 5px;
     margin-bottom: 5px;
 }

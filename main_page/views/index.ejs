@@ -1,4 +1,91 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+	<link rel="stylesheet" href="/main_page/public/css/style.css">
+	<title>Main page</title>
+</head>
+<body>
+
+<header>
+	<img id="logo" src="/main_page/public/img/libchat2.png">
+</header>
+
+<div id="main-container">
+	<aside id="left-aside">
+		<a href="/" id="log-out">Log out</a>
+
+		<h3 id="add-friend-label">Add friend</h3>
+		<form name="addFriend">
+			<label for="reciever_nickname">Nickname</label>
+			<input type="text" placeholder="user_12345" name="reciever_nickname"><br>
+			<label for="reciever_tag">Tag</label>
+			<input type="text" placeholder="#9999" name="reciever_tag"><br>
+			<input type="submit" value="Add" class="addFriendSubmit">
+		</form>
+		
+		<h3 id="create-chat-label">Create chat</h3>
+		<form name="create-chat">
+			<input type="text" name="name" placeholder="Name of a chat"><br>
+			<% friends.forEach(function( eachChat ){ %>
+				<input type="checkbox" name="reciever_id" value="<%= eachChat.user_id %>">
+				<span id="<%= eachChat.user_id %>"><%= eachChat.chat_name %></span><br>
+			<% }) %>
+			<input type="hidden" value="<%= _id %>" name="sender_id">
+			<input type="submit" value="Create" class="create-chat-submit">
+		</form>
+	</aside>
+
+	<main>
+		<b>Chats</b>
+		<div id="chats">
+			<ul>
+				<% chats.forEach(function( eachChat ){ %>
+					<li> 
+						<form action="/chat" method="POST" class="chat">
+							<input name="_id" type="hidden" value="<%= _id %>">
+							<input name="nickname" type="hidden" value="<%= nickname %>">
+							<input name="chat" type="hidden" value="<%= eachChat.chat_id %>">
+							<input name="avatar" type="hidden" value="<%= eachChat.avatar %>">
+							<input name="chat_name" type="hidden" value="<%= eachChat.chat_name %>">
+							<% if (eachChat.chat_id.split("_")[0] == "private") { %>
+								<img src="/main_page/uploads/avatars/<%= eachChat.user_id %>/<%= eachChat.avatar %>" class="chat-avatar">
+								<input name="user_id" type="hidden" value="<%= eachChat.user_id %>">
+							<% } else { %>
+								<img src="/main_page/uploads/groupchats/<%= eachChat.chat_id %>/avatar/<%= eachChat.avatar %>" class="chat-avatar">
+								<input name="user_id" type="hidden" value="null">
+							<% } %>
+							<p><%= eachChat.chat_name %></p>
+							<button type="submit"></button>
+							<input type="button" value="Delete" class="deleteChat">
+						</form>
+					</li>
+				<% }) %>
+			</ul>
+		</div>
+	</main>
+
+	<aside id="right-aside">
+
+		<div id="avatar-container">
+			<img src="/main_page/public/img/libchat2.png" id="avatar">
+			<label id="label-for-file" for="file">Select avatar</label>
+			<input type="file" class="file">
+			<input type="button" id="upload" value="Set" accept="image/png,image/jpeg,image/jpg" onclick="upload()">
+		</div>
+		<h3 id="nickname-tag"><%= nickname %></h3>
+
+		<form action="/change_info_form" method="POST">
+			<input type="hidden" name="id" value="<%= _id %>">
+			<input type="submit" id="change" value="Change personal information">
+		</form>
+	</aside>
+</div>
+</body>
+
 <script src="/node1/socket.io/socket.io.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -7,61 +94,6 @@
 	const avatar = "<%= avatar %>";
     const nickname = "<%= nickname %>"; 
 </script>
-
-<a href="/">Log out</a><br>
-
-<div style="float:left;width:100px;border-right:1px solid black;height:300px;padding:10px;overflow:scroll-y;">
-	<b>Chats</b>
-	<div id="chats">
-		<ul>
-			<% chats.forEach(function( eachChat ){ %>
-				<li> 
-					<form action="/chat" method="POST">
-						<input name="_id" type="hidden" value="<%= _id %>">
-						<input name="nickname" type="hidden" value="<%= nickname %>">
-						<input name="chat" type="hidden" value="<%= eachChat.chat_id %>">
-						<input name="avatar" type="hidden" value="<%= eachChat.avatar %>">
-						<% if (eachChat.chat_id.split("_")[0] == "private") { %>
-							<img src="/main_page/uploads/avatars/<%= eachChat.user_id %>/<%= eachChat.avatar %>" width="50px" height="50px">
-							<input name="user_id" type="hidden" value="<%= eachChat.user_id %>">
-						<% } else { %>
-							<img src="/main_page/uploads/groupchats/<%= eachChat.chat_id %>/avatar/<%= eachChat.avatar %>" width="50px" height="50px">
-							<input name="user_id" type="hidden" value="null">
-						<% } %>
-						<input type="button" value="Delete" class="deleteChat">
-						<button type="submit"><%= eachChat.chat_name %></button>
-					</form>
-				</li>
-			<% }) %>
-		</ul>
-	</div>
-</div>
-
-<form name="addFriend">
-	<label for="reciever_nickname">Nickname</label>
-	<input type="text" placeholder="user_12345" name="reciever_nickname">
-	<label for="reciever_tag">Tag</label>
-	<input type="text" placeholder="#9999" name="reciever_tag">
-	<input type="submit" value="Add" class="addFriendSubmit">
-</form><br><br>
-
-
-<form name="create-chat">
-	<input type="text" name="name" placeholder="Name of a chat"><br>
-	<% friends.forEach(function( eachChat ){ %>
-		<input type="checkbox" name="reciever_id" value="<%= eachChat.user_id %>">
-		<span id="<%= eachChat.user_id %>"><%= eachChat.chat_name %></span><br>
-	<% }) %>
-	<input type="hidden" value="<%= _id %>" name="sender_id">
-	<input type="submit" value="Create" class="create-chat-submit">
-</form>
-
-
-<input type="file" class="file">
-<input type="button" id="upload" value="Upload" accept="image/png,image/jpeg,image/jpg" onclick="upload()">
-
-<div class="avatar"></div>
-
-
 <script src="/main_page/public/js/script.js"></script>
 
+</html>

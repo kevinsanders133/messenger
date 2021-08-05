@@ -64,7 +64,8 @@ var rooms = [];
 
 app.post('/chat', function (req, res) {
 	res.render('index', { 
-		roomName: req.body.chat, 
+		roomName: req.body.chat,
+		chat_name: req.body.chat_name,
 		nickname: req.body.nickname,
 		_id: req.body._id, 
 		avatar: req.body.avatar, 
@@ -112,18 +113,8 @@ io.sockets.on('connection', function (socket) {
 		await io.sockets.in(socket.room).emit('updatechat', object, socket.room.split("_")[0]);
 	});	
 
-	socket.on('changeAvatar', function (message, image, chat) {
-		var history;
-		if (socket.room.split("_")[0] == "private") {
-			history = `${__dirname}/uploads/privatechats/${chat}/history/history.html`;
-		} else {
-			history = `${__dirname}/uploads/groupchats/${chat}/history/history.html`;
-		}
-		fs.appendFileSync(history, data);
-		// we tell the client to execute 'updatechat' with 2 parameters
+	socket.on('changeAvatar', function (image) {
 		io.sockets.in(socket.room).emit('updateAvatar', image);
-
-		io.sockets.in(socket.room).emit('updatechat', message);
 	});	
 
 	// when the user disconnects.. perform this

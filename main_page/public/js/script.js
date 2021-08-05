@@ -11,15 +11,17 @@ socket.on('recieveFriendRequest', function (reciever_id, reciever_nickname, avat
 	$("#chats > ul").append(
 		`
 		<li> 
-			<form action="/chat" method="POST">
+			<form action="/chat" method="POST" class="chat">
 				<input name="_id" type="hidden" value="${_id}">
 				<input name="nickname" type="hidden" value="${nickname}">
 				<input name="chat" type="hidden" value="${chat_id}">
 				<input name="avatar" type="hidden" value="${avatar}">
-				<img src="/main_page/uploads/avatars/${reciever_id}/${avatar}" width="50px" height="50px">
+				<input name="chat_name" type="hidden" value=${reciever_nickname}>
+				<img src="/main_page/uploads/avatars/${reciever_id}/${avatar}" class="chat-avatar">
 				<input name="user_id" type="hidden" value="${reciever_id}">
-				<input type="button" value="Delete" class="deleteChat">
+				<p>${reciever_nickname}</p>
 				<button type="submit">${reciever_nickname}</button>
+				<input type="button" value="Delete" class="deleteChat">
 			</form>
 		</li>
 		`
@@ -34,15 +36,17 @@ socket.on('create-chat', function (name, chat_id) {
 	$("#chats > ul").append(
 		`
 		<li> 
-			<form action="/chat" method="POST">
+			<form action="/chat" method="POST" class="chat">
 				<input name="_id" type="hidden" value="${_id}">
 				<input name="nickname" type="hidden" value="${nickname}">
 				<input name="chat" type="hidden" value="${chat_id}">
 				<input name="avatar" type="hidden" value="no-avatar.png">
-				<img src="/main_page/uploads/groupchats/${chat_id}/avatar/no-avatar.png" width="50px" height="50px">
+				<input name="chat_name" type="hidden" value=${name}>
+				<img src="/main_page/uploads/groupchats/${chat_id}/avatar/no-avatar.png" class="chat-avatar">
 				<input name="user_id" type="hidden" value="null">
-				<input type="button" value="Delete" class="deleteChat">
+				<p>${name}</p>
 				<button type="submit">${name}</button>
+				<input type="button" value="Delete" class="deleteChat">
 			</form>
 		</li>
 		`
@@ -62,15 +66,20 @@ socket.on('deleteChat', function (chat_id, initiator_id) {
 	}
 });
 
-socket.on('updateAvatar', function (data) {
-	console.log(data);
-	$('.avatar').empty();
-	$('.avatar').append(data);
-});
-
 $(function() {
 	$(".avatar").empty();
-    $(".avatar").append(`<img src="/main_page/uploads/avatars/${_id}/${avatar}" width="200px" height="200px">`);
+    $(".avatar").append(`<img src="/main_page/uploads/avatars/${_id}/${avatar}" id="avatar">`);
+});
+
+let file = document.querySelector(".file");
+let label = document.querySelector("#label-for-file");
+file.addEventListener("change", () => {
+    console.log(file.value);
+    if (file.value !== "") {
+        label.style["background-color"] = "rgb(51, 250, 51)";
+    } else {
+        label.style.removeProperty("background-color");
+    }
 });
 
 function upload() {
@@ -90,9 +99,10 @@ function upload() {
 	.then(function (res) {
 		console.log(res)
 		if (res.status == 200) {
-			const avatar = `<img src="/main_page/uploads/avatars/${_id}/${nickname}.png" width="200px" height="200px">`;
-			$(".avatar").empty();
-			$(".avatar").append(avatar);
+			var name = `/main_page/uploads/avatars/${_id}/${nickname}.png?date=${(+new Date())}`;
+			const avatar = `<img src="${name}" id="avatar">`;
+			$("#avatar").remove();
+			$("#avatar-container").prepend(avatar);
 		}
 	})
 	.catch(function (err) {
@@ -122,15 +132,17 @@ document.querySelector(".addFriendSubmit").addEventListener("click", function (e
 			$("#chats > ul").append(
 				`
 				<li> 
-					<form action="/chat" method="POST">
+					<form action="/chat" method="POST" class="chat">
 						<input name="_id" type="hidden" value="${_id}">
 						<input name="nickname" type="hidden" value="${nickname}">
 						<input name="chat" type="hidden" value="${response.chat_id}">
 						<input name="avatar" type="hidden" value="${response.avatar}">
-						<img src="/main_page/uploads/avatars/${response.reciever_id}/${response.avatar}" width="50px" height="50px">
+						<input name="chat_name" type="hidden" value=${reciever_nickname}>
+						<img src="/main_page/uploads/avatars/${response.reciever_id}/${response.avatar}" class="chat-avatar">
 						<input name="user_id" type="hidden" value="${response.reciever_id}">
-						<input type="button" value="Delete" class="deleteChat">
+						<p>${reciever_nickname}</p>
 						<button type="submit">${reciever_nickname}</button>
+						<input type="button" value="Delete" class="deleteChat">
 					</form>
 				</li>
 				`
@@ -171,15 +183,17 @@ document.querySelector(".create-chat-submit").addEventListener("click", function
 		$("#chats > ul").append(
 			`
 			<li> 
-				<form action="/chat" method="POST">
+				<form action="/chat" method="POST" class="chat">
 					<input name="_id" type="hidden" value="${_id}">
 					<input name="nickname" type="hidden" value="${nickname}">
 					<input name="chat" type="hidden" value="${response.chat_id}">
 					<input name="avatar" type="hidden" value="no-avatar.png">
-					<img src="/main_page/uploads/groupchats/${response.chat_id}/avatar/no-avatar.png" width="50px" height="50px">
+					<input name="chat_name" type="hidden" value=${name}>
+					<img src="/main_page/uploads/groupchats/${response.chat_id}/avatar/no-avatar.png" class="chat-avatar">
 					<input name="user_id" type="hidden" value="null">
-					<input type="button" value="Delete" class="deleteChat">
+					<p>${name}</p>
 					<button type="submit">${name}</button>
+					<input type="button" value="Delete" class="deleteChat">
 				</form>
 			</li>
 			`

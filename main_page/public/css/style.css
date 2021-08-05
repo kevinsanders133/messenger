@@ -1,19 +1,251 @@
-.progress-bar {
-    height: 35px;
-    width: 250px;
-    border: 2px solid darkblue;
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
 }
 
-.progress-bar-fill {
-    height: 100%;
-    width: 25%;
-    background: lightblue;
+body {
+    max-width: 1920px;
+    margin: 40px;
+    background-color: rgb(21, 151, 226);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#main-container {
+    display: flex;
+}
+
+/*----------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------*/
+
+header {
+    display: block;
+    background-color: white;
+    width: 1100px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+#logo {
+    width: 120px;
+    height: 45px;
+    margin-left: 10px;
+}
+
+/*----------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------*/
+
+#left-aside {
+    width: 350px;
+    height: 561px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-bottom-left-radius: 10px;
+    border-top: solid white;
+    border-left: solid white;
+    border-bottom: solid white;
+    font-family: sans-serif;
+}
+
+#log-out {
+    margin-top: 20px;
+    text-decoration: none;
+    color: white;
+}
+
+form {
+    padding: 5px;
+}
+
+form input {
+    padding: 5px;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+#add-friend-label {
+    margin-top: 50px;
+}
+
+form[name="addFriend"] {
+    color: white;
+}
+
+#create-chat-label {
+    margin-top: 50px;
+}
+
+form[name="create-chat"] {
+
+}
+
+form[name="addFriend"] input {
+    
+}
+
+form[name="create-chat"] input {
+    
+}
+
+/*----------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------*/
+
+main {
+    width: 400px;
+    height: 561px;
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: solid white;
+}
+
+b {
+    margin-top: 20px;
+    color: white;
+    font-weight: 400;
+}
+
+main ul {
+    list-style: none;
+    margin-top: 20px;
+    width: 300px;
+    height: 456px;
+    overflow-y: scroll;
+    margin-left: 5px;
+    background-color: yellow;
+    padding: 4px;
+    padding-right: 2px;
+    border-radius: 7px;
+}
+
+/* scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll */
+/* width */
+main ul::-webkit-scrollbar {
+    width: 10px;
+    height: auto;
+}
+  
+/* Track */
+main ul::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255);
+}
+
+/* Handle */
+main ul::-webkit-scrollbar-thumb {
+    background: rgb(204, 202, 202);
+    border-radius: 10px;
+}
+/* scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll */
+
+.chat {
+    background-color: white;
+    border-radius: 5px;
     display: flex;
     align-items: center;
-    transition: width 0.25s;
+    position: relative;
+    margin: 3px;
 }
 
-.progress-bar-text {
-    margin-left: 10px;
-    font-weight: 700;
+.chat button {
+    width: 210px;
+    height: 60px;
+    position: absolute;
+    cursor: pointer;
+    opacity: 0;
+}
+
+p {
+    padding: 10px;
+}
+
+.chat-avatar {
+    object-fit: cover;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+}
+
+.deleteChat {
+    position: absolute;
+    right: 10px;
+}
+
+/*----------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------*/
+
+#right-aside {
+    width: 350px;
+    height: 561px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-bottom-right-radius: 10px;
+    border-top: solid white;
+    border-right: solid white;
+    border-bottom: solid white;
+    font-family: sans-serif;
+}
+
+#avatar-container {
+    max-width: 300px;
+    max-height: 500px;
+    margin-bottom: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+#avatar {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.file {
+    position: absolute;
+    opacity: 0;
+    bottom: 20px;
+    width: 85px;
+}
+
+#label-for-file {
+    width: 100px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+#upload {
+    width: 40px;
+    height: 20px;
+    border-radius: 5px;
+}
+
+#nickname-tag {
+    margin-bottom: 20px;
+    color: white;
+}
+
+#change {
+    margin-bottom: 100px;
+    text-decoration: none;
+    color: white;
+    border: none;
+    background: none;
 }

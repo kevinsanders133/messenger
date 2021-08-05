@@ -11,17 +11,15 @@
 
 <body>
 
-    <h1>Sign up</h1>
-
     <div class="container right-panel-active">
 
         <div class="container__form container--signup">
             <form method="post" action="/registration" class="form" id="form1">
                 <h2 class="form__title">Sign Up</h2>
-                <input type="text" placeholder="User" class="input" name="nickname_signup">
+                <input type="text" placeholder="User" class="input" name="nickname_signup" maxlength="20">
                 <input type="email" placeholder="Email" class="input" name="email_signup">
-                <input type="password" placeholder="Password" class="input" name="password_signup">
-                <input type="password" placeholder="Password" class="input" name="password_check_signup">
+                <input type="password" placeholder="Password" class="input" name="password_signup" maxlength="20">
+                <input type="password" placeholder="Password" class="input" name="password_check_signup" maxlength="20">
                 <input type="submit" class="btn" value="Sign Up">
             </form>
         </div>
@@ -31,7 +29,9 @@
                 <h2 class="form__title">Sign In</h2>
                 <input type="email" placeholder="qweEmail" class="input" name="email_signin">
                 <input type="password" placeholder="qwePassword" class="input" name="password_signin">
-                <!--<a href="#" class="link" id="forgotPassword">Forgot your password?</a>-->
+
+                <a class="link" id="forgotPassword">Forgot your password?</a>
+
                 <input type="submit" class="btn" value="Sign In">
             </form>
         </div>

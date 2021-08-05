@@ -10,7 +10,7 @@ signInBtn.addEventListener("click", () => {
     container.classList.remove('right-panel-active');
     if(container.classList.contains('forgot-panel-active')) {
         container.classList.remove('forgot-panel-active');
-        container.classList.add('right-panel-active');
+        container.classList.remove('right-panel-active');
     }
 });
 
@@ -19,10 +19,6 @@ signUpBtn.addEventListener("click", () => {
 });
 
 forgotPassword.addEventListener("click", () => {
+    container.classList.add('right-panel-active');
     container.classList.add('forgot-panel-active');
-    /**container.classList.remove('container');
-    container.classList.add('container--forgot');**/
 });
-
-fistForm.addEventListener("submit", (e) => e.preventDefault());
-secondForm.addEventListener("submit", (e) => e.preventDefault());

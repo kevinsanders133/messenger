@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="style.css">
+	<title>Document</title>
+</head>
+<body>
+
+<a href="#" id="back-link">Back</a>
+
+<header>
+	<img id="logo" src="libchat2.png">
+</header>
+
+<div id="change_data">
+	<form id="change_data_form">
+		<label for="reciever_nickname">Nickname</label>
+		<input type="text" placeholder="user_12345" name="reciever_nickname"><br>
+		<label for="reciever_tag">E-mail</label>
+		<input type="text" placeholder="tomtom@gmail.com" name="reciever_tag"><br>
+		<label for="reciever_tag">Password</label>
+		<input type="text" placeholder="********" name="reciever_tag"><br>
+		<input type="submit" value="Save" class="addFriendSubmit">
+	</form>
+</div>
+</main>
+
+<div id="notification">Changes are saved</div>
+
+</body>
+
+<script>
+    const id = "<%= roomName %>";
+    const chat_name = "<%= chat_name %>";
+    const nickname = "<%= nickname %>";
+    const avatar = "<%= avatar %>";
+    const user_id = "<%= user_id %>";
+    const _id = "<%= _id %>";
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script src="/chat/public/js/script.js"></script>
+
+</html>
