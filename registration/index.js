@@ -22,74 +22,78 @@ const User = require("./models/User");
 app.post('/email_confirmation', async (req, res) => {
     if (req.body.password_signup == req.body.password_check_signup) {
 
-        const tag = await User.countDocuments({ nickname: req.body.nickname_signup }, function(err, c) {
-            return c;
-        }) + 1;
+        var nickname = req.body.nickname_signup;
+        var email = req.body.email_signup;
+        var password = req.body.password_signup;
 
-        const user = new User({
-            nickname: req.body.nickname_signup,
-            tag: "#" + String(tag),
-            email: req.body.email_signup,
-            password: req.body.password_signup
-        });
-    
-        await user.save();
-
-        var _id;
-        await User.findOne({ nickname: req.body.nickname_signup, tag: "#" + String(tag) }, '_id', function(err, doc) {
-            _id = doc._id;
-            console.log(doc._id);
-        });
-
-        const dir = __dirname + '/uploads/avatars/' + _id;
-        fs.mkdirSync(dir);
-        const src = __dirname + '/uploads/no-avatar.png';
-        const dest =  `${dir}/${req.body.nickname_signup}.png`;
-        fs.copyFile(src, dest, (err) => {
-            if (err) {
-            console.log("Error Found:", err);
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'storytelltom@gmail.com',
+                pass: 'putKuSpeChU2<>'
             }
         });
+          
+        var mailOptions = {
+            from: 'storytelltom@gmail.com',
+            to: 'storytelltom@gmail.com',
+            subject: 'Registration',
+            text: 
+               `Registration for LibChat.
+                Click button to finish registration.
+                <form method="POST" action="http://localhost:8080/registration">
+                    <input type="hidden" name="nickname_signup" value="${nickname}">
+                    <input type="hidden" name="email_signup" value="${email}">
+                    <input type="hidden" name="password_signup" value="${password}">
+                    <button>Confirm</button>
+                </form>`
+        };
+        
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
+        });
+        
     }
     res.redirect("/");
 });
   
 app.post('/registration', async (req, res) => {
-    if (req.body.password_signup == req.body.password_check_signup) {
 
-        const tag = await User.countDocuments({ nickname: req.body.nickname_signup }, function(err, c) {
-            return c;
-        }) + 1;
+    const tag = await User.countDocuments({ nickname: req.body.nickname_signup }, function(err, c) {
+        return c;
+    }) + 1;
 
-        const user = new User({
-            nickname: req.body.nickname_signup,
-            tag: "#" + String(tag),
-            email: req.body.email_signup,
-            password: req.body.password_signup
-        });
-    
-        await user.save();
+    const user = new User({
+        nickname: req.body.nickname_signup,
+        tag: "#" + String(tag),
+        email: req.body.email_signup,
+        password: req.body.password_signup
+    });
 
-        var _id;
-        await User.findOne({ nickname: req.body.nickname_signup, tag: "#" + String(tag) }, '_id', function(err, doc) {
-            _id = doc._id;
-            console.log(doc._id);
-        });
+    await user.save();
 
-        const dir = __dirname + '/uploads/avatars/' + _id;
-        fs.mkdirSync(dir);
-        const src = __dirname + '/uploads/no-avatar.png';
-        const dest =  `${dir}/${req.body.nickname_signup}.png`;
-        fs.copyFile(src, dest, (err) => {
-            if (err) {
-            console.log("Error Found:", err);
-            }
-        });
-    }
+    var _id;
+    await User.findOne({ nickname: req.body.nickname_signup, tag: "#" + String(tag) }, '_id', function(err, doc) {
+        _id = doc._id;
+        console.log(doc._id);
+    });
+
+    const dir = __dirname + '/uploads/avatars/' + _id;
+    fs.mkdirSync(dir);
+    const src = __dirname + '/uploads/no-avatar.png';
+    const dest =  `${dir}/${req.body.nickname_signup}.png`;
+    fs.copyFile(src, dest, (err) => {
+        if (err) {
+        console.log("Error Found:", err);
+        }
+    });
     res.redirect("/");
 });
 
 app.listen(3000, () => {
-  console.log("running on port 3000");
-  console.log("--------------------------");
+  console.log("running");
 });
