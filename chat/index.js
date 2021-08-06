@@ -3,6 +3,8 @@ const app = express()
 const fs = require('fs')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
+const user_schema = require("./models/user_schema");
+const user_chat_schema = require("./models/user_chat_schema");
 const io = require("socket.io")({
 	path: "/node2/socket.io",
 	transports: ["polling", "websocket"]
@@ -92,7 +94,9 @@ io.sockets.on('connection', function (socket) {
 		let query = [];
 
 		await user_chat_schema.find({chat_id: roomName}, '-_id user_id', function(err, doc) {
-			query = doc;
+			doc.forEach(element => {
+				query.push({_id: element.user_id});
+			});
 		});
 
 		await user_schema.find({$or: query}, function(err, doc) {
