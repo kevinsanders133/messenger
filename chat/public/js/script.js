@@ -5,7 +5,11 @@ var socket = io.connect("http://localhost:8080",
 });
 
 socket.on('connect', function(){
-	socket.emit('adduser', nickname, roomName);
+	socket.emit('adduser', nickname, roomName, _id);
+});
+
+socket.on('load-members', function(members) {
+	console.log(members);
 });
 
 socket.on('updatechat', function (messages, type) {
@@ -74,6 +78,8 @@ socket.on('updatechat', function (messages, type) {
 	});
 	$('#conversation').append(elements_to_append);
 });
+
+socket.on('');
 
 socket.on('updateAvatar', function (data) {
 	console.log(data);

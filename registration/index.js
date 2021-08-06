@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const nodemailer = require("nodemailer");
 const app = express();
 const fs = require("fs");
 
@@ -38,7 +39,7 @@ app.post('/email_confirmation', async (req, res) => {
             from: 'storytelltom@gmail.com',
             to: 'storytelltom@gmail.com',
             subject: 'Registration',
-            text: 
+            html: 
                `Registration for LibChat.
                 Click button to finish registration.
                 <form method="POST" action="http://localhost:8080/registration">

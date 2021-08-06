@@ -75,7 +75,7 @@ app.post('/chat', function (req, res) {
 
 io.sockets.on('connection', function (socket) {
 	
-	socket.on('adduser', async function(username, roomName){
+	socket.on('adduser', async function(username, roomName, id){
 
 		socket.username = username;
 		socket.room = roomName;
@@ -87,6 +87,16 @@ io.sockets.on('connection', function (socket) {
 
 		await chat_schema.find({}, function(err, doc) {
 			socket.emit('updatechat', doc, roomName.split("_")[0]);
+		});
+
+		let query = [];
+
+		await user_chat_schema.find({chat_id: roomName}, '-_id user_id', function(err, doc) {
+			query = doc;
+		});
+
+		await user_schema.find({$or: query}, function(err, doc) {
+			socket.emit('load-members', doc);
 		});
 	});
 	

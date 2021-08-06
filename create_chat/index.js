@@ -49,12 +49,14 @@ app.post("/create_chat", jsonParser, async (req, res) => {
     var members = [];
     members.push({
         user_id: sender_id,
+        admin: true,
         chat_id: chat_id,
         chat_name: name
     });
     for (var i = 0; i < recievers_ids.length; i++) {
         members.push({
             user_id: recievers_ids[i],
+            admin: false,
             chat_id: chat_id,
             chat_name: name
         });
