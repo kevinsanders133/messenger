@@ -44,16 +44,6 @@ server.listen(3000);
 
 const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
 
-try {
-	mongoose.connect(
-		mongoAtlasUri,
-		{ useNewUrlParser: true, useUnifiedTopology: true },
-		() => console.log("Mongoose is connected")
-	);
-} catch (e) {
-	console.log("could not connect");
-}
-
 app.use('/chat/public', express.static(`${__dirname}/public`));
 
 app.set('views', './views')
@@ -61,7 +51,7 @@ app.set('view engine', 'ejs')
 
 app.use(express.urlencoded({ extended: false }));
 
-var usernames = {};
+var users = {};
 var rooms = [];
 
 app.post('/chat', function (req, res) {
@@ -79,11 +69,21 @@ io.sockets.on('connection', function (socket) {
 	
 	socket.on('adduser', async function(username, roomName, id){
 
-		socket.username = username;
+		socket.id = id;
 		socket.room = roomName;
-		usernames[username] = username;
+		users[id] = id;
 
 		await socket.join(roomName);
+
+		try {
+			mongoose.connect(
+				mongoAtlasUri,
+				{ useNewUrlParser: true, useUnifiedTopology: true },
+				() => console.log("Mongoose is connected")
+			);
+		} catch (e) {
+			console.log("could not connect");
+		}
 
 		let chat_schema = mongoose.model(roomName, schema, roomName);
 
@@ -95,41 +95,46 @@ io.sockets.on('connection', function (socket) {
 			let query = [];
 			let friends = [];
 			let admin;
+			let temp;
 
-			await user_chat_schema.findOne({user_id: id, chat_id: roomName}, '-_id admin', function(err, doc) {
-				admin = doc.admin;
-			});
+			admin = await user_chat_schema.findOne({user_id: id, chat_id: roomName}, '-_id admin');
+			console.log(admin);
 
-			await user_chat_schema.find({user_id: id, chat_id: {$regex: /^private.*/}}, '-_id chat_id', function(err, doc) {
-				console.log(doc);
-				doc.forEach(element => {
-					query.push({chat_id: element.chat_id});
-				});
-			});
+			temp = await user_chat_schema.find({user_id: id, chat_id: {$regex: /^private.*/}}, '-_id chat_id');
+			console.log(temp);
 
-			await user_chat_schema.find({$or: query, user_id: {$ne: id}}, '-_id user_id', function(err, doc) {
-				doc.forEach(element => {
-					friends.push({_id: element.user_id});
-				});
-			});
+			query = temp;
 
-			await user_schema.find({$or: friends}, function(err, doc) {
-				friends = doc;
-			});
+			temp = await user_chat_schema.find({$or: query, user_id: {$ne: id}}, '-_id user_id');
+			console.log(temp);
+
+			for (var i = 0; i < temp.length; i++) {
+				friends.push({_id: temp[i].user_id});
+			}
+
+			console.log(friends);
+
+			temp = await user_schema.find({$or: friends});
+			console.log(temp);
+
+			friends = temp;
 
 			query = [];
 
-			await user_chat_schema.find({chat_id: roomName}, '-_id user_id', function(err, doc) {
-				console.log(doc);
-				doc.forEach(element => {
-					query.push({_id: element.user_id});
-				});
-			});
+			temp = await user_chat_schema.find({chat_id: roomName}, '-_id user_id');
+			console.log(temp);
 
-			await user_schema.find({$or: query}, function(err, doc) {
-				socket.emit('load-members', doc, friends, admin);
-			});
+			for (var i = 0; i < temp.length; i++) {
+				query.push({_id: temp[i].user_id});
+			}
+
+			temp = await user_schema.find({$or: query});
+			console.log(temp);
+
+			await socket.emit('load-members', temp, friends, admin);
 		}
+
+		await mongoose.connection.close();
 	});
 	
 	socket.on('sendchat', async function (type, message, user_id, sender_nickname) {
@@ -153,7 +158,11 @@ io.sockets.on('connection', function (socket) {
 		}];
 		
 		await io.sockets.in(socket.room).emit('updatechat', object, socket.room.split("_")[0]);
-	});	
+	});
+	
+	socket.on('sendDeleteMember', async function(member_id) {
+		io.sockets.socket(member_id).emit("disconnectOrder");
+	});
 
 	socket.on('changeAvatar', function (image) {
 		io.sockets.in(socket.room).emit('updateAvatar', image);
@@ -161,7 +170,7 @@ io.sockets.on('connection', function (socket) {
 
 	// when the user disconnects.. perform this
 	socket.on('disconnect', function(){
-		delete usernames[socket.username];
+		delete users[socket.id];
 		socket.leave(socket.room);
 	});
 });

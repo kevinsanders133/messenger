@@ -109,12 +109,45 @@ socket.on('load-members', function(members, friends, admin) {
 
 	friends.forEach(friend => {
 		$("#members-container").append(`
-		<form action="/change_members" method="POST" class="member">
+		<form class="member">
+			<input type="hidden" name="id" value="${friend._id}">
 			<img class="members-container-image" src="/main_page/uploads/avatars/${friend._id}/${friend.nickname}.png">
-			<span>${friend.nickname}${friend.tag}</span>
-			<input class="delete-member" type="submit" value="Delete">
-		</form>`);
+			<span>${friend.nickname}${friend.tag}</span>`);
+		if (admin == true) {
+			$("#members-container").append(`
+			<input class="delete-member" type="submit" value="Delete" onclick="deleteMember()">`);
+		}
+		$("#members-container").append(`</form>`);
 	});
+});
+
+function deleteMember(e) {
+	const target = e.target;
+	let form = target.parentElement;
+	let member_id = form.querySelector('input[name="id"]').value;
+	let data = JSON.stringify({
+		member_id: member_id,
+		chat_id: roomName
+	});
+	let request = new XMLHttpRequest();
+
+	request.open("POST", "/change_members_delete", true);   
+	request.setRequestHeader("Content-Type", "application/json");
+	request.addEventListener("load", function () {
+
+		let response = JSON.parse(request.response);
+		if (response) {
+			$(`#change-members > input[name="user_id"][value="${member_id}"]`).parent().remove();
+			socket.emit('sendDeleteMember', chat_id, member_id);
+		};
+
+	});
+	request.send(data);
+}
+
+socket.on('disconnectOrder', function() {
+	socket.emit('disconnect');
+	window.location.replace(`/main_page&id=${_id}`);
 });
 
 socket.on('updatechat', function (messages, type) {
