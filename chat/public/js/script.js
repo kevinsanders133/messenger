@@ -8,8 +8,133 @@ socket.on('connect', function(){
 	socket.emit('adduser', nickname, roomName, _id);
 });
 
-socket.on('load-members', function(members) {
+let overlay_1 = document.querySelector("#popup1");
+let files_input = document.querySelector(".files");
+let close_1 = document.querySelector(".close1");
+let data = document.querySelector("#data");
+let send_message_button = document.querySelector("#send-message-button");
+let menu_images = document.querySelector("#menu-images");
+let menu_files = document.querySelector("#menu-files");
+let images_container = document.querySelector("#images-container");
+let files_container = document.querySelector("#files-container");
+
+let overlay_2;
+let close_2;
+let menu_members;
+let members_container;
+let add_member_image;
+
+let conversation = document.getElementById("conversation");
+conversation.scrollTop = conversation.scrollHeight;
+
+files_input.addEventListener("change", () => {
+    overlay_1.style["visibility"] = "visible";
+    overlay_1.style["opacity"] = "1";
+});
+
+close_1.addEventListener("click", () => {
+    overlay_1.style.removeProperty("visibility");
+    overlay_1.style.removeProperty("opacity");
+    files_input.value = "";
+});
+
+data.addEventListener("keyup", checkIfEmpty);
+data.addEventListener("click", checkIfEmpty);
+function checkIfEmpty() {
+    if (data.value != "") {
+        send_message_button.style["display"] = "block";
+    } else {
+        send_message_button.style.removeProperty("display");
+    } 
+}
+
+menu_images.addEventListener("click", () => {
+    images_container.style["display"] = "flex";
+    files_container.style["display"] = "none";
+});
+
+menu_files.addEventListener("click", () => {
+    images_container.style["display"] = "none";
+    files_container.style["display"] = "flex";
+});
+
+socket.on('load-members', function(members, friends, admin) {
 	console.log(members);
+	console.log(friends);
+
+	overlay_2 = document.querySelector("#popup2");
+	close_2 = document.querySelector(".close2");
+	menu_members = document.querySelector("#menu-members");
+	members_container = document.querySelector("#members-container");
+	add_member_image = document.querySelector("#add-member-image");
+
+	add_member_image.addEventListener("click", () => {
+		overlay_2.style["visibility"] = "visible";
+		overlay_2.style["opacity"] = "1";
+	});
+
+	close_2.addEventListener("click", () => {
+		overlay_2.style.removeProperty("visibility");
+		overlay_2.style.removeProperty("opacity");
+	});
+
+	menu_members.addEventListener("click", () => {
+		images_container.style["display"] = "none";
+		files_container.style["display"] = "none";
+		members_container.style["display"] = "flex";
+	});
+
+	menu_images.addEventListener("click", () => {
+		images_container.style["display"] = "flex";
+		files_container.style["display"] = "none";
+		members_container.style["display"] = "none";
+	});
+	
+	menu_files.addEventListener("click", () => {
+		images_container.style["display"] = "none";
+		files_container.style["display"] = "flex";
+		members_container.style["display"] = "none";
+	});
+
+	$(".menu").append(`<span id="menu-members" class="menu-item">Members</span>`);
+
+	$("aside").append(`
+	<div id="members-container">
+		<img src="/chat/public/img/add_member.png" id="add-member-image">
+	</div>`);
+
+	$("footer").append(`
+	<div id="popup2" class="overlay">
+		<div class="overlay-container">
+			<h2>Add friends</h2>
+			<a class="close2" href="#">&times;</a>
+			<div class="content">
+			<form action="/change_members" method="POST" id="change-members">
+				<input type="submit" value="Add">
+			</form>
+			</div>
+		</div>
+	</div>`);
+
+	if (admin == true) {
+		$("#members-container").append(`<img src="/chat/public/img/add_member.png" id="add-member-image"></img>`);
+		friends.forEach(friend => {
+			$("#change-members").prepend(`
+			<div class="friend-checkbox">
+				<input type="checkbox" name="user_id" value="${friend._id}">
+				<span class="friend">Friend</span>
+			</div>`);
+		});
+	}
+
+	friends.forEach(friend => {
+		$("#members-container").append(`
+		<form action="/change_members" method="POST" class="member">
+			<img class="members-container-image" src="/main_page/uploads/avatars/${friend._id}/${friend.nickname}.png">
+			<span>${friend._id}${friend.tag}</span>
+			<input class="delete-member" type="submit" value="Delete">
+		</form>`);
+	});
 });
 
 socket.on('updatechat', function (messages, type) {
@@ -85,53 +210,6 @@ socket.on('updateAvatar', function (data) {
 	console.log(data);
 	$('#avatar').remove();
 	$('#chat-info-container').prepend(data);
-});
-
-var conversation = document.getElementById("conversation");
-conversation.scrollTop = conversation.scrollHeight;
-
-let overlay = document.querySelector(".overlay");
-let files_input = document.querySelector(".files");
-let close = document.querySelector(".close");
-let data = document.querySelector("#data");
-let send_message_button = document.querySelector("#send-message-button");
-let menu_images = document.querySelector("#menu-images");
-let menu_files = document.querySelector("#menu-files");
-let images_container = document.querySelector("#images-container");
-let files_container = document.querySelector("#files-container");
-
-window.onload = function() {
-    files_container.style["display"] = "none";
-};
-
-files_input.addEventListener("change", () => {
-    overlay.style["visibility"] = "visible";
-    overlay.style["opacity"] = "1";
-});
-close.addEventListener("click", () => {
-    overlay.style.removeProperty("visibility");
-    overlay.style.removeProperty("opacity");
-    files_input.value = "";
-});
-
-data.addEventListener("keyup", checkIfEmpty);
-data.addEventListener("click", checkIfEmpty);
-function checkIfEmpty() {
-    if (data.value != "") {
-        send_message_button.style["display"] = "block";
-    } else {
-        send_message_button.style.removeProperty("display");
-    } 
-}
-
-menu_images.addEventListener("click", () => {
-    images_container.style["display"] = "flex";
-    files_container.style["display"] = "none";
-});
-
-menu_files.addEventListener("click", () => {
-    images_container.style["display"] = "none";
-    files_container.style["display"] = "flex";
 });
 
 $(function(){

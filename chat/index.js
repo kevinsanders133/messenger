@@ -91,17 +91,38 @@ io.sockets.on('connection', function (socket) {
 			socket.emit('updatechat', doc, roomName.split("_")[0]);
 		});
 
-		let query = [];
+		if (roomName.split("_")[0] == "group") {
+			let query = [];
+			let friends = [];
+			let admin;
 
-		await user_chat_schema.find({chat_id: roomName}, '-_id user_id', function(err, doc) {
-			doc.forEach(element => {
-				query.push({_id: element.user_id});
+			await user_chat_schema.findOne({user_id: id, chat_id: roomName}, '-_id admin', function(err, doc) {
+				admin = doc.admin;
 			});
-		});
 
-		await user_schema.find({$or: query}, function(err, doc) {
-			socket.emit('load-members', doc);
-		});
+			await user_chat_schema.find({user_id: id, chat_id: {$regex: /^private.*/}}, '-_id chat_id', function(err, doc) {
+				console.log(doc);
+				doc.forEach(element => {
+					query.push({chat_id: element.chat_id});
+				});
+			});
+
+			await user_chat_schema.find({$or: query, _id: {$ne: id}}, function(err, doc) {
+				friends = doc;
+			});
+
+			query = [];
+
+			await user_chat_schema.find({chat_id: roomName}, '-_id user_id', function(err, doc) {
+				doc.forEach(element => {
+					query.push({_id: element.user_id});
+				});
+			});
+
+			await user_schema.find({$or: query}, function(err, doc) {
+				socket.emit('load-members', doc, friends, admin);
+			});
+		}
 	});
 	
 	socket.on('sendchat', async function (type, message, user_id, sender_nickname) {
