@@ -42,6 +42,20 @@
                   </div>
                 </div>
             </div>
+
+            <% if (roomName.split("_")[0] == "group") { %>
+                <div id="popup2" class="overlay">
+                    <div class="overlay-container">
+                        <h2>Add friends</h2>
+                        <a class="close2" href="#">&times;</a>
+                        <div class="content">
+                        <form action="/change_members" method="POST" id="change-members">
+                            <input type="submit" value="Add">
+                        </form>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
         </footer>
     </div>
     <aside>
@@ -64,10 +78,18 @@
         <div class="menu">
             <span id="menu-images" class="menu-item">Images</span>
             <span id="menu-files" class="menu-item">Files</span>
+            <% if (roomName.split("_")[0] == "group") { %>
+                <span id="menu-members" class="menu-item">Members</span>
+            <% } %>
         </div>
 
         <div id="images-container"></div>
         <div id="files-container"></div>
+        <% if (roomName.split("_")[0] == "group") { %>
+            <div id="members-container">
+                <img src="/chat/public/img/add_member.png" id="add-member-image">
+            </div>
+        <% } %>
     </aside>
 </body>
 <script>

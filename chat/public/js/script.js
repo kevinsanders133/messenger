@@ -96,26 +96,6 @@ socket.on('load-members', function(members, friends, admin) {
 		members_container.style["display"] = "none";
 	});
 
-	$(".menu").append(`<span id="menu-members" class="menu-item">Members</span>`);
-
-	$("aside").append(`
-	<div id="members-container">
-		<img src="/chat/public/img/add_member.png" id="add-member-image">
-	</div>`);
-
-	$("footer").append(`
-	<div id="popup2" class="overlay">
-		<div class="overlay-container">
-			<h2>Add friends</h2>
-			<a class="close2" href="#">&times;</a>
-			<div class="content">
-			<form action="/change_members" method="POST" id="change-members">
-				<input type="submit" value="Add">
-			</form>
-			</div>
-		</div>
-	</div>`);
-
 	if (admin == true) {
 		$("#members-container").append(`<img src="/chat/public/img/add_member.png" id="add-member-image"></img>`);
 		friends.forEach(friend => {
@@ -131,7 +111,7 @@ socket.on('load-members', function(members, friends, admin) {
 		$("#members-container").append(`
 		<form action="/change_members" method="POST" class="member">
 			<img class="members-container-image" src="/main_page/uploads/avatars/${friend._id}/${friend.nickname}.png">
-			<span>${friend._id}${friend.tag}</span>
+			<span>${friend.nickname}${friend.tag}</span>
 			<input class="delete-member" type="submit" value="Delete">
 		</form>`);
 	});

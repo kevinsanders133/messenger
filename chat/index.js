@@ -107,13 +107,20 @@ io.sockets.on('connection', function (socket) {
 				});
 			});
 
-			await user_chat_schema.find({$or: query, _id: {$ne: id}}, function(err, doc) {
+			await user_chat_schema.find({$or: query, user_id: {$ne: id}}, '-_id user_id', function(err, doc) {
+				doc.forEach(element => {
+					friends.push({_id: element.user_id});
+				});
+			});
+
+			await user_schema.find({$or: friends}, function(err, doc) {
 				friends = doc;
 			});
 
 			query = [];
 
 			await user_chat_schema.find({chat_id: roomName}, '-_id user_id', function(err, doc) {
+				console.log(doc);
 				doc.forEach(element => {
 					query.push({_id: element.user_id});
 				});
