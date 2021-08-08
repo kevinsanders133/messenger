@@ -9,6 +9,19 @@ const io = require("socket.io")({
 	path: "/node2/socket.io",
 	transports: ["polling", "websocket"]
 });
+
+const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
+
+try {
+	mongoose.connect(
+		mongoAtlasUri,
+		{ useNewUrlParser: true, useUnifiedTopology: true },
+		() => console.log("Mongoose is connected")
+	);
+} catch (e) {
+	console.log("could not connect");
+}
+
 const schema = new Schema({
 	user_id: {
 		type: String,
@@ -42,8 +55,6 @@ io.attach(server, {
 
 server.listen(3000);
 
-const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
-
 app.use('/chat/public', express.static(`${__dirname}/public`));
 
 app.set('views', './views')
@@ -74,16 +85,6 @@ io.sockets.on('connection', function (socket) {
 		users[id] = id;
 
 		await socket.join(roomName);
-
-		try {
-			mongoose.connect(
-				mongoAtlasUri,
-				{ useNewUrlParser: true, useUnifiedTopology: true },
-				() => console.log("Mongoose is connected")
-			);
-		} catch (e) {
-			console.log("could not connect");
-		}
 
 		let chat_schema = mongoose.model(roomName, schema, roomName);
 
@@ -133,8 +134,6 @@ io.sockets.on('connection', function (socket) {
 
 			await socket.emit('load-members', temp, friends, admin);
 		}
-
-		await mongoose.connection.close();
 	});
 	
 	socket.on('sendchat', async function (type, message, user_id, sender_nickname) {
@@ -156,6 +155,8 @@ io.sockets.on('connection', function (socket) {
 			type: type,
 			content: message,
 		}];
+
+		console.log("I'm here");
 		
 		await io.sockets.in(socket.room).emit('updatechat', object, socket.room.split("_")[0]);
 	});

@@ -79,6 +79,11 @@ services:
         volumes:
             - ./main_page/uploads:/src/uploads
 
+    change_members:
+        build: './change_members'
+        ports:
+            - "3012:3000"
+
 
     nginx:
         image: nginx:latest
@@ -99,4 +104,5 @@ services:
             - change_info
             - chat
             - send_files
+            - change_members
             

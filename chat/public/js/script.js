@@ -59,6 +59,7 @@ menu_files.addEventListener("click", () => {
 });
 
 socket.on('load-members', function(members, friends, admin) {
+	console.log(admin);
 	console.log(members);
 	console.log(friends);
 
@@ -66,12 +67,6 @@ socket.on('load-members', function(members, friends, admin) {
 	close_2 = document.querySelector(".close2");
 	menu_members = document.querySelector("#menu-members");
 	members_container = document.querySelector("#members-container");
-	add_member_image = document.querySelector("#add-member-image");
-
-	add_member_image.addEventListener("click", () => {
-		overlay_2.style["visibility"] = "visible";
-		overlay_2.style["opacity"] = "1";
-	});
 
 	close_2.addEventListener("click", () => {
 		overlay_2.style.removeProperty("visibility");
@@ -96,7 +91,7 @@ socket.on('load-members', function(members, friends, admin) {
 		members_container.style["display"] = "none";
 	});
 
-	if (admin == true) {
+	if (admin.admin == true) {
 		$("#members-container").append(`<img src="/chat/public/img/add_member.png" id="add-member-image"></img>`);
 		friends.forEach(friend => {
 			$("#change-members").prepend(`
@@ -105,23 +100,31 @@ socket.on('load-members', function(members, friends, admin) {
 				<span class="friend">Friend</span>
 			</div>`);
 		});
+		add_member_image = document.querySelector("#add-member-image");
+		add_member_image.addEventListener("click", () => {
+			overlay_2.style["visibility"] = "visible";
+			overlay_2.style["opacity"] = "1";
+		});
 	}
 
-	friends.forEach(friend => {
-		$("#members-container").append(`
+	members.forEach(member => {
+		var member_string = ""
+		member_string += `
 		<form class="member">
-			<input type="hidden" name="id" value="${friend._id}">
-			<img class="members-container-image" src="/main_page/uploads/avatars/${friend._id}/${friend.nickname}.png">
-			<span>${friend.nickname}${friend.tag}</span>`);
-		if (admin == true) {
-			$("#members-container").append(`
-			<input class="delete-member" type="submit" value="Delete" onclick="deleteMember()">`);
+			<input type="hidden" name="id" value="${member._id}">
+			<img class="members-container-image" src="/main_page/uploads/avatars/${member._id}/${member.nickname}.png">
+			<span>${member.nickname}${member.tag}</span>`;
+		if (admin.admin == true && member._id != _id) {
+			member_string += `
+			<input class="delete-member" type="submit" value="Delete" onclick="deleteMember()">`;
 		}
-		$("#members-container").append(`</form>`);
+		member_string += `</form>`;
+		$("#members-container").append(member_string);
 	});
 });
 
 function deleteMember(e) {
+	e.preventDefault();
 	const target = e.target;
 	let form = target.parentElement;
 	let member_id = form.querySelector('input[name="id"]').value;
@@ -146,11 +149,13 @@ function deleteMember(e) {
 }
 
 socket.on('disconnectOrder', function() {
+	console.log(_id);
 	socket.emit('disconnect');
 	window.location.replace(`/main_page&id=${_id}`);
 });
 
 socket.on('updatechat', function (messages, type) {
+	console.log(messages + " - " + type);
 	let elements_to_append = "";
 	messages.forEach(message => {
 		if (message.type == "text") {
