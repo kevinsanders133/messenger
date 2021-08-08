@@ -80,11 +80,13 @@ io.sockets.on('connection', function (socket) {
 	
 	socket.on('adduser', async function(username, roomName, id){
 
-		socket.id = id;
+		
 		socket.room = roomName;
-		users[id] = id;
+		users[id] = socket.id;
 
 		await socket.join(roomName);
+
+		console.log(socket);
 
 		let chat_schema = mongoose.model(roomName, schema, roomName);
 
@@ -138,6 +140,8 @@ io.sockets.on('connection', function (socket) {
 	
 	socket.on('sendchat', async function (type, message, user_id, sender_nickname) {
 
+		console.log(type, message, user_id, sender_nickname);
+
 		let chat_schema = mongoose.model(socket.room, schema, socket.room);
 		
 		let record = await new chat_schema({
@@ -157,12 +161,13 @@ io.sockets.on('connection', function (socket) {
 		}];
 
 		console.log("I'm here");
+		console.log(socket.room);
 		
 		await io.sockets.in(socket.room).emit('updatechat', object, socket.room.split("_")[0]);
 	});
 	
 	socket.on('sendDeleteMember', async function(member_id) {
-		io.sockets.socket(member_id).emit("disconnectOrder");
+		io.sockets.socket(users[member_id]).emit("disconnectOrder");
 	});
 
 	socket.on('changeAvatar', function (image) {
@@ -171,6 +176,7 @@ io.sockets.on('connection', function (socket) {
 
 	// when the user disconnects.. perform this
 	socket.on('disconnect', function(){
+		console.log("User left.");
 		delete users[socket.id];
 		socket.leave(socket.room);
 	});

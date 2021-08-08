@@ -110,15 +110,15 @@ socket.on('load-members', function(members, friends, admin) {
 	members.forEach(member => {
 		var member_string = ""
 		member_string += `
-		<form class="member">
+		<div class="member">
 			<input type="hidden" name="id" value="${member._id}">
 			<img class="members-container-image" src="/main_page/uploads/avatars/${member._id}/${member.nickname}.png">
 			<span>${member.nickname}${member.tag}</span>`;
 		if (admin.admin == true && member._id != _id) {
 			member_string += `
-			<input class="delete-member" type="submit" value="Delete" onclick="deleteMember()">`;
+			<input class="delete-member" type="submit" value="Delete" onclick="deleteMember(event)">`;
 		}
-		member_string += `</form>`;
+		member_string += `</div>`;
 		$("#members-container").append(member_string);
 	});
 });
@@ -126,6 +126,7 @@ socket.on('load-members', function(members, friends, admin) {
 function deleteMember(e) {
 	e.preventDefault();
 	const target = e.target;
+	console.log(target);
 	let form = target.parentElement;
 	let member_id = form.querySelector('input[name="id"]').value;
 	let data = JSON.stringify({
@@ -141,7 +142,7 @@ function deleteMember(e) {
 		let response = JSON.parse(request.response);
 		if (response) {
 			$(`#change-members > input[name="user_id"][value="${member_id}"]`).parent().remove();
-			socket.emit('sendDeleteMember', chat_id, member_id);
+			socket.emit('sendDeleteMember', roomName, member_id);
 		};
 
 	});
@@ -222,7 +223,7 @@ socket.on('updatechat', function (messages, type) {
 	$('#conversation').append(elements_to_append);
 });
 
-socket.on('');
+
 
 socket.on('updateAvatar', function (data) {
 	console.log(data);

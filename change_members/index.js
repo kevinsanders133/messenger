@@ -30,7 +30,7 @@ app.post("/change_members_delete", jsonParser, async (req, res) => {
 
     await mongoose.connection.close();
 
-    res.json();
+    res.json(true);
 });
 
 app.post("/change_members_add", jsonParser, async (req, res) => {
