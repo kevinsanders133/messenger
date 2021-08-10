@@ -86,8 +86,6 @@ io.sockets.on('connection', function (socket) {
 
 		await socket.join(roomName);
 
-		console.log(socket);
-
 		let chat_schema = mongoose.model(roomName, schema, roomName);
 
 		await chat_schema.find({}, function(err, doc) {
@@ -167,7 +165,9 @@ io.sockets.on('connection', function (socket) {
 	});
 	
 	socket.on('sendDeleteMember', async function(member_id) {
-		io.sockets.socket(users[member_id]).emit("disconnectOrder");
+		console.log("sendDeleteMember");
+		await io.to(users[member_id]).emit("disconnectOrder");
+		await io.sockets.in(socket.room).emit("removeMember", member_id);
 	});
 
 	socket.on('changeAvatar', function (image) {

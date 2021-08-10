@@ -97,7 +97,7 @@ socket.on('load-members', function(members, friends, admin) {
 			$("#change-members").prepend(`
 			<div class="friend-checkbox">
 				<input type="checkbox" name="user_id" value="${friend._id}">
-				<span class="friend">Friend</span>
+				<span class="friend">${friend.nickname}${friend.tag}</span>
 			</div>`);
 		});
 		add_member_image = document.querySelector("#add-member-image");
@@ -123,6 +123,11 @@ socket.on('load-members', function(members, friends, admin) {
 	});
 });
 
+socket.on("removeMember", member_id => {
+	console.log("J=HI " + member_id);
+	$(`#members-container input[name="id"][value="${member_id}"]`).parent().remove();
+});
+
 function deleteMember(e) {
 	e.preventDefault();
 	const target = e.target;
@@ -141,18 +146,44 @@ function deleteMember(e) {
 
 		let response = JSON.parse(request.response);
 		if (response) {
-			$(`#change-members > input[name="user_id"][value="${member_id}"]`).parent().remove();
-			socket.emit('sendDeleteMember', roomName, member_id);
+			$(`#change-members input[name="user_id"][value="${member_id}"]`).parent().remove();
+			socket.emit('sendDeleteMember', member_id);
 		};
 
 	});
 	request.send(data);
 }
 
+function addMember(e) {
+	e.preventDefault();
+	const target = e.target;
+	console.log(target);
+	let form = target.parentElement;
+	let member_id = form.querySelectorAll('input[name="user_id"]').value;
+	console.log(member_id);
+	/*let data = JSON.stringify({
+		member_id: member_id,
+		chat_id: roomName
+	});
+	let request = new XMLHttpRequest();
+
+	request.open("POST", "/change_members_add", true);   
+	request.setRequestHeader("Content-Type", "application/json");
+	request.addEventListener("load", function () {
+
+		let response = JSON.parse(request.response);
+		if (response) {
+			$(`#change-members input[name="user_id"][value="${member_id}"]`).parent().remove();
+			socket.emit('sendDeleteMember', member_id);
+		};
+
+	});
+	request.send(data);*/
+}
+
 socket.on('disconnectOrder', function() {
-	console.log(_id);
-	socket.emit('disconnect');
-	window.location.replace(`/main_page&id=${_id}`);
+	console.log("disconnect order");
+	window.location.replace(`/main_page?id=${_id}`);
 });
 
 socket.on('updatechat', function (messages, type) {
