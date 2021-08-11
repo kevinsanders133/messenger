@@ -23,6 +23,7 @@ let close_2;
 let menu_members;
 let members_container;
 let add_member_image;
+let isAdmin = false;
 
 let conversation = document.getElementById("conversation");
 conversation.scrollTop = conversation.scrollHeight;
@@ -92,13 +93,19 @@ socket.on('load-members', function(members, friends, admin) {
 	});
 
 	if (admin.admin == true) {
+		isAdmin = true;
+		let members_ids = members.map(member => {return member._id});
 		$("#members-container").append(`<img src="/chat/public/img/add_member.png" id="add-member-image"></img>`);
 		friends.forEach(friend => {
-			$("#change-members").prepend(`
-			<div class="friend-checkbox">
-				<input type="checkbox" name="user_id" value="${friend._id}">
-				<span class="friend">${friend.nickname}${friend.tag}</span>
-			</div>`);
+			if (!members_ids.includes(friend._id)) {
+				$("#change-members").prepend(`
+				<div class="friend-checkbox">
+					<input type="checkbox" name="user_id" value="${friend._id}">
+					<input type="hidden" name="user_nickname" value="${friend.nickname}">
+					<input type="hidden" name="user_tag" value="${friend.tag}">
+					<span class="friend">${friend.nickname}${friend.tag}</span>
+				</div>`);
+			}
 		});
 		add_member_image = document.querySelector("#add-member-image");
 		add_member_image.addEventListener("click", () => {
@@ -112,6 +119,8 @@ socket.on('load-members', function(members, friends, admin) {
 		member_string += `
 		<div class="member">
 			<input type="hidden" name="id" value="${member._id}">
+			<input type="hidden" name="nickname" value="${member.nickname}">
+			<input type="hidden" name="tag" value="${member.tag}">
 			<img class="members-container-image" src="/main_page/uploads/avatars/${member._id}/${member.nickname}.png">
 			<span>${member.nickname}${member.tag}</span>`;
 		if (admin.admin == true && member._id != _id) {
@@ -123,9 +132,18 @@ socket.on('load-members', function(members, friends, admin) {
 	});
 });
 
-socket.on("removeMember", member_id => {
-	console.log("J=HI " + member_id);
-	$(`#members-container input[name="id"][value="${member_id}"]`).parent().remove();
+socket.on("removeMember", member => {
+	console.log(member);
+	$(`#members-container input[name="id"][value="${member.id}"]`).parent().remove();
+	if (isAdmin == true) {
+		$("#change-members").prepend(`
+			<div class="friend-checkbox">
+				<input type="checkbox" name="user_id" value="${member.id}">
+				<input type="hidden" name="user_nickname" value="${member.nickname}">
+				<input type="hidden" name="user_tag" value="${member.tag}">
+				<span class="friend">${member.nickname}${member.tag}</span>
+			</div>`);
+	}
 });
 
 function deleteMember(e) {
@@ -134,8 +152,10 @@ function deleteMember(e) {
 	console.log(target);
 	let form = target.parentElement;
 	let member_id = form.querySelector('input[name="id"]').value;
+	let member_nickname = form.querySelector('input[name="nickname"]').value;
+	let member_tag = form.querySelector('input[name="tag"]').value;
 	let data = JSON.stringify({
-		member_id: member_id,
+		member: member_id,
 		chat_id: roomName
 	});
 	let request = new XMLHttpRequest();
@@ -147,38 +167,66 @@ function deleteMember(e) {
 		let response = JSON.parse(request.response);
 		if (response) {
 			$(`#change-members input[name="user_id"][value="${member_id}"]`).parent().remove();
-			socket.emit('sendDeleteMember', member_id);
+			socket.emit('sendDeleteMember', {id: member_id, nickname: member_nickname, tag: member_tag});
 		};
 
 	});
 	request.send(data);
 }
 
-function addMember(e) {
+socket.on("addMembers", members => {
+	console.log(members);
+	members.forEach(member => {
+		var member_string = ""
+		member_string += `
+		<div class="member">
+			<input type="hidden" name="id" value="${member.id}">
+			<img class="members-container-image" src="/main_page/uploads/avatars/${member.id}/${member.nickname}.png">
+			<span>${member.nickname}${member.tag}</span>`;
+		if (isAdmin == true) {
+			member_string += `
+			<input class="delete-member" type="submit" value="Delete" onclick="deleteMember(event)">`;
+			document.querySelector(`#change-members input[name="${member.id}"]`).parentElement.remove();
+		}
+		member_string += `</div>`;
+		$("#members-container").append(member_string);
+	});
+});
+
+function addMembers(e) {
 	e.preventDefault();
 	const target = e.target;
 	console.log(target);
 	let form = target.parentElement;
-	let member_id = form.querySelectorAll('input[name="user_id"]').value;
-	console.log(member_id);
-	/*let data = JSON.stringify({
-		member_id: member_id,
-		chat_id: roomName
-	});
-	let request = new XMLHttpRequest();
-
-	request.open("POST", "/change_members_add", true);   
-	request.setRequestHeader("Content-Type", "application/json");
-	request.addEventListener("load", function () {
-
-		let response = JSON.parse(request.response);
-		if (response) {
-			$(`#change-members input[name="user_id"][value="${member_id}"]`).parent().remove();
-			socket.emit('sendDeleteMember', member_id);
-		};
-
-	});
-	request.send(data);*/
+	let users_ids = form.querySelectorAll('input[name="user_id"]');
+	let users_nicknames = form.querySelectorAll('input[name="user_nickname"]');
+	let users_tags = form.querySelectorAll('input[name="user_tag"]');
+	let members = [];
+	for (var i = 0; i < users_ids.length; i++) {
+		if (users_ids[i].checked) {
+			members.push({id: users_ids[i].value, nickname: users_nicknames[i].value, tag: users_tags[i].value});
+		}
+    }
+	if (members.length != 0) {
+		let data = JSON.stringify({
+			members: members,
+			chat_id: roomName,
+			chat_name: chat_name
+		});
+		let request = new XMLHttpRequest();
+	
+		request.open("POST", "/change_members_add", true); 
+		request.setRequestHeader("Content-Type", "application/json");
+		request.addEventListener("load", function () {
+	
+			let response = JSON.parse(request.response);
+			if (response) {
+				socket.emit('sendAddMembers', members);
+			};
+	
+		});
+		request.send(data);
+	}
 }
 
 socket.on('disconnectOrder', function() {

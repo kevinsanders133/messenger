@@ -79,7 +79,6 @@ app.post('/chat', function (req, res) {
 io.sockets.on('connection', function (socket) {
 	
 	socket.on('adduser', async function(username, roomName, id){
-
 		
 		socket.room = roomName;
 		users[id] = socket.id;
@@ -164,10 +163,15 @@ io.sockets.on('connection', function (socket) {
 		await io.sockets.in(socket.room).emit('updatechat', object, socket.room.split("_")[0]);
 	});
 	
-	socket.on('sendDeleteMember', async function(member_id) {
+	socket.on('sendDeleteMember', async function(member) {
 		console.log("sendDeleteMember");
-		await io.to(users[member_id]).emit("disconnectOrder");
-		await io.sockets.in(socket.room).emit("removeMember", member_id);
+		await io.to(users[member.id]).emit("disconnectOrder");
+		await io.sockets.in(socket.room).emit("removeMember", member);
+	});
+
+	socket.on('sendAddMembers', async function(members) {
+		console.log("sendAddMembers");
+		await io.sockets.in(socket.room).emit("addMembers", members);
 	});
 
 	socket.on('changeAvatar', function (image) {

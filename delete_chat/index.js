@@ -25,7 +25,6 @@ app.post('/delete_chat', jsonParser, async function (req, res) {
 
 	try {
         await del(dir);
-
         console.log(`${dir} is deleted!`);
     } catch (err) {
         console.error(`Error while deleting ${dir}.`);
@@ -46,9 +45,9 @@ app.post('/delete_chat', jsonParser, async function (req, res) {
 		members = doc;
 	});
 
-	await user_chat_schema.deleteMany({ chat_id: chat_id }, function (err) {
-		if (err) return handleError(err);
-	});
+	await user_chat_schema.deleteMany({ chat_id: chat_id });
+
+	await mongoose.connection.db.dropCollection(chat_id);
 
 	await mongoose.connection.close();
 

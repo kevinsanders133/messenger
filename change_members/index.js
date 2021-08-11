@@ -34,9 +34,9 @@ app.post("/change_members_delete", jsonParser, async (req, res) => {
 });
 
 app.post("/change_members_add", jsonParser, async (req, res) => {
-    const sender_id = req.body.sender_id;
-    const recievers_ids = req.body.recievers_ids;
-    const name = req.body.name;
+    const members = req.body.members;
+    const chat_id = req.body.chat_id;
+    const chat_name = req.body.chat_name;
 
     try {
         mongoose.connect(
@@ -48,44 +48,18 @@ app.post("/change_members_add", jsonParser, async (req, res) => {
         console.log("could not connect");
     }
 
-    const chat_id = `group_${String(Date.now())}`;
-
-    const dir_main = `${__dirname}/uploads/groupchats/${chat_id}`;
-    fs.mkdirSync(dir_main);
-
-    const dir_files = `${__dirname}/uploads/groupchats/${chat_id}/files`;
-    fs.mkdirSync(dir_files);
-
-    const dir_avatar = `${__dirname}/uploads/groupchats/${chat_id}/avatar`;
-    fs.mkdirSync(dir_avatar);
-
-    const src = `${__dirname}/uploads/no-avatar.png`;
-    const dest =  `${dir_avatar}/no-avatar.png`;
-    fs.copyFile(src, dest, (err) => {
-        if (err) {
-        console.log("Error Found:", err);
-        }
-    });
-
-    var members = [];
-    members.push({
-        user_id: sender_id,
-        admin: true,
-        chat_id: chat_id,
-        chat_name: name
-    });
-    for (var i = 0; i < recievers_ids.length; i++) {
-        members.push({
-            user_id: recievers_ids[i],
+    let members_objects = [];
+    members.forEach(member => {
+        var new_member = {
+            user_id: member.id,
             admin: false,
             chat_id: chat_id,
-            chat_name: name
-        });
-    }
+            chat_name: chat_name
+        };
+        members_objects.push(new_member);
+    });
 
-    console.log(members);
-
-    await user_chat_schema.insertMany(members).then(function(){
+    await user_chat_schema.insertMany(members_objects).then(function(){
         console.log("Data inserted");
     }).catch(function(error){
         console.log(error);
@@ -93,7 +67,7 @@ app.post("/change_members_add", jsonParser, async (req, res) => {
 
     await mongoose.connection.close();
 
-    res.json({ chat_id: chat_id });
+    res.json(true);
 });
 
 app.listen(3000, () => {
