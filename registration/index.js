@@ -64,11 +64,9 @@ app.post('/email_confirmation', async (req, res) => {
   
 app.post('/registration', async (req, res) => {
 
-    const tag = await User.countDocuments({ nickname: req.body.nickname_signup }, function(err, c) {
-        return c;
-    }) + 1;
+    const tag = await User.countDocuments({ nickname: req.body.nickname_signup }) + 1;
 
-    const user = new User({
+    const user = await new User({
         nickname: req.body.nickname_signup,
         tag: "#" + String(tag),
         email: req.body.email_signup,
@@ -77,24 +75,22 @@ app.post('/registration', async (req, res) => {
 
     await user.save();
 
-    var _id;
-    await User.findOne({ nickname: req.body.nickname_signup, tag: "#" + String(tag) }, '_id', function(err, doc) {
-        _id = doc._id;
-        console.log(doc._id);
-    });
+    var _id = await User.findOne({ nickname: req.body.nickname_signup, tag: "#" + String(tag) }, '_id');
 
-    const dir = __dirname + '/uploads/avatars/' + _id;
+    console.log(_id);
+
+    const dir = `${__dirname}/uploads/avatars/${_id._id}`;
     fs.mkdirSync(dir);
-    const src = __dirname + '/uploads/no-avatar.png';
+    const src = `${__dirname}/uploads/no-avatar.png`;
     const dest =  `${dir}/${req.body.nickname_signup}.png`;
     fs.copyFile(src, dest, (err) => {
         if (err) {
-        console.log("Error Found:", err);
+            console.log("Error Found:", err);
         }
     });
     res.redirect("/");
 });
 
 app.listen(3000, () => {
-  console.log("running");
+  console.log("Listening");
 });

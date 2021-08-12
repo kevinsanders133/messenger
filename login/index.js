@@ -22,22 +22,19 @@ app.post('/login', async (req, res) => {
         console.log("could not connect");
     }
 
-    await User.findOne({email: email, password: password}, '_id', function(err, doc)
-    {     
-        mongoose.connection.close();
-        if(doc)
-        {
-            console.log(doc._id);
-            res.redirect('/main_page?id=' + doc._id);
-        }
-        else if(!doc) {
-            res.redirect('/');
-        }
-    });
+    var _id = await User.findOne({email: email, password: password}, '_id');
+
+    await mongoose.connection.close();
+
+    if (_id) {
+        console.log(_id);
+        res.redirect(`/main_page?id=${_id._id}`);
+    } else {
+        res.redirect('/');
+    }
 
 });
 
 app.listen(3000, () => {
-  console.log(`running on port 3000`);
-  console.log("--------------------------");
+    console.log("Listening");
 });

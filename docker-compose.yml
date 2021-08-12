@@ -11,17 +11,17 @@ services:
         ports:
             - "3001:3000"
 
-    registration:
-        build: './registration'
-        ports:
-            - "3002:3000"
-        volumes: 
-            - ./main_page/uploads:/src/uploads
+    #registration:
+    #    build: './registration'
+    #    ports:
+    #        - "3002:3000"
+    #    volumes: 
+    #        - ./main_page/uploads:/src/uploads
 
-    send_email:
-        build: './send_email'
-        ports:
-            - "3003:3000"
+    #send_email:
+    #    build: './send_email'
+    #    ports:
+    #        - "3003:3000"
 
     main_page:
         build: './main_page'
@@ -94,8 +94,8 @@ services:
         depends_on:
             - start_page
             - login
-            - registration
-            - send_email
+            #- registration
+            #- send_email
             - main_page
             - upload_avatar
             - add_friend

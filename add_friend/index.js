@@ -6,13 +6,12 @@ const fs = require("fs")
 const user_schema = require("./models/user_schema");
 const user_chat_schema = require("./models/user_chat_schema");
 
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
-const jsonParser = express.json();
 
 const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
 
-app.post("/add_friend", jsonParser, async (req, res) => {
+app.post("/add_friend", async (req, res) => {
     const sender_nickname = req.body.sender_nickname;
     const reciever_nickname = req.body.reciever_nickname;
     const sender_id = req.body.sender_id;
@@ -35,11 +34,10 @@ app.post("/add_friend", jsonParser, async (req, res) => {
 	}
 
     var reciever_id = null;
-    await user_schema.findOne({ nickname: reciever_nickname, tag: reciever_tag }, '_id', (err, doc) => {
-        if (doc != null) {
-            reciever_id = doc._id.toString();
-        }
-    });
+    var doc = await user_schema.findOne({ nickname: reciever_nickname, tag: reciever_tag }, '_id');
+    if (doc != null) {
+        reciever_id = doc._id;
+    }
 
     if (reciever_id == sender_id) {
         reciever_id = null;
@@ -49,27 +47,21 @@ app.post("/add_friend", jsonParser, async (req, res) => {
 
         console.log("1111111111111111");
 
-        await user_chat_schema.find({ user_id: sender_id, chat_id: { $regex: '^private.*' } }, '-_id chat_id', function(err, doc)
-        {
-            if(doc)
-            {
-                query = doc;
-            }
-        });
+        doc = await user_chat_schema.find({ user_id: sender_id, chat_id: { $regex: '^private.*' } }, '-_id chat_id');
+        if (doc) {
+            query = doc;
+        }
 
         if (query.length != 0) {
 
             console.log("2222222222222222");
 
-            await user_chat_schema.find({ user_id: { $ne: sender_id }, $or: query }, '-_id user_id', function(err, doc)
-            {
-                if(doc)
-                {
-                    for (var i = 0; i < doc.length; i++) {
-                        ids.push(doc[i]["user_id"]);
-                    }
+            doc = await user_chat_schema.find({ user_id: { $ne: sender_id }, $or: query }, '-_id user_id');
+            if (doc) {
+                for (var i = 0; i < doc.length; i++) {
+                    ids.push(doc[i]["user_id"]);
                 }
-            });
+            }
         }
 
         if (ids.includes(reciever_id)) {
@@ -117,5 +109,5 @@ app.post("/add_friend", jsonParser, async (req, res) => {
 });
 
 app.listen(3000, () => {
-    console.log(`running`);
+    console.log("Listening");
 });

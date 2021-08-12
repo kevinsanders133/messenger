@@ -10,11 +10,11 @@ app.post('/upload_avatar', (req, res) => {
     const _id = req.query._id;
     const nickname = req.query.nickname;
 
-    fsExtra.emptyDirSync(__dirname + "/uploads/avatars/" + _id);
+    fsExtra.emptyDirSync(`${__dirname}/uploads/avatars/${_id}`);
 
     var storage = multer.diskStorage({
         destination: function (req, file, cb) {
-            cb(null, __dirname + "/uploads/avatars/" + _id);
+            cb(null, `${__dirname}/uploads/avatars/${_id}`);
         },
         filename: function (req, file, cb) {
             cb(null, `${nickname}.png`);
@@ -25,14 +25,11 @@ app.post('/upload_avatar', (req, res) => {
 
     upload(req, res, function (err) {
         if (err instanceof multer.MulterError) {
-          // A Multer error occurred when uploading.
-          console.log("A Multer error occurred when uploading.")
+            console.log("A Multer error occurred when uploading.")
         } else if (err) {
-          // An unknown error occurred when uploading.
-          console.log("An unknown error occurred when uploading.")
+            console.log("An unknown error occurred when uploading.")
         }
      
-        // Everything went fine.
         console.log("Everything went fine.", req.files)
         res.send("Everything went fine.")
     })
@@ -57,14 +54,11 @@ app.post('/upload_group_avatar', (req, res) => {
 
     upload(req, res, function (err) {
         if (err instanceof multer.MulterError) {
-          // A Multer error occurred when uploading.
-          console.log("A Multer error occurred when uploading.")
+            console.log("A Multer error occurred when uploading.")
         } else if (err) {
-          // An unknown error occurred when uploading.
-          console.log("An unknown error occurred when uploading.")
+            console.log("An unknown error occurred when uploading.")
         }
      
-        // Everything went fine.
         console.log("Everything went fine.", req.files)
         res.send("Everything went fine.")
     })
@@ -72,5 +66,5 @@ app.post('/upload_group_avatar', (req, res) => {
 });
 
 app.listen(3000, () => {
-    console.log("upload_avatar)))))");
+    console.log("Listen");
 });
