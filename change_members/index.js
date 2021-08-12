@@ -1,8 +1,8 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const fs = require("fs")
 
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 const user_schema = require("./models/user_schema");
@@ -10,9 +10,7 @@ const user_chat_schema = require("./models/user_chat_schema");
 
 const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
 
-const jsonParser = express.json();
-
-app.post("/change_members_delete", jsonParser, async (req, res) => {
+app.post("/change_members_delete", async (req, res) => {
     const member_id = req.body.member_id;
     const chat_id = req.body.chat_id;
 
@@ -33,7 +31,7 @@ app.post("/change_members_delete", jsonParser, async (req, res) => {
     res.json(true);
 });
 
-app.post("/change_members_add", jsonParser, async (req, res) => {
+app.post("/change_members_add", async (req, res) => {
     const members = req.body.members;
     const chat_id = req.body.chat_id;
     const chat_name = req.body.chat_name;
@@ -59,11 +57,7 @@ app.post("/change_members_add", jsonParser, async (req, res) => {
         members_objects.push(new_member);
     });
 
-    await user_chat_schema.insertMany(members_objects).then(function(){
-        console.log("Data inserted");
-    }).catch(function(error){
-        console.log(error);
-    });
+    await user_chat_schema.insertMany(members_objects);
 
     await mongoose.connection.close();
 
@@ -71,6 +65,6 @@ app.post("/change_members_add", jsonParser, async (req, res) => {
 });
 
 app.listen(3000, () => {
-    console.log(`running`);
+    console.log("Listening");
 });
 

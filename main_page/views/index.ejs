@@ -29,10 +29,12 @@
 		
 		<h3 id="create-chat-label">Create chat</h3>
 		<form name="create-chat">
-			<input type="text" name="name" placeholder="Name of a chat"><br>
+			<input type="text" name="name" placeholder="Name of a chat">
 			<% friends.forEach(function( eachChat ){ %>
-				<input type="checkbox" name="reciever_id" value="<%= eachChat.user_id %>">
-				<span id="<%= eachChat.user_id %>"><%= eachChat.chat_name %></span><br>
+				<div>
+					<input type="checkbox" name="reciever_id" value="<%= eachChat.user_id %>">
+					<span id="<%= eachChat.user_id %>"><%= eachChat.chat_name %></span>
+				</div>
 			<% }) %>
 			<input type="hidden" value="<%= _id %>" name="sender_id">
 			<input type="submit" value="Create" class="create-chat-submit">

@@ -8,41 +8,36 @@ app.use(express.urlencoded({limit: '200mb', extended: false}));
 app.post('/send_files', (req, res) => {
     const chatName = req.query.chatName;
     const milis = String(Date.now());
-    let path;
 
     if (chatName.split("_")[0] == "private") {
-        path = `${__dirname}/uploads/privatechats/${chatName}/files`;
+        var path = `${__dirname}/uploads/privatechats/${chatName}/files`;
     } else {
-        path = `${__dirname}/uploads/groupchats/${chatName}/files`;
+        var path = `${__dirname}/uploads/groupchats/${chatName}/files`;
     }
 
     var storage = multer.diskStorage({
         destination: function (req, file, cb) {
-            cb(null, path)
+            cb(null, path);
         },
         filename: function (req, file, cb) {
-            cb(null, `${milis}${file.originalname}`)
+            cb(null, `${milis}${file.originalname}`);
         }
-    })
+    });
        
-    var upload = multer({ storage: storage }).array("myFile", 10)
+    var upload = multer({ storage: storage }).array("myFile", 10);
 
     upload(req, res, function (err) {
         if (err instanceof multer.MulterError) {
-          // A Multer error occurred when uploading.
-          console.log("A Multer error occurred when uploading.")
+            console.log("A Multer error occurred when uploading.")
         } else if (err) {
-          // An unknown error occurred when uploading.
-          console.log("An unknown error occurred when uploading.")
+            console.log("An unknown error occurred when uploading.")
         }
-     
-        // Everything went fine.
         console.log("Everything went fine.", req.files)
         res.send(milis);
-    })
+    });
 
 });
 
 app.listen(3000, () => {
-    console.log("send_files)))))");
+    console.log("Listening");
 });

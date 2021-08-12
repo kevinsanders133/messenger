@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 const fs = require("fs")
 
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 const user_schema = require("./models/user_schema");
@@ -10,9 +11,7 @@ const user_chat_schema = require("./models/user_chat_schema");
 
 const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
 
-const jsonParser = express.json();
-
-app.post("/create_chat", jsonParser, async (req, res) => {
+app.post("/create_chat", async (req, res) => {
     const sender_id = req.body.sender_id;
     const recievers_ids = req.body.recievers_ids;
     const name = req.body.name;
@@ -42,7 +41,7 @@ app.post("/create_chat", jsonParser, async (req, res) => {
     const dest =  `${dir_avatar}/no-avatar.png`;
     fs.copyFile(src, dest, (err) => {
         if (err) {
-        console.log("Error Found:", err);
+            console.log("Error Found:", err);
         }
     });
 
@@ -64,11 +63,7 @@ app.post("/create_chat", jsonParser, async (req, res) => {
 
     console.log(members);
 
-    await user_chat_schema.insertMany(members).then(function(){
-        console.log("Data inserted");
-    }).catch(function(error){
-        console.log(error);
-    });
+    await user_chat_schema.insertMany(members);
 
     await mongoose.connection.close();
 
@@ -76,6 +71,6 @@ app.post("/create_chat", jsonParser, async (req, res) => {
 });
 
 app.listen(3000, () => {
-    console.log(`running`);
+    console.log("Listening");
 });
 

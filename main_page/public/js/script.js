@@ -60,7 +60,7 @@ socket.on('deleteChat', function (chat_id, initiator_id) {
 	if (chat_id.split("_")[0] == "private") {
 		const create_chat_form = document.forms["create-chat"];
 		const checkbox = create_chat_form.querySelector(`input[name="reciever_id"][value="${initiator_id}"]`);
-		checkbox.remove();
+		checkbox.parentElement.remove();
 		const label = create_chat_form.querySelector(`span[id="${initiator_id}"]`);
 		label.remove();
 	}
@@ -147,9 +147,13 @@ document.querySelector(".addFriendSubmit").addEventListener("click", function (e
 				</li>
 				`
 			);
-			$('form[name="create-chat"]').append(
-				`<input type="checkbox" name="reciever_id" value="${response.reciever_id}">
-				<span id="${response.reciever_id}">${reciever_nickname}</span><br>`
+			$('form[name="create-chat"]').prepend(
+				`
+				<div>
+					<input type="checkbox" name="reciever_id" value="${response.reciever_id}">
+					<span id="${response.reciever_id}">${reciever_nickname}</span>
+				</div>
+				`
 			);
 
 			socket.emit('sendFriendRequest', _id, nickname, avatar, response.chat_id, response.reciever_id);

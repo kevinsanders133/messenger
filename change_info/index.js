@@ -2,9 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
-const jsonParser = express.json();
 
 app.set('view engine', 'ejs')
 app.use('views', express.static(__dirname + '/views'));
@@ -27,15 +26,13 @@ try {
   
 app.post('/change_info_form', async (req, res) => {
     const id = req.body.id;
-    var nickname;
-    var email;
-    var password;
-    await User.findOne({_id: id}, '-_id', function(err, doc)
-    {     
-        nickname = doc.nickname;
-        email = doc.email;
-        password = doc.password;
-    });
+
+    var user = await User.findOne({_id: id}, '-_id');
+
+    var nickname = user.nickname;
+    var email = user.email;
+    var password = user.password;
+
     res.render("index", {
         id: id,
 		nickname: nickname,
@@ -44,26 +41,7 @@ app.post('/change_info_form', async (req, res) => {
     });
 });
 
-app.post('/change_info_form', async (req, res) => {
-    const id = req.body.id;
-    var nickname;
-    var email;
-    var password;
-    await User.findOne({_id: id}, '-_id', function(err, doc)
-    {     
-        nickname = doc.nickname;
-        email = doc.email;
-        password = doc.password;
-    });
-    res.render("index", {
-        id: id,
-		nickname: nickname,
-        email: email,
-        password: password
-    });
-});
-
-app.post('/change_info', jsonParser, async (req, res) => {
+app.post('/change_info', async (req, res) => {
     const id = req.body.id;
     const nickname = req.body.nickname;
     const email = req.body.email;
@@ -75,15 +53,10 @@ app.post('/change_info', jsonParser, async (req, res) => {
         password: password
     };
 
-    await User.findOneAndUpdate({_id: id}, user, {upsert: true}, function(err, doc)
-    {     
-        if (err) console.log(err);
-    });
-
-    res.json();
-
+    await User.findOneAndUpdate({_id: id}, user, {upsert: true});
+    res.json(true);
 });
 
 app.listen(3000, () => {
-  console.log(`running`);
+  console.log("Listening");
 });

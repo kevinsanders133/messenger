@@ -32,7 +32,7 @@ app.post('/upload_avatar', (req, res) => {
      
         console.log("Everything went fine.", req.files)
         res.send("Everything went fine.")
-    })
+    });
 
 });
 
@@ -58,7 +58,6 @@ app.post('/upload_group_avatar', (req, res) => {
         } else if (err) {
             console.log("An unknown error occurred when uploading.")
         }
-     
         console.log("Everything went fine.", req.files)
         res.send("Everything went fine.")
     })
@@ -66,5 +65,5 @@ app.post('/upload_group_avatar', (req, res) => {
 });
 
 app.listen(3000, () => {
-    console.log("Listen");
+    console.log("Listening");
 });

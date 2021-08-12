@@ -84,7 +84,8 @@ form[name="addFriend"] {
 }
 
 form[name="create-chat"] {
-
+    display: flex;
+    flex-direction: column;
 }
 
 form[name="addFriend"] input {

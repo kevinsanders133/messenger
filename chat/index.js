@@ -1,6 +1,5 @@
 const express = require('express')
 const app = express()
-const fs = require('fs')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 const user_schema = require("./models/user_schema");
@@ -63,7 +62,6 @@ app.set('view engine', 'ejs')
 app.use(express.urlencoded({ extended: false }));
 
 var users = {};
-var rooms = [];
 
 app.post('/chat', function (req, res) {
 	res.render('index', { 
@@ -178,7 +176,6 @@ io.sockets.on('connection', function (socket) {
 		io.sockets.in(socket.room).emit('updateAvatar', image);
 	});	
 
-	// when the user disconnects.. perform this
 	socket.on('disconnect', function(){
 		console.log("User left.");
 		delete users[socket.id];

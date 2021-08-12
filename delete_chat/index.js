@@ -15,12 +15,11 @@ const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb
 app.post('/delete_chat', async function (req, res) {
 	var _id = req.body.id;
 	var chat_id = req.body.chat_id;
-	var dir;
 
 	if (chat_id.split("_")[0] == "private") {
-		dir = `${__dirname}/uploads/privatechats/${chat_id}`;
+		var dir = `${__dirname}/uploads/privatechats/${chat_id}`;
 	} else {
-		dir = `${__dirname}/uploads/groupchats/${chat_id}`;
+		var dir = `${__dirname}/uploads/groupchats/${chat_id}`;
 	}
 
 	try {
@@ -44,7 +43,16 @@ app.post('/delete_chat', async function (req, res) {
 
 	await user_chat_schema.deleteMany({ chat_id: chat_id });
 
-	await mongoose.connection.db.dropCollection(chat_id);
+	var collections = await mongoose.connection.db.listCollections().toArray();
+
+	for (i = 0; i < collections.length; i++) {
+		console.log(collections[i].name);
+		if (collections[i].name == chat_id) {
+			await mongoose.connection.db.dropCollection(chat_id);
+			console.log("HI");
+			break;
+		}
+	}
 
 	await mongoose.connection.close();
 
