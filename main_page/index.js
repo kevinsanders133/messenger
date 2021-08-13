@@ -8,6 +8,9 @@ const io = require("socket.io")({
 	transports: ["polling", "websocket"]
 });
 
+app.use(express.json({limit: '1000mb'}));
+app.use(express.urlencoded({extended: false, limit: '1000mb'}));
+
 const server = require("http").Server(app);
 
 io.attach(server, {
@@ -26,8 +29,6 @@ app.use('views', express.static(`${__dirname}/views`));
 
 app.use('/main_page/uploads', express.static(`${__dirname}/uploads`));
 app.use('/main_page/public', express.static(`${__dirname}/public`));
-
-app.use(express.urlencoded({ extended: false }));
 
 var usernames = {};
 

@@ -6,7 +6,7 @@ const fsExtra = require('fs-extra')
 app.use(express.json({limit: '1000mb'}));
 app.use(express.urlencoded({extended: false, limit: '1000mb'}));
 
-app.post('/upload_avatar', (req, res) => {
+app.post('/upload_avatar', express.json({limit: '1000mb'}), (req, res) => {
     const _id = req.query._id;
     const nickname = req.query.nickname;
 
