@@ -1,9 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
+const axios = require("axios");
+const cors = require('cors');
 const app = express();
 const fs = require("fs");
 
+app.use(cors());
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
@@ -75,6 +79,14 @@ app.post('/registration', async (req, res) => {
 
     await user.save();
 
+    await axios.post("http://event_bus:3000/events", {id: 1})
+	.then(function (res) {
+		console.log(res)
+	})
+	.catch(function (err) {
+		console.log(err)
+	})
+
     var _id = await User.findOne({ nickname: req.body.nickname_signup, tag: "#" + String(tag) }, '_id');
 
     console.log(_id);
@@ -88,7 +100,14 @@ app.post('/registration', async (req, res) => {
             console.log("Error Found:", err);
         }
     });
-    res.redirect("/");
+    res.send({});
+    //res.redirect("/");
+});
+
+app.post('/events', async (req, res) => {
+    const content = req.body;
+    console.log(`${content.type}: ${content.data}.`);
+    res.send("OK");
 });
 
 app.listen(3000, () => {
