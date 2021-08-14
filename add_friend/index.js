@@ -9,7 +9,17 @@ const user_chat_schema = require("./models/user_chat_schema");
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
+const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/add_friend?retryWrites=true&w=majority";
+
+try {
+    mongoose.connect(
+        mongoAtlasUri,
+        { useNewUrlParser: true, useUnifiedTopology: true },
+        () => console.log("Mongoose is connected")
+    );
+} catch (e) {
+    console.log("could not connect");
+}
 
 app.post("/add_friend", async (req, res) => {
     const sender_nickname = req.body.sender_nickname;
@@ -22,16 +32,6 @@ app.post("/add_friend", async (req, res) => {
     var avatar;
 
     console.log(sender_nickname + "\n" + reciever_nickname + "\n" + sender_id + "\n" + reciever_tag);
-
-    try {
-		mongoose.connect(
-			mongoAtlasUri,
-			{ useNewUrlParser: true, useUnifiedTopology: true },
-			() => console.log("Mongoose is connected")
-		);
-	} catch (e) {
-		console.log("could not connect");
-	}
 
     var reciever_id = null;
     var doc = await user_schema.findOne({ nickname: reciever_nickname, tag: reciever_tag }, '_id');
@@ -102,7 +102,6 @@ app.post("/add_friend", async (req, res) => {
         }
     }
 
-    await mongoose.connection.close();
     res.json({ chat_id: name,
                reciever_id: reciever_id,
                avatar: avatar});

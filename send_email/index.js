@@ -5,21 +5,22 @@ const app = express();
 
 app.use(express.urlencoded({ extended: false }));
 
-const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
+const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/send_email?retryWrites=true&w=majority";
+
+try {
+    mongoose.connect(
+        mongoAtlasUri,
+        { useNewUrlParser: true, useUnifiedTopology: true },
+        () => console.log("Mongoose is connected")
+    );
+} catch (e) {
+    console.log("could not connect");
+}
 
 const User = require("./models/User");
 
-app.post('/send_email', (req, res) => {
 
-    try {
-        mongoose.connect(
-            mongoAtlasUri,
-            { useNewUrlParser: true, useUnifiedTopology: true },
-            () => console.log("Mongoose is connected")
-        );
-    } catch (e) {
-        console.log("could not connect");
-    }
+app.post('/send_email', (req, res) => {
 
     var transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -48,6 +49,5 @@ app.post('/send_email', (req, res) => {
 });
 
 app.listen(3000, () => {
-  console.log("running on port 3000");
-  console.log("--------------------------");
+  console.log("Listening");
 });

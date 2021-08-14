@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
+const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/registration?retryWrites=true&w=majority";
 
 try {
 	mongoose.connect(
@@ -99,6 +99,14 @@ app.post('/registration', async (req, res) => {
 
 app.post('/events', async (req, res) => {
     const content = req.body;
+    if (content.type == 'insert') {
+        const user = await new User(content.data);
+        await user.save();
+    } else if (content.type == 'delete') {
+
+    } else {
+
+    }
     console.log(content);
     console.log(`${content.type}: ${content.data}.`);
     res.send("OK");

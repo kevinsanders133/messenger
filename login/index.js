@@ -4,7 +4,17 @@ const app = express();
 
 app.use(express.urlencoded({ extended: false }));
 
-const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
+const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/login?retryWrites=true&w=majority";
+
+try {
+    mongoose.connect(
+        mongoAtlasUri,
+        { useNewUrlParser: true, useUnifiedTopology: true },
+        () => console.log("Mongoose is connected")
+    );
+} catch (e) {
+    console.log("could not connect");
+}
 
 const User = require("./models/User");
   
@@ -12,19 +22,7 @@ app.post('/login', async (req, res) => {
     var email = req.body.email_signin;
     var password = req.body.password_signin;
 
-    try {
-        mongoose.connect(
-            mongoAtlasUri,
-            { useNewUrlParser: true, useUnifiedTopology: true },
-            () => console.log("Mongoose is connected")
-        );
-    } catch (e) {
-        console.log("could not connect");
-    }
-
     var _id = await User.findOne({email: email, password: password}, '_id');
-
-    await mongoose.connection.close();
 
     if (_id) {
         console.log(_id);
@@ -33,6 +31,21 @@ app.post('/login', async (req, res) => {
         res.redirect('/');
     }
 
+});
+
+app.post('/events', async (req, res) => {
+    const content = req.body;
+    if (content.type == 'insert') {
+        const user = await new User(content.data);
+        await user.save();
+    } else if (content.type == 'delete') {
+
+    } else {
+
+    }
+    console.log(content);
+    console.log(`${content.type}: ${content.data}.`);
+    res.send("OK");
 });
 
 app.listen(3000, () => {

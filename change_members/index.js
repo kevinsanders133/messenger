@@ -8,25 +8,23 @@ app.use(express.urlencoded({ extended: false }));
 const user_schema = require("./models/user_schema");
 const user_chat_schema = require("./models/user_chat_schema");
 
-const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
+const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/change_members?retryWrites=true&w=majority";
+
+try {
+    mongoose.connect(
+        mongoAtlasUri,
+        { useNewUrlParser: true, useUnifiedTopology: true },
+        () => console.log("Mongoose is connected")
+    );
+} catch (e) {
+    console.log("could not connect");
+}
 
 app.post("/change_members_delete", async (req, res) => {
     const member_id = req.body.member_id;
     const chat_id = req.body.chat_id;
 
-    try {
-        mongoose.connect(
-            mongoAtlasUri,
-            { useNewUrlParser: true, useUnifiedTopology: true },
-            () => console.log("Mongoose is connected")
-        );
-    } catch (e) {
-        console.log("could not connect");
-    }
-
     await user_chat_schema.deleteOne({chat_id: chat_id, user_id: member_id});
-
-    await mongoose.connection.close();
 
     res.json(true);
 });

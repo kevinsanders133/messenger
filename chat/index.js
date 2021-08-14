@@ -9,7 +9,7 @@ const io = require("socket.io")({
 	transports: ["polling", "websocket"]
 });
 
-const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
+const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/chat?retryWrites=true&w=majority";
 
 try {
 	mongoose.connect(
