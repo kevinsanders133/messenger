@@ -85,9 +85,8 @@ io.sockets.on('connection', function (socket) {
 
 		let chat_schema = mongoose.model(roomName, schema, roomName);
 
-		await chat_schema.find({}, function(err, doc) {
-			socket.emit('updatechat', doc, roomName.split("_")[0]);
-		});
+		var doc = await chat_schema.find({});
+		await socket.emit('updatechat', doc, roomName.split("_")[0]);
 
 		if (roomName.split("_")[0] == "group") {
 			let query = [];

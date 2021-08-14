@@ -18,6 +18,10 @@ let menu_files = document.querySelector("#menu-files");
 let images_container = document.querySelector("#images-container");
 let files_container = document.querySelector("#files-container");
 
+window.onload = () => {
+	files_container.style["display"] = "none";
+}
+
 let overlay_2;
 let close_2;
 let menu_members;
@@ -186,7 +190,7 @@ socket.on("addMembers", members => {
 		if (isAdmin == true) {
 			member_string += `
 			<input class="delete-member" type="submit" value="Delete" onclick="deleteMember(event)">`;
-			document.querySelector(`#change-members input[name="${member.id}"]`).parentElement.remove();
+			document.querySelector(`#change-members input[name="user_id"][value="${member.id}"]`).parentElement.remove();
 		}
 		member_string += `</div>`;
 		$("#members-container").append(member_string);
