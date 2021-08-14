@@ -13,13 +13,13 @@ app.use(express.urlencoded({ extended: false }));
 const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
 
 try {
-    mongoose.connect(
-        mongoAtlasUri,
-        { useNewUrlParser: true, useUnifiedTopology: true },
-        () => console.log("Mongoose is connected")
-    );
+	mongoose.connect(
+		mongoAtlasUri,
+		{ useNewUrlParser: true, useUnifiedTopology: true },
+		() => console.log("Mongoose is connected")
+	);
 } catch (e) {
-    console.log("could not connect");
+	console.log("could not connect");
 }
 
 const User = require("./models/User");
@@ -79,13 +79,7 @@ app.post('/registration', async (req, res) => {
 
     await user.save();
 
-    await axios.post("http://event_bus:3000/events", {id: 1})
-	.then(function (res) {
-		console.log(res)
-	})
-	.catch(function (err) {
-		console.log(err)
-	})
+    await axios.post("http://event_bus:3000/events", {service: "registration", collection: "users", type: "insert", data: user});
 
     var _id = await User.findOne({ nickname: req.body.nickname_signup, tag: "#" + String(tag) }, '_id');
 
@@ -100,12 +94,12 @@ app.post('/registration', async (req, res) => {
             console.log("Error Found:", err);
         }
     });
-    res.send({});
-    //res.redirect("/");
+    res.redirect("/");
 });
 
 app.post('/events', async (req, res) => {
     const content = req.body;
+    console.log(content);
     console.log(`${content.type}: ${content.data}.`);
     res.send("OK");
 });
