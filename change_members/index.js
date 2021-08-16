@@ -5,7 +5,6 @@ const mongoose = require("mongoose");
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const user_schema = require("./models/user_schema");
 const user_chat_schema = require("./models/user_chat_schema");
 
 const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/change_members?retryWrites=true&w=majority";
@@ -34,16 +33,6 @@ app.post("/change_members_add", async (req, res) => {
     const chat_id = req.body.chat_id;
     const chat_name = req.body.chat_name;
 
-    try {
-        mongoose.connect(
-            mongoAtlasUri,
-            { useNewUrlParser: true, useUnifiedTopology: true },
-            () => console.log("Mongoose is connected")
-        );
-    } catch (e) {
-        console.log("could not connect");
-    }
-
     let members_objects = [];
     members.forEach(member => {
         var new_member = {
@@ -57,9 +46,20 @@ app.post("/change_members_add", async (req, res) => {
 
     await user_chat_schema.insertMany(members_objects);
 
-    await mongoose.connection.close();
-
     res.json(true);
+});
+
+app.post('/events', async (req, res) => {
+    const content = req.body;
+    console.log(content);
+    if (content.type == 'insert') {
+        await user_chat_schema.insertMany(content.data);
+    } else if (content.type == 'delete') {
+        //await user.deleteOne({$and: content.data});
+    } else {
+        
+    }
+    res.send(true);
 });
 
 app.listen(3000, () => {

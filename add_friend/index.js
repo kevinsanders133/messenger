@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+const axios = require('axios');
 const fs = require("fs")
 
 const user_schema = require("./models/user_schema");
@@ -20,6 +21,7 @@ try {
 } catch (e) {
     console.log("could not connect");
 }
+mongoose.set('useFindAndModify', false);
 
 app.post("/add_friend", async (req, res) => {
     const sender_nickname = req.body.sender_nickname;
@@ -97,14 +99,44 @@ app.post("/add_friend", async (req, res) => {
                 chat_name: sender_nickname
             });
 
-            await sender.save();
-            await reciever.save();
+            await user_chat_schema.insertMany([sender, reciever]);
+
+            await axios.post('http://event_bus:3000/events', {
+                service: "add_friend", 
+                collection: "user_chat", 
+                type: "insert", 
+                data: [sender, reciever]
+            });
         }
     }
 
     res.json({ chat_id: name,
                reciever_id: reciever_id,
                avatar: avatar});
+});
+
+app.post('/events', async (req, res) => {
+    const content = req.body;
+    console.log(content);
+    if (content.collection == 'users') {
+        if (content.type == 'insert') {
+            const user = await new user_schema(content.data);
+            await user.save();
+        } else if (content.type == 'delete') {
+            await user.deleteOne({$and: content.data});
+        } else {
+            await user_schema.findOneAndUpdate({_id: content.data._id}, content.data.new_data, {upsert: true}).exec();
+        }
+    } else {
+        if (content.type == 'insert') {
+            await user_chat_schema.insertMany(content.data);
+        } else if (content.type == 'delete') {
+            await user_chat_schema.deleteOne({$and: content.data});
+        } else {
+            
+        }
+    }
+    res.send(true);
 });
 
 app.listen(3000, () => {

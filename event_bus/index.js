@@ -7,29 +7,30 @@ app.use(cors());
 app.use(express.json());
 
 const services = [  
-                    'add_friend',
-                    'change_info',
-                    'change_members',
-                    'chat',
-                    'create_chat',
-                    'delete_chat',
-                    'login',
-                    'main_page',
-                    'registation'
+                    {name: 'login', dbs: ["users"]}, // users
+                    {name: 'add_friend', dbs: ["users", "user_chat"]}, // users user_chat
+                    {name: 'change_info', dbs: ["users"]}, // users
+                    {name: 'change_members', dbs: ["user_chat"]}, // user_chat
+                    {name: 'delete_chat', dbs: ["user_chat"]}, // user_chat
+                    {name: 'main_page', dbs: ["users", "user_chat"]},  // users user_chat
+                    {name: 'registration', dbs: ["users"]} // users
                 ];
 
-app.post('/events', async (req, res) => {
+app.post('/events', (req, res) => {
     console.log("HI, i'm there");
     const content = req.body;
-    const temp = services;
-    const index = temp.indexOf(content.service);
+    const temp = services.map(e => {return e});
+    console.log(temp);
+    const index = temp.map(e => e.name).indexOf(content.service);
     temp.splice(index, 1);
     for (var i = 0; i < temp.length; i++) {
-        await axios.post(`http://${temp[i]}:3000/events`, {
-            collection: content.collection,    
-            type: content.type,
-            data: content.data
-        });
+        if (temp[i].dbs.includes(content.collection)) {
+            axios.post(`http://${temp[i].name}:3000/events`, {
+                collection: content.collection,    
+                type: content.type,
+                data: content.data
+            });
+        }
     }
     res.send(true);
 });

@@ -32,7 +32,18 @@ app.use('/main_page/public', express.static(`${__dirname}/public`));
 
 var usernames = {};
 
-const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
+const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/main_page?retryWrites=true&w=majority";
+
+try {
+	mongoose.connect(
+		mongoAtlasUri,
+		{ useNewUrlParser: true, useUnifiedTopology: true },
+		() => console.log("Mongoose is connected")
+	);
+} catch (e) {
+	console.log("could not connect");
+}
+mongoose.set('useFindAndModify', false);
 
 app.get('/main_page', async function (req, res) {
 	const _id = req.query.id;
@@ -43,18 +54,6 @@ app.get('/main_page', async function (req, res) {
 	fs.readdirSync(dir).forEach(file => {
 		avatar = file;
 	});
-
-	console.log(avatar);
-
-	try {
-		mongoose.connect(
-			mongoAtlasUri,
-			{ useNewUrlParser: true, useUnifiedTopology: true },
-			() => console.log("Mongoose is connected")
-		);
-	} catch (e) {
-		console.log("could not connect");
-	}
 
 	var user = await user_schema.findOne({_id: _id}, '-_id nickname tag');
 	var nickname = user.nickname;
@@ -100,8 +99,6 @@ app.get('/main_page', async function (req, res) {
 	chats = private_chats.concat(group_chats);
 	console.log(chats);
 
-	await mongoose.connection.close();
-
 	res.render('index', {   
 		chats: chats, 
 	    friends: private_chats,
@@ -110,6 +107,30 @@ app.get('/main_page', async function (req, res) {
 		tag: tag,
 		avatar: avatar 
 	});
+});
+
+app.post('/events', async (req, res) => {
+    const content = req.body;
+    console.log(content);
+    if (content.collection == 'users') {
+        if (content.type == 'insert') {
+            const user = await new user_schema(content.data);
+            await user.save();
+        } else if (content.type == 'delete') {
+            await user_schema.deleteOne({$and: content.data});
+        } else {
+            await user_schema.findOneAndUpdate({_id: content.data._id}, content.data.new_data, {upsert: true});
+        }
+    } else {
+		if (content.type == 'insert') {
+			await user_chat_schema.insertMany(content.data);
+		} else if (content.type == 'delete') {
+			//await user.deleteOne({$and: content.data});
+		} else {
+			
+		}
+    }
+    res.send(true);
 });
 
 io.sockets.on('connection', function (socket) {

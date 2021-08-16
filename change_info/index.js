@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const axios = require('axios');
 const app = express();
 
 app.use(express.json());
@@ -10,7 +11,7 @@ app.use('views', express.static(__dirname + '/views'));
 
 app.use('/change_info/public', express.static(__dirname + '/public'));
 
-const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/app?retryWrites=true&w=majority";
+const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/change_info?retryWrites=true&w=majority";
 
 const User = require("./models/User");
 
@@ -23,11 +24,13 @@ try {
 } catch (e) {
     console.log("could not connect");
 }
+
+mongoose.set('useFindAndModify', false);
   
 app.post('/change_info_form', async (req, res) => {
     const id = req.body.id;
 
-    var user = await User.findOne({_id: id}, '-_id');
+    var user = await User.findOne({_id: id}, '-_id').exec();
 
     var nickname = user.nickname;
     var email = user.email;
@@ -53,8 +56,29 @@ app.post('/change_info', async (req, res) => {
         password: password
     };
 
-    await User.findOneAndUpdate({_id: id}, user, {upsert: true});
+    await User.findOneAndUpdate({_id: id}, user, {upsert: true}).exec();
+    await axios.post('http://event_bus:3000/events', {
+        service: "change_info", 
+        collection: "users", 
+        type: "update", 
+        data: { _id: id, new_data: user }
+    });
+
     res.json(true);
+});
+
+app.post('/events', async (req, res) => {
+    const content = req.body;
+    console.log(content);
+    if (content.type == 'insert') {
+        const user = await new User(content.data);
+        await user.save();
+    } else if (content.type == 'delete') {
+        //await user.deleteOne({$and: content.data});
+    } else {
+        await User.findOneAndUpdate({_id: content.data._id}, content.data, {upsert: true});
+    }
+    res.send(true);
 });
 
 app.listen(3000, () => {

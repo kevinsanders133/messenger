@@ -3,22 +3,16 @@ services:
 
     start_page:
         build: './start_page'
-        networks: 
-            - bridge
         ports:
             - "3000:3000"
 
     login:
         build: './login'
-        networks: 
-            - bridge
         ports:
             - "3001:3000"
 
     registration:
         build: './registration'
-        networks: 
-            - bridge
         ports:
             - "3002:3000"
         volumes: 
@@ -31,8 +25,6 @@ services:
 
     main_page:
         build: './main_page'
-        networks: 
-            - bridge
         ports:
             - "3004:3000"
         volumes: 
@@ -40,8 +32,6 @@ services:
 
     upload_avatar:
         build: './upload_avatar'
-        networks: 
-            - bridge
         ports:
             - "3005:3000"
         volumes: 
@@ -49,8 +39,6 @@ services:
 
     add_friend:
         build: './add_friend'
-        networks: 
-            - bridge
         ports:
             - "3006:3000"
         volumes: 
@@ -58,8 +46,6 @@ services:
 
     create_chat:
         build: './create_chat'
-        networks: 
-            - bridge
         ports:
             - "3007:3000"
         volumes: 
@@ -67,8 +53,6 @@ services:
 
     delete_chat:
         build: './delete_chat'
-        networks: 
-            - bridge
         ports:
             - "3008:3000"
         volumes: 
@@ -76,8 +60,6 @@ services:
 
     change_info:
         build: './change_info'
-        networks: 
-            - bridge
         ports:
             - "3009:3000"
         volumes: 
@@ -85,8 +67,6 @@ services:
 
     chat:
         build: './chat'
-        networks: 
-            - bridge
         ports:
             - "3010:3000"
         volumes: 
@@ -94,8 +74,6 @@ services:
 
     send_files:
         build: './send_files'
-        networks: 
-            - bridge
         ports:
             - "3011:3000"
         volumes:
@@ -103,23 +81,17 @@ services:
 
     change_members:
         build: './change_members'
-        networks: 
-            - bridge
         ports:
             - "3012:3000"
 
     event_bus:
         build: './event_bus'
-        networks: 
-            - bridge
         ports:
             - "3013:3000"
 
 
     nginx:
         image: nginx:latest
-        networks: 
-            - bridge
         ports:
             - "8080:80"
         volumes:
@@ -139,8 +111,3 @@ services:
             - send_files
             - change_members
             - event_bus
-
-networks: 
-    bridge:
-        driver: bridge
-            

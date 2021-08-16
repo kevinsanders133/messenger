@@ -21,6 +21,7 @@ try {
 } catch (e) {
 	console.log("could not connect");
 }
+mongoose.set('useFindAndModify', false);
 
 const User = require("./models/User");
 
@@ -99,17 +100,16 @@ app.post('/registration', async (req, res) => {
 
 app.post('/events', async (req, res) => {
     const content = req.body;
+    console.log(content);
     if (content.type == 'insert') {
         const user = await new User(content.data);
         await user.save();
     } else if (content.type == 'delete') {
 
     } else {
-
+        await User.findOneAndUpdate({_id: content.data._id}, content.data.new_data, {upsert: true}).exec();
     }
-    console.log(content);
-    console.log(`${content.type}: ${content.data}.`);
-    res.send("OK");
+    res.send(true);
 });
 
 app.listen(3000, () => {

@@ -57,6 +57,19 @@ app.post('/delete_chat', async function (req, res) {
 	res.json({ members: members });
 });
 
+app.post('/events', async (req, res) => {
+    const content = req.body;
+    console.log(content);
+    if (content.type == 'insert') {
+        await user_chat_schema.insertMany(content.data);
+    } else if (content.type == 'delete') {
+        //await user.deleteOne({$and: content.data});
+    } else {
+        
+    }
+    res.send(true);
+});
+
 app.listen(3000, () => {
 	console.log("Listening");
 });
