@@ -20,6 +20,15 @@ body {
     text-decoration: none;
     color: white;
     font-size: 20px;
+    cursor: pointer;
+}
+
+#back-link:hover {
+    color: yellow;
+}
+
+#back-link:active {
+    transform: scale(1.1);
 }
 
 /*----------------------------------------------------------------------------------------------------------

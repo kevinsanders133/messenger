@@ -76,9 +76,9 @@ let label = document.querySelector("#label-for-file");
 file.addEventListener("change", () => {
     console.log(file.value);
     if (file.value !== "") {
-        label.style["background-color"] = "rgb(51, 250, 51)";
+        label.style["color"] = "rgb(51, 250, 51)";
     } else {
-        label.style.removeProperty("background-color");
+        label.style.removeProperty("color");
     }
 });
 
@@ -103,6 +103,7 @@ function upload() {
 			const avatar = `<img src="${name}" id="avatar">`;
 			$("#avatar").remove();
 			$("#avatar-container").prepend(avatar);
+			label.style.removeProperty("color");
 		}
 	})
 	.catch(function (err) {

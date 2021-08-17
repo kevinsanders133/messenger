@@ -61,6 +61,14 @@ header {
     color: white;
 }
 
+#log-out:hover {
+    color: yellow;
+}
+
+#log-out:active {
+    transform: scale(1.1);
+}
+
 form {
     padding: 5px;
 }
@@ -108,7 +116,8 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: solid white;
+    border-top: solid white;
+    border-bottom: solid white;
 }
 
 b {
@@ -223,13 +232,28 @@ p {
     position: absolute;
     opacity: 0;
     bottom: 20px;
-    width: 85px;
+    width: 90px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+::-webkit-file-upload-button {
+    cursor: pointer;
 }
 
 #label-for-file {
     width: 100px;
     text-align: center;
     border-radius: 5px;
+    color: white;
+}
+
+.file:hover + #label-for-file {
+    color: yellow;
+}
+
+.file:active + #label-for-file {
+    transform: scale(1.1);
 }
 
 #upload {
@@ -249,4 +273,13 @@ p {
     color: white;
     border: none;
     background: none;
+    cursor: pointer;
+}
+
+#change:hover {
+    color: yellow;
+}
+
+#change:active {
+    transform: scale(1.1);
 }

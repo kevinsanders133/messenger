@@ -101,7 +101,6 @@ app.post('/events', async (req, res) => {
 					console.log(collections[i].name);
 					if (collections[i].name == content.data[0].chat_id) {
 						await mongoose.connection.db.dropCollection(content.data[0].chat_id);
-						console.log("HI");
 						break;
 					}
 				}
