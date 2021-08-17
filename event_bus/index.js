@@ -10,10 +10,10 @@ const services = [
                     {name: 'login', dbs: ["users"]}, // users
                     {name: 'add_friend', dbs: ["users", "user_chat"]}, // users user_chat
                     {name: 'change_info', dbs: ["users"]}, // users
-                    {name: 'change_members', dbs: ["user_chat"]}, // user_chat
                     {name: 'delete_chat', dbs: ["user_chat"]}, // user_chat
-                    {name: 'main_page', dbs: ["users", "user_chat"]},  // users user_chat
-                    {name: 'registration', dbs: ["users"]} // users
+                    {name: 'main_page', dbs: ["users", "user_chat"]}, // users user_chat
+                    {name: 'registration', dbs: ["users"]}, // users
+                    {name: 'chat', dbs: ["users", "user_chat"]} // users user_chat
                 ];
 
 app.post('/events', (req, res) => {

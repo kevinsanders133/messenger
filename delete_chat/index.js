@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
+const axios = require('axios');
 const del = require('del');
 
 app.use(express.json());
@@ -39,20 +40,14 @@ app.post('/delete_chat', async function (req, res) {
         console.error(`Error while deleting ${dir}.`);
     }
 
-	var members = await user_chat_schema.find({ user_id: { $ne: _id }, chat_id: chat_id }, '-_id user_id');
+	var members = await user_chat_schema.find({ user_id: { $ne: _id }, chat_id: chat_id }, '-_id user_id').exec();
 
-	await user_chat_schema.deleteMany({ chat_id: chat_id });
-
-	var collections = await mongoose.connection.db.listCollections().toArray();
-
-	for (i = 0; i < collections.length; i++) {
-		console.log(collections[i].name);
-		if (collections[i].name == chat_id) {
-			await mongoose.connection.db.dropCollection(chat_id);
-			console.log("HI");
-			break;
-		}
-	}
+	await axios.post('http://event_bus:3000/events', {
+        service: "delete_chat", 
+        collection: "user_chat", 
+        type: "delete", 
+        data: [{ chat_id: chat_id }]
+    });
 
 	res.json({ members: members });
 });
@@ -63,7 +58,7 @@ app.post('/events', async (req, res) => {
     if (content.type == 'insert') {
         await user_chat_schema.insertMany(content.data);
     } else if (content.type == 'delete') {
-        //await user.deleteOne({$and: content.data});
+        await user_chat_schema.deleteOne({$and: content.data});
     } else {
         
     }

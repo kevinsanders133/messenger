@@ -123,7 +123,7 @@ app.post('/events', async (req, res) => {
             const user = await new user_schema(content.data);
             await user.save();
         } else if (content.type == 'delete') {
-            await user.deleteOne({$and: content.data});
+            await user_schema.deleteOne({$and: content.data}).exec();
         } else {
             await user_schema.findOneAndUpdate({_id: content.data._id}, content.data.new_data, {upsert: true}).exec();
         }

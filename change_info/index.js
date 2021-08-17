@@ -74,9 +74,9 @@ app.post('/events', async (req, res) => {
         const user = await new User(content.data);
         await user.save();
     } else if (content.type == 'delete') {
-        //await user.deleteOne({$and: content.data});
+        await User.deleteOne({$and: content.data}).exec();
     } else {
-        await User.findOneAndUpdate({_id: content.data._id}, content.data, {upsert: true});
+        await User.findOneAndUpdate({_id: content.data._id}, content.data, {upsert: true}).exec();
     }
     res.send(true);
 });

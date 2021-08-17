@@ -1,24 +1,10 @@
-const express = require("express");
+const express = require('express');
 const app = express();
-const mongoose = require("mongoose");
-const fs = require("fs")
+const axios = require('axios');
+const fs = require('fs');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
-const user_chat_schema = require("./models/user_chat_schema");
-
-const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/create_chat?retryWrites=true&w=majority";
-
-try {
-    mongoose.connect(
-        mongoAtlasUri,
-        { useNewUrlParser: true, useUnifiedTopology: true },
-        () => console.log("Mongoose is connected")
-    );
-} catch (e) {
-    console.log("could not connect");
-}
 
 app.post("/create_chat", async (req, res) => {
     const sender_id = req.body.sender_id;
@@ -62,8 +48,13 @@ app.post("/create_chat", async (req, res) => {
 
     console.log(members);
 
-    await user_chat_schema.insertMany(members);
-
+    await axios.post('http://event_bus:3000/events', {
+        service: "create_chat", 
+        collection: "user_chat", 
+        type: "insert", 
+        data: members
+    });
+    
     res.json({ chat_id: chat_id });
 });
 

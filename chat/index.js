@@ -2,8 +2,7 @@ const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
-const user_schema = require("./models/user_schema");
-const user_chat_schema = require("./models/user_chat_schema");
+
 const io = require("socket.io")({
 	path: "/node2/socket.io",
 	transports: ["polling", "websocket"]
@@ -20,6 +19,9 @@ try {
 } catch (e) {
 	console.log("could not connect");
 }
+
+const user_schema = require("./models/user_schema");
+const user_chat_schema = require("./models/user_chat_schema");
 
 const schema = new Schema({
 	user_id: {
@@ -59,6 +61,7 @@ app.use('/chat/public', express.static(`${__dirname}/public`));
 app.set('views', './views')
 app.set('view engine', 'ejs')
 
+app.use(express.json({limit: '200mb'}));
 app.use(express.urlencoded({ extended: false }));
 
 var users = {};
@@ -72,6 +75,43 @@ app.post('/chat', function (req, res) {
 		avatar: req.body.avatar, 
 		user_id: req.body.user_id 
 	});
+});
+
+app.post('/events', async (req, res) => {
+    const content = req.body;
+    console.log(content);
+    if (content.collection == 'users') {
+        if (content.type == 'insert') {
+            const user = await new user_schema(content.data);
+            await user.save();
+        } else if (content.type == 'delete') {
+            await user_schema.deleteOne({$and: content.data}).exec();
+        } else {
+            await user_schema.findOneAndUpdate({_id: content.data._id}, content.data.new_data, {upsert: true}).exec();
+        }
+    } else {
+		if (content.type == 'insert') {
+			await user_chat_schema.insertMany(content.data);
+		} else if (content.type == 'delete') {
+			await user_chat_schema.deleteOne({$and: content.data});
+
+			if (content.data.length == 1) {
+				var collections = await mongoose.connection.db.listCollections().toArray();
+				for (i = 0; i < collections.length; i++) {
+					console.log(collections[i].name);
+					if (collections[i].name == content.data[0].chat_id) {
+						await mongoose.connection.db.dropCollection(content.data[0].chat_id);
+						console.log("HI");
+						break;
+					}
+				}
+			}
+
+		} else {
+			
+		}
+    }
+    res.send(true);
 });
 
 io.sockets.on('connection', function (socket) {
