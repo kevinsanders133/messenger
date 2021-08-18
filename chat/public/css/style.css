@@ -350,6 +350,7 @@ aside {
     flex-direction: column;
     background-color: rgb(21, 151, 226);
     border-radius: 40px;
+    margin-bottom: 10px;
 }
 
 #avatar {

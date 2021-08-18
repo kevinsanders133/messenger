@@ -48,7 +48,6 @@ socket.on('create-chat', function (name, chat_id) {
 				<input name="user_id" type="hidden" value="null">
 				<p>${name}</p>
 				<button type="submit">${name}</button>
-				<input type="button" value="Delete" class="deleteChat">
 			</form>
 		</li>
 		`

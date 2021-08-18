@@ -63,7 +63,9 @@
 							<% } %>
 							<p><%= eachChat.chat_name %></p>
 							<button type="submit"></button>
-							<input type="button" value="Delete" class="deleteChat">
+							<% if (eachChat.chat_id.split("_")[0] == "private" || eachChat.admin == true) { %>
+								<input type="button" value="Delete" class="deleteChat">
+							<% } %>
 						</form>
 					</li>
 				<% }) %>

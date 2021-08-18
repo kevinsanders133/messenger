@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
 const axios = require("axios");
+const { randomBytes } = require("crypto");
 const cors = require('cors');
 const app = express();
 const fs = require("fs");
@@ -69,7 +70,7 @@ app.post('/email_confirmation', async (req, res) => {
   
 app.post('/registration', async (req, res) => {
 
-    const tag = await User.countDocuments({ nickname: req.body.nickname_signup }) + 1;
+    const tag = randomBytes(3).toString("hex").toUpperCase();
 
     const user = await new User({
         nickname: req.body.nickname_signup,
