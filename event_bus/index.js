@@ -16,16 +16,19 @@ const services = [
                     {name: 'chat', dbs: ["users", "user_chat"]} // users user_chat
                 ];
 
-app.post('/events', (req, res) => {
-    console.log("HI, i'm there");
+app.post('/events', async (req, res) => {
     const content = req.body;
+    console.log(content);
     const temp = services.map(e => {return e});
-    console.log(temp);
     const index = temp.map(e => e.name).indexOf(content.service);
-    temp.splice(index, 1);
+    if (index > -1) {
+        temp.splice(index, 1);
+    }
+    console.log(temp);
     for (var i = 0; i < temp.length; i++) {
-        if (temp[i].dbs.includes(content.collection)) {
-            axios.post(`http://${temp[i].name}:3000/events`, {
+        if (temp[i].dbs.includes(content.collection) || 
+            (content.collection != 'users' && content.collection != 'user_chat' && temp[i].name == 'chat')) {
+            await axios.post(`http://${temp[i].name}:3000/events`, {
                 collection: content.collection,    
                 type: content.type,
                 data: content.data

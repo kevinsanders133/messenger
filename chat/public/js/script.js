@@ -315,11 +315,25 @@ socket.on('updateAvatar', function (data) {
 });
 
 $(function(){
-	$('#send-message-button').click( function() {
+	$('#send-message-button').click( async function() {
 		var message = $('#data').val();
 		$('#data').val('');
-		// tell server to execute 'sendchat' and send along one parameter
-		socket.emit('sendchat', "text", message, _id, nickname);
+
+		var object = await axios.post('/send_message', {
+			service: "chat", 
+			collection: roomName, 
+			type: "insert", 
+			data: {
+				type: "text",
+				message: message,
+				user_id: _id,
+				sender_nickname: nickname
+			}
+		});
+
+		console.log(object.data);
+
+		await socket.emit('sendchat', object.data);
 	});
 	$('#data').keypress(function(e) {
 		if(e.which == 13) {

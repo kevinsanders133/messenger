@@ -91,13 +91,11 @@ app.get('/main_page', async function (req, res) {
 					private_chats[i]["avatar"] = file;
 				});
 				private_chats[i]["user_id"] = friends[i]["user_id"];
-				console.log(private_chats[i]);
 			}
 		}
 	}
 
 	chats = private_chats.concat(group_chats);
-	console.log(chats);
 
 	res.render('index', {   
 		chats: chats, 

@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
+const axios = require('axios');
 
 const io = require("socket.io")({
 	path: "/node2/socket.io",
@@ -79,7 +80,8 @@ app.post('/chat', function (req, res) {
 
 app.post('/events', async (req, res) => {
     const content = req.body;
-    console.log(content);
+	console.log("events");
+    console.log(content + "   /events");
     if (content.collection == 'users') {
         if (content.type == 'insert') {
             const user = await new user_schema(content.data);
@@ -89,7 +91,7 @@ app.post('/events', async (req, res) => {
         } else {
             await user_schema.findOneAndUpdate({_id: content.data._id}, content.data.new_data, {upsert: true}).exec();
         }
-    } else {
+    } else if (content.collection == 'user_chat') {
 		if (content.type == 'insert') {
 			await user_chat_schema.insertMany(content.data);
 		} else if (content.type == 'delete') {
@@ -109,7 +111,13 @@ app.post('/events', async (req, res) => {
 		} else {
 			
 		}
-    }
+    } else {
+		let chat_schema = mongoose.model(content.collection, schema, content.collection);
+		
+		let record = await new chat_schema(content.data);
+
+		await record.save();
+	}
     res.send(true);
 });
 
@@ -171,31 +179,9 @@ io.sockets.on('connection', function (socket) {
 		}
 	});
 	
-	socket.on('sendchat', async function (type, message, user_id, sender_nickname) {
-
-		console.log(type, message, user_id, sender_nickname);
-
-		let chat_schema = mongoose.model(socket.room, schema, socket.room);
-		
-		let record = await new chat_schema({
-			user_id: user_id,
-			nickname: sender_nickname,
-			type: type,
-			content: message,
-		});
-
-		await record.save();
-
-		let object = [{
-			user_id: user_id,
-			nickname: sender_nickname,
-			type: type,
-			content: message,
-		}];
-
-		console.log("I'm here");
-		console.log(socket.room);
-		
+	socket.on('sendchat', async function (object) {
+		console.log("sendchat");
+		console.log(object);
 		await io.sockets.in(socket.room).emit('updatechat', object, socket.room.split("_")[0]);
 	});
 	

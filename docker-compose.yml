@@ -72,23 +72,27 @@ services:
         volumes: 
             - ./main_page/uploads:/src/uploads
 
+    send_message:
+        build: './send_message'
+        ports:
+            - "3011:3000"
+
     send_files:
         build: './send_files'
         ports:
-            - "3011:3000"
+            - "3012:3000"
         volumes:
             - ./main_page/uploads:/src/uploads
 
     change_members:
         build: './change_members'
         ports:
-            - "3012:3000"
+            - "3013:3000"
 
     event_bus:
         build: './event_bus'
         ports:
-            - "3013:3000"
-
+            - "3014:3000"
 
     nginx:
         image: nginx:latest
@@ -108,6 +112,7 @@ services:
             - delete_chat
             - change_info
             - chat
+            - send_message
             - send_files
             - change_members
             - event_bus
