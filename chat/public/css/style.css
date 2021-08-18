@@ -31,6 +31,21 @@ header {
     margin-left: 10px;
 }
 
+.back-link {
+    text-decoration: none;
+    color:rgb(21, 151, 226);
+    align-self: center;
+}
+
+.back-link:hover {
+    color: yellow;
+}
+
+.back-link:active {
+    color: yellow;
+    transform: scale(1.1);
+}
+
 /*----------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------
@@ -375,6 +390,12 @@ aside {
     width: 50px;
     border-radius: 10px;
     font-family: sans-serif;
+}
+
+.leave-chat {
+    color: red;
+    font-family: sans-serif;
+    text-decoration: none;
 }
 
 .menu {

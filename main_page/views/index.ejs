@@ -50,6 +50,7 @@
 						<form action="/chat" method="POST" class="chat">
 							<input name="_id" type="hidden" value="<%= _id %>">
 							<input name="nickname" type="hidden" value="<%= nickname %>">
+							<input name="tag" type="hidden" value="<%= tag %>">
 							<input name="chat" type="hidden" value="<%= eachChat.chat_id %>">
 							<input name="avatar" type="hidden" value="<%= eachChat.avatar %>">
 							<input name="chat_name" type="hidden" value="<%= eachChat.chat_name %>">
@@ -95,6 +96,7 @@
 	const _id = "<%= _id %>";
 	const avatar = "<%= avatar %>";
     const nickname = "<%= nickname %>"; 
+	const tag = "<%= tag %>"; 
 </script>
 <script src="/main_page/public/js/script.js"></script>
 

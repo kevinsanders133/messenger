@@ -74,7 +74,8 @@ app.post('/chat', function (req, res) {
 		nickname: req.body.nickname,
 		_id: req.body._id, 
 		avatar: req.body.avatar, 
-		user_id: req.body.user_id 
+		user_id: req.body.user_id,
+		tag: req.body.tag
 	});
 });
 

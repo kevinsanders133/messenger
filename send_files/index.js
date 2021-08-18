@@ -24,7 +24,7 @@ app.post('/send_files', (req, res) => {
         }
     });
        
-    var upload = multer({ storage: storage }).array("myFile", 10);
+    var upload = multer({ storage: storage }).array("myFile", 50);
 
     upload(req, res, function (err) {
         if (err instanceof multer.MulterError) {

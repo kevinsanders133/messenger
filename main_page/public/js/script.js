@@ -14,6 +14,7 @@ socket.on('recieveFriendRequest', function (reciever_id, reciever_nickname, avat
 			<form action="/chat" method="POST" class="chat">
 				<input name="_id" type="hidden" value="${_id}">
 				<input name="nickname" type="hidden" value="${nickname}">
+				<input name="tag" type="hidden" value="${tag}">
 				<input name="chat" type="hidden" value="${chat_id}">
 				<input name="avatar" type="hidden" value="${avatar}">
 				<input name="chat_name" type="hidden" value=${reciever_nickname}>
@@ -39,6 +40,7 @@ socket.on('create-chat', function (name, chat_id) {
 			<form action="/chat" method="POST" class="chat">
 				<input name="_id" type="hidden" value="${_id}">
 				<input name="nickname" type="hidden" value="${nickname}">
+				<input name="tag" type="hidden" value="${tag}">
 				<input name="chat" type="hidden" value="${chat_id}">
 				<input name="avatar" type="hidden" value="no-avatar.png">
 				<input name="chat_name" type="hidden" value=${name}>
@@ -136,6 +138,7 @@ document.querySelector(".addFriendSubmit").addEventListener("click", function (e
 					<form action="/chat" method="POST" class="chat">
 						<input name="_id" type="hidden" value="${_id}">
 						<input name="nickname" type="hidden" value="${nickname}">
+						<input name="tag" type="hidden" value="${tag}">
 						<input name="chat" type="hidden" value="${response.chat_id}">
 						<input name="avatar" type="hidden" value="${response.avatar}">
 						<input name="chat_name" type="hidden" value=${reciever_nickname}>
@@ -191,6 +194,7 @@ document.querySelector(".create-chat-submit").addEventListener("click", function
 				<form action="/chat" method="POST" class="chat">
 					<input name="_id" type="hidden" value="${_id}">
 					<input name="nickname" type="hidden" value="${nickname}">
+					<input name="tag" type="hidden" value="${tag}">
 					<input name="chat" type="hidden" value="${response.chat_id}">
 					<input name="avatar" type="hidden" value="no-avatar.png">
 					<input name="chat_name" type="hidden" value=${name}>

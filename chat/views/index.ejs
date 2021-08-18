@@ -9,10 +9,12 @@
 </head>
 
 <body>
+
     <div class="body-container">
         
         <header>
             <img id="logo" src="/chat/public/img/libchat2.png">
+            <a href="/main_page?id=<%= _id %>" class="back-link">Back</a>
         </header>
         <main>
             <div id="conversation"></div>
@@ -70,6 +72,7 @@
                 <input type="file" class="avatar_input">
                 <input type="button" id="upload_avatar" value="Set" onclick="uploadAvatar()">
             </div>
+            
             <% } %>
 
             <h3 id="nickname"><%= chat_name %></h3>
@@ -97,6 +100,7 @@
     const avatar = "<%= avatar %>";
     const user_id = "<%= user_id %>";
     const _id = "<%= _id %>";
+    const tag = "<%= tag %>";
 </script>
 <script src="/node2/socket.io/socket.io.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>

@@ -17,6 +17,7 @@ let menu_images = document.querySelector("#menu-images");
 let menu_files = document.querySelector("#menu-files");
 let images_container = document.querySelector("#images-container");
 let files_container = document.querySelector("#files-container");
+let leave_chat = document.querySelector(".leave-chat");
 
 window.onload = () => {
 	files_container.style["display"] = "none";
@@ -138,15 +139,19 @@ socket.on('load-members', function(members, friends, admin) {
 
 socket.on("removeMember", member => {
 	console.log(member);
-	$(`#members-container input[name="id"][value="${member.id}"]`).parent().remove();
-	if (isAdmin == true) {
-		$("#change-members").prepend(`
-			<div class="friend-checkbox">
-				<input type="checkbox" name="user_id" value="${member.id}">
-				<input type="hidden" name="user_nickname" value="${member.nickname}">
-				<input type="hidden" name="user_tag" value="${member.tag}">
-				<span class="friend">${member.nickname}${member.tag}</span>
-			</div>`);
+	if (member.id == _id) {
+		window.location.replace(`/main_page?id=${_id}`);
+	} else {
+		$(`#members-container input[name="id"][value="${member.id}"]`).parent().remove();
+		if (isAdmin == true) {
+			$("#change-members").prepend(`
+				<div class="friend-checkbox">
+					<input type="checkbox" name="user_id" value="${member.id}">
+					<input type="hidden" name="user_nickname" value="${member.nickname}">
+					<input type="hidden" name="user_tag" value="${member.tag}">
+					<span class="friend">${member.nickname}${member.tag}</span>
+				</div>`);
+		}
 	}
 });
 
@@ -389,10 +394,22 @@ function uploadFiles() {
 				}
 			}
 			if (images !== "") {
-				socket.emit('sendchat', "image", images, _id, nickname);
+				let object = [{
+					user_id: _id,
+					nickname: nickname,
+					type: "image",
+					content: images
+				}];
+				socket.emit('sendchat', object);
 			}
 			if (others !== "") {
-				socket.emit('sendchat', "other", others, _id, nickname);
+				let object = [{
+					user_id: _id,
+					nickname: nickname,
+					type: "other",
+					content: images
+				}];
+				socket.emit('sendchat', object);
 			}
 		}
 	})
@@ -427,3 +444,16 @@ function uploadAvatar() {
 		console.log(err)
 	})
 };
+
+if (leave_chat != null) {
+	leave_chat.addEventListener('click', async (e) => {
+		e.preventDefault();
+	
+		await axios.post('/change_members_delete', {
+			member: _id,
+			chat_id: roomName
+		});
+	
+		await socket.emit('sendDeleteMember', {id: _id, nickname: nickname, tag: tag});
+	});
+}
