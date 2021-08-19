@@ -17,6 +17,12 @@ body {
     background-color: rgb(21, 151, 226);
     place-items: center;
 }
+.logo {
+    margin: 0 auto;
+    border-radius: 20px;
+    width: 400px;
+    height: 156px;
+}
 .form__title {
     font-weight: 300;
     margin: 0;
@@ -38,6 +44,7 @@ body {
     overflow: hidden;
     position: relative;
     width: 100%;
+    margin-bottom: 90px;
 }
 .container__form {
     height: 100%;
