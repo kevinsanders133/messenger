@@ -281,7 +281,7 @@ socket.on('updatechat', function (messages, type) {
 			}
 			for (var i = 0; i < images.length - 1; i++) {
 				elements_to_append += `<img src="${images[i]}" class="uploaded-image">\n`;
-				images_container += `<img src="${images[i]}" class="images-container-image">\n`;
+				images_container += `<a href="${images[i]}" target="_blank" download><img src="${images[i]}" class="images-container-image"></a>\n`;
 			}
 			elements_to_append += `</div>\n</div>`;
 			$("#images-container").append(images_container);
@@ -364,16 +364,16 @@ function uploadFiles() {
 		}
 	}
 
-	var myFile = document.querySelector(".files").files
-	var formData = new FormData()
+	var myFile = document.querySelector(".files").files;
+	var formData = new FormData();
 		
 	for (var i = 0; i < myFile.length; i++) {
-		formData.append("myFile", myFile[i])
+		formData.append("myFile", myFile[i]);
 	}
 
-	axios.post("/send_files?chatName=" + roomName + "&nickname=" + nickname, formData, config)
-	.then(function (res) {
-		console.log(res)
+	axios.post(`/send_files?chat_name=${roomName}`, formData, config)
+	.then(async res => {
+		console.log(res);
 		if (res.status == 200) {
 			let images = "";
 			let others = "";
@@ -393,29 +393,36 @@ function uploadFiles() {
 					}
 				}
 			}
+
+			var messages = [];
 			if (images !== "") {
-				let object = [{
-					user_id: _id,
-					nickname: nickname,
+				messages.push({
 					type: "image",
-					content: images
-				}];
-				socket.emit('sendchat', object);
+					content: images,
+					user_id: _id,
+					nickname: nickname
+				});
 			}
 			if (others !== "") {
-				let object = [{
-					user_id: _id,
-					nickname: nickname,
+				messages.push({
 					type: "other",
-					content: images
-				}];
-				socket.emit('sendchat', object);
+					content: others,
+					user_id: _id,
+					nickname: nickname
+				});
 			}
+			await axios.post('/send_files_info', {
+				service: "chat", 
+				collection: roomName, 
+				type: "insert", 
+				data: messages
+			});
+			await socket.emit('sendchat', messages);
 		}
 	})
 	.catch(function (err) {
 		console.log(err)
-	})
+	});
 };
 
 

@@ -131,7 +131,7 @@ app.post('/events', async (req, res) => {
         if (content.type == 'insert') {
             await user_chat_schema.insertMany(content.data);
         } else if (content.type == 'delete') {
-            await user_chat_schema.deleteOne({$and: content.data});
+            await user_chat_schema.deleteMany({$and: content.data});
         } else {
             
         }

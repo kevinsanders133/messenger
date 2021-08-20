@@ -96,7 +96,7 @@ app.post('/events', async (req, res) => {
 		if (content.type == 'insert') {
 			await user_chat_schema.insertMany(content.data);
 		} else if (content.type == 'delete') {
-			await user_chat_schema.deleteOne({$and: content.data});
+			await user_chat_schema.deleteMany({$and: content.data});
 
 			if (content.data.length == 1) {
 				var collections = await mongoose.connection.db.listCollections().toArray();
@@ -119,6 +119,7 @@ app.post('/events', async (req, res) => {
 
 		await record.save();
 	}
+	console.log("end");
     res.send(true);
 });
 
@@ -128,6 +129,7 @@ io.sockets.on('connection', function (socket) {
 		
 		socket.room = roomName;
 		users[id] = socket.id;
+		console.log(roomName);
 
 		await socket.join(roomName);
 

@@ -27,9 +27,13 @@ socket.on('recieveFriendRequest', function (reciever_id, reciever_nickname, avat
 		</li>
 		`
 	);
-	$('form[name="create-chat"]').append(
-		`<input type="checkbox" name="reciever_id" value="${reciever_id}">
-		<span id="${reciever_id}">${reciever_nickname}</span><br>`
+	$('.checkboxes').append(
+		`
+		<div>
+			<input type="checkbox" name="reciever_id" value="${reciever_id}">
+			<span id="${reciever_id}">${reciever_nickname}${tag}</span>
+		</div>
+		`
 	);
 });
 
@@ -154,7 +158,7 @@ document.querySelector(".addFriendSubmit").addEventListener("click", function (e
 				`
 				<div>
 					<input type="checkbox" name="reciever_id" value="${response.reciever_id}">
-					<span id="${response.reciever_id}">${reciever_nickname}</span>
+					<span id="${response.reciever_id}">${reciever_nickname}${tag}</span>
 				</div>
 				`
 			);
