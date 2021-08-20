@@ -150,7 +150,7 @@ document.querySelector(".addFriendSubmit").addEventListener("click", function (e
 				</li>
 				`
 			);
-			$('form[name="create-chat"]').prepend(
+			$('.checkboxes').append(
 				`
 				<div>
 					<input type="checkbox" name="reciever_id" value="${response.reciever_id}">

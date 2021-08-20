@@ -19,23 +19,23 @@
 		<a href="/" id="log-out">Log out</a>
 
 		<h3 id="add-friend-label">Add friend</h3>
-		<form name="addFriend">
-			<label for="reciever_nickname">Nickname</label>
-			<input type="text" placeholder="user_12345" name="reciever_nickname"><br>
-			<label for="reciever_tag">Tag</label>
-			<input type="text" placeholder="#000000" name="reciever_tag"><br>
+		<form name="addFriend" class="form">
+			<input type="text" placeholder="Nickname" name="reciever_nickname" class="input">
+			<input type="text" placeholder="Tag: #000000" name="reciever_tag" class="input">
 			<input type="submit" value="Add" class="addFriendSubmit">
 		</form>
 		
 		<h3 id="create-chat-label">Create chat</h3>
-		<form name="create-chat">
-			<input type="text" name="name" placeholder="Name of a chat">
+		<form name="create-chat" class="form">
+			<input type="text" name="name" placeholder="Name of a chat" class="input">
+			<div class="checkboxes">
 			<% friends.forEach(function( eachChat ){ %>
 				<div>
 					<input type="checkbox" name="reciever_id" value="<%= eachChat.user_id %>">
 					<span id="<%= eachChat.user_id %>"><%= eachChat.chat_name %></span>
 				</div>
 			<% }) %>
+			</div>
 			<input type="hidden" value="<%= _id %>" name="sender_id">
 			<input type="submit" value="Create" class="create-chat-submit">
 		</form>
@@ -85,7 +85,7 @@
 
 		<form action="/change_info_form" method="POST">
 			<input type="hidden" name="id" value="<%= _id %>">
-			<input type="submit" id="change" value="Change personal information">
+			<button type="submit" id="change">Change personal information</button>
 		</form>
 	</aside>
 </div>

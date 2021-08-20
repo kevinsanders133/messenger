@@ -1,5 +1,5 @@
 :root {
-    --white: #e9e9e9;
+    --white: #ffff;
     --gray: #333;
     --blue: #0367a6;
     --lightblue: #008997;
@@ -105,7 +105,7 @@ body {
 }
 
 .overlay {
-    background-color: var(--lightblue);
+    background-color: var(--white);
     background: url('../img/background.jpg');
     background-attachment: fixed;
     background-position: center;
@@ -163,10 +163,10 @@ body {
 }
 
 .btn {
-    background-color: var(--blue);
-    background-image: linear-gradient(90deg, var(--blue) 0%, var(--lightblue) 74%);
+    background-color: rgb(21, 151, 226);
+    background-image: linear-gradient(90deg, rgb(21, 151, 226) 0%, rgb(43, 174, 250) 74%);
     border-radius: 20px;
-    border: 1px solid var(--blue);
+    border: 1px solid rgb(21, 151, 226);;
     color: var(--white);
     cursor: pointer;
     font-size: 0.8rem;
@@ -186,7 +186,7 @@ body {
     outline: none;
 }
 .input {
-    background-color: #fff;
+    background-color: #e9e9e9;
     border: none;
     padding: 0.9rem 0.9rem;
     margin: 0.5rem 0;
