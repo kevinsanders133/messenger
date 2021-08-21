@@ -248,12 +248,24 @@ footer {
     transition: opacity 500ms;
     visibility: hidden;
     opacity: 0;
-  }
-  .overlay:target {
+}
+.overlay:target {
     visibility: visible;
     opacity: 1;
-  }
-  
+}
+
+.overlay-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.chosen-files {
+    padding: 5px;
+    width: 200px;
+    text-overflow: ellipsis;
+    height: 150px;
+    overflow-y: auto;
+}
 
 .overlay-container {
     margin: 70px auto;

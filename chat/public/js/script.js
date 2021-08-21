@@ -18,6 +18,9 @@ let menu_files = document.querySelector("#menu-files");
 let images_container = document.querySelector("#images-container");
 let files_container = document.querySelector("#files-container");
 let leave_chat = document.querySelector(".leave-chat");
+let chosen_files = document.querySelector(".chosen-files");
+let progress_bar_text = document.querySelector(".progress-bar-text");
+let progress_bar_fill = document.querySelector(".progress-bar-fill");
 
 window.onload = () => {
 	files_container.style["display"] = "none";
@@ -31,17 +34,27 @@ let add_member_image;
 let isAdmin = false;
 
 let conversation = document.getElementById("conversation");
-conversation.scrollTop = conversation.scrollHeight;
 
 files_input.addEventListener("change", () => {
-    overlay_1.style["visibility"] = "visible";
-    overlay_1.style["opacity"] = "1";
+	const files = files_input.files;
+	console.log(files);
+	for (obj in files) {
+		console.log(files[obj]);
+		if (files[obj].name && files[obj].name != 'item') {
+			chosen_files.innerHTML += `<li>${files[obj].name}</li>\n`;
+		}
+	}
+	console.log(chosen_files.innerHTML);
+	overlay_1.style["visibility"] = "visible";
+	overlay_1.style["opacity"] = "1";
 });
 
 close_1.addEventListener("click", () => {
     overlay_1.style.removeProperty("visibility");
     overlay_1.style.removeProperty("opacity");
     files_input.value = "";
+	progress_bar_fill.style.width = "0%";
+	progress_bar_text.innerHTML = "0%";
 });
 
 data.addEventListener("keyup", checkIfEmpty);
@@ -280,7 +293,7 @@ socket.on('updatechat', function (messages, type) {
 				elements_to_append += `<div class="left-image-container image-container">`;
 			}
 			for (var i = 0; i < images.length - 1; i++) {
-				elements_to_append += `<img src="${images[i]}" class="uploaded-image">\n`;
+				elements_to_append += `<a href="${images[i]}" target="_blank" download><img src="${images[i]}" class="uploaded-image"></a>\n`;
 				images_container += `<a href="${images[i]}" target="_blank" download><img src="${images[i]}" class="images-container-image"></a>\n`;
 			}
 			elements_to_append += `</div>\n</div>`;
@@ -309,6 +322,7 @@ socket.on('updatechat', function (messages, type) {
 		}
 	});
 	$('#conversation').append(elements_to_append);
+	conversation.scrollTop = conversation.scrollHeight;
 });
 
 
