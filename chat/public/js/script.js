@@ -325,8 +325,6 @@ socket.on('updatechat', function (messages, type) {
 	conversation.scrollTop = conversation.scrollHeight;
 });
 
-
-
 socket.on('updateAvatar', function (data) {
 	console.log(data);
 	$('#avatar').remove();

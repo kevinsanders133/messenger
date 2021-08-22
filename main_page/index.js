@@ -1,7 +1,7 @@
-const express = require('express')
-const app = express()
-const mongoose = require('mongoose')
-const fs = require('fs')
+const express = require('express');
+const app = express();
+const mongoose = require('mongoose');
+const fs = require('fs');
 
 const io = require("socket.io")({
 	path: "/node1/socket.io",
