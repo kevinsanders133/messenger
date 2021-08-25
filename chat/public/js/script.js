@@ -177,7 +177,7 @@ function deleteMember(e) {
 	let member_nickname = form.querySelector('input[name="nickname"]').value;
 	let member_tag = form.querySelector('input[name="tag"]').value;
 	let data = JSON.stringify({
-		member: member_id,
+		member_id: member_id,
 		chat_id: roomName
 	});
 	let request = new XMLHttpRequest();
@@ -469,7 +469,7 @@ if (leave_chat != null) {
 		e.preventDefault();
 	
 		await axios.post('/change_members_delete', {
-			member: _id,
+			member_id: _id,
 			chat_id: roomName
 		});
 	

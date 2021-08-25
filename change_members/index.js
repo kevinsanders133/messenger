@@ -6,6 +6,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.post("/change_members_delete", async (req, res) => {
+    console.log(req.body);
     const member_id = req.body.member_id;
     const chat_id = req.body.chat_id;
 

@@ -190,7 +190,7 @@ io.sockets.on('connection', function (socket) {
 	
 	socket.on('sendDeleteMember', async function(member) {
 		console.log("sendDeleteMember");
-		await io.to(users[member.id]).emit("disconnectOrder");
+		//await io.to(users[member.id]).emit("disconnectOrder");
 		await io.sockets.in(socket.room).emit("removeMember", member);
 	});
 

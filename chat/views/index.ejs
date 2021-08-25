@@ -15,6 +15,9 @@
         <header>
             <img id="logo" src="/chat/public/img/libchat2.png">
             <a href="/main_page?id=<%= _id %>" class="back-link">Back</a>
+            <% if (roomName.split("_")[0] == "group") { %>
+                <a class="leave-chat">Leave</a>
+            <% } %>
         </header>
         <main>
             <div id="conversation"></div>

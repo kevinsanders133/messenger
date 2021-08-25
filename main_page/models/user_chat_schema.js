@@ -6,6 +6,10 @@ const schema = new Schema({
 		type: String,
 		required: true
 	},
+	admin: {
+		type: Boolean,
+		required: false
+	},
 	chat_id: {
 		type: String,
 		required: true

@@ -10,6 +10,25 @@ body {
     background-color: rgb(21, 151, 226);
     display: flex;
     justify-content: center;
+    font-family: sans-serif;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+    height: auto;
+}
+  
+/* Track */
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: rgb(233, 232, 232);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgb(204, 202, 202);
+    border-radius: 10px;
 }
 
 /*----------------------------------------------------------------------------------------------------------
@@ -23,6 +42,8 @@ header {
     background-color: rgb(255, 255, 255);
     border-top-left-radius: 10px;
     border-bottom: solid rgb(21, 151, 226);
+    display: flex;
+    align-items: center;
 }
 
 #logo {
@@ -32,18 +53,31 @@ header {
 }
 
 .back-link {
-    text-decoration: none;
     color:rgb(21, 151, 226);
-    align-self: center;
+    text-decoration: none;
+    margin-top: 6px;
+    margin-left: 5px;
 }
 
 .back-link:hover {
-    color: yellow;
+    color: rgb(89, 190, 248);
 }
 
 .back-link:active {
-    color: yellow;
-    transform: scale(1.1);
+    color: rgb(89, 190, 248);
+    transform: scale(1.05);
+}
+
+.leave-chat {
+    color: red;
+    text-decoration: none;
+    margin-left: 470px;
+    margin-top: 6px;
+    cursor: pointer;
+}
+
+.back-link:active {
+    transform: scale(1.05);
 }
 
 /*----------------------------------------------------------------------------------------------------------
@@ -85,26 +119,6 @@ main {
     margin-left: 63px;
     margin-top: 5px;
 }
-
-/* scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll */
-/* width */
-#conversation::-webkit-scrollbar {
-    width: 10px;
-    height: auto;
-}
-  
-/* Track */
-#conversation::-webkit-scrollbar-track {
-    border-radius: 10px;
-    background-color: rgb(255, 255, 255);
-}
-
-/* Handle */
-#conversation::-webkit-scrollbar-thumb {
-    background: rgb(204, 202, 202);
-    border-radius: 10px;
-}
-/* scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll */
 
 .left-groupchat-message-container {
     display: flex;
@@ -452,26 +466,6 @@ aside {
     object-fit: cover;
 }
 
-/* scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll */
-/* width */
-#images-container::-webkit-scrollbar {
-    width: 10px;
-    height: auto;
-}
-  
-/* Track */
-#images-container::-webkit-scrollbar-track {
-    border-radius: 10px;
-    background-color: rgb(255, 255, 255);
-}
-
-/* Handle */
-#images-container::-webkit-scrollbar-thumb {
-    background: rgb(204, 202, 202);
-    border-radius: 10px;
-}
-/* scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll */
-
 #files-container {
     display: flex;
     flex-direction: column;
@@ -495,26 +489,6 @@ aside {
     margin-top: 5px;
     margin-bottom: 5px;
 }
-
-/* scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll */
-/* width */
-#files-container::-webkit-scrollbar {
-    width: 10px;
-    height: auto;
-}
-  
-/* Track */
-#files-container::-webkit-scrollbar-track {
-    border-radius: 10px;
-    background-color: rgb(255, 255, 255);
-}
-
-/* Handle */
-#files-container::-webkit-scrollbar-thumb {
-    background: rgb(204, 202, 202);
-    border-radius: 10px;
-}
-/* scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll */
 
 #members-container {
     display: none;
@@ -582,43 +556,3 @@ aside {
     margin-left: 10px;
     font-family: sans-serif;
 }
-
-/* scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll */
-/* width */
-#change-members::-webkit-scrollbar {
-    width: 10px;
-    height: auto;
-}
-  
-/* Track */
-#change-members::-webkit-scrollbar-track {
-    border-radius: 10px;
-    background-color: rgb(255, 255, 255);
-}
-
-/* Handle */
-#change-members::-webkit-scrollbar-thumb {
-    background: rgb(204, 202, 202);
-    border-radius: 10px;
-}
-/* scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll */
-
-/* scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll */
-/* width */
-#members-container::-webkit-scrollbar {
-    width: 10px;
-    height: auto;
-}
-  
-/* Track */
-#members-container::-webkit-scrollbar-track {
-    border-radius: 10px;
-    background-color: rgb(255, 255, 255);
-}
-
-/* Handle */
-#members-container::-webkit-scrollbar-thumb {
-    background: rgb(204, 202, 202);
-    border-radius: 10px;
-}
-/* scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll scroll */
