@@ -382,10 +382,10 @@ aside {
 #avatar {
     width: 200px;
     height: 200px;
-    margin: 0 auto;
-    margin-top: 30px;
-    border-radius: 50%;
+    margin: 0px auto;
     object-fit: cover;
+    border-radius: 50%;
+    margin-top: 30px;
 }
 
 #nickname {

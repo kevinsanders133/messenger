@@ -26,6 +26,17 @@ window.onload = () => {
 	files_container.style["display"] = "none";
 }
 
+let file = document.querySelector(".file");
+let label = document.querySelector("#label-for-file");
+file.addEventListener("change", () => {
+    console.log(file.value);
+    if (file.value !== "") {
+        label.style["color"] = "rgb(51, 250, 51)";
+    } else {
+        label.style.removeProperty("color");
+    }
+});
+
 let overlay_2;
 let close_2;
 let menu_members;

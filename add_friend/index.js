@@ -10,7 +10,7 @@ const user_chat_schema = require("./models/user_chat_schema");
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/add_friend?retryWrites=true&w=majority";
+const mongoAtlasUri = process.env.ADD_FRIEND;
 
 try {
     mongoose.connect(

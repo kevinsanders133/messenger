@@ -10,7 +10,7 @@ const user_chat_schema = require("./models/user_chat_schema");
 
 app.use(express.urlencoded({ extended: false }));
 
-const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/delete_chat?retryWrites=true&w=majority";
+const mongoAtlasUri = process.env.DELETE_CHAT;
 
 try {
 	mongoose.connect(

@@ -11,7 +11,7 @@ app.use('views', express.static(__dirname + '/views'));
 
 app.use('/change_info/public', express.static(__dirname + '/public'));
 
-const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/change_info?retryWrites=true&w=majority";
+const mongoAtlasUri = process.env.CHANGE_INFO;
 
 const User = require("./models/User");
 

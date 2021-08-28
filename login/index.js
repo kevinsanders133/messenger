@@ -5,7 +5,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/login?retryWrites=true&w=majority";
+const mongoAtlasUri = process.env.LOGIN;
 
 try {
     mongoose.connect(

@@ -5,7 +5,7 @@ const app = express();
 
 app.use(express.urlencoded({ extended: false }));
 
-const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/send_email?retryWrites=true&w=majority";
+const mongoAtlasUri = process.env.SEND_EMAIL;
 
 try {
     mongoose.connect(
@@ -25,8 +25,8 @@ app.post('/send_email', (req, res) => {
     var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'storytelltom@gmail.com',
-            pass: 'putKuSpeChU2<>'
+            user: process.env.EMAIL,
+            pass: process.env.PASS
         }
     });
       

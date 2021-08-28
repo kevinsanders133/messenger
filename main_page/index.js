@@ -32,7 +32,7 @@ app.use('/main_page/public', express.static(`${__dirname}/public`));
 
 var usernames = {};
 
-const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/main_page?retryWrites=true&w=majority";
+const mongoAtlasUri = process.env.MAIN_PAGE;
 
 try {
 	mongoose.connect(

@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const mongoAtlasUri = "mongodb+srv://kevinsanders:skripka@cluster0.0paig.mongodb.net/registration?retryWrites=true&w=majority";
+const mongoAtlasUri = process.env.REGISTRATION;
 
 try {
 	mongoose.connect(
@@ -36,8 +36,8 @@ app.post('/email_confirmation', async (req, res) => {
         var transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: 'storytelltom@gmail.com',
-                pass: 'putKuSpeChU2<>'
+                user: process.env.EMAIL,
+                pass: process.env.PASS
             }
         });
           

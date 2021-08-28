@@ -10,6 +10,8 @@ services:
         build: './login'
         ports:
             - "3001:3000"
+        env_file: 
+            - "./env/mongodb.env"
 
     registration:
         build: './registration'
@@ -17,11 +19,16 @@ services:
             - "3002:3000"
         volumes: 
             - ./uploads:/src/uploads
+        env_file: 
+            - "./env/mongodb.env"
+            - "./env/email.env"
 
     #send_email:
     #    build: './send_email'
     #    ports:
     #        - "3003:3000"
+    #    env_file:
+    #        - "./env/email.env"
 
     main_page:
         build: './main_page'
@@ -29,6 +36,8 @@ services:
             - "3004:3000"
         volumes: 
             - ./uploads:/src/uploads
+        env_file: 
+            - "./env/mongodb.env"
 
     upload_avatar:
         build: './upload_avatar'
@@ -43,6 +52,8 @@ services:
             - "3006:3000"
         volumes: 
             - ./uploads:/src/uploads
+        env_file: 
+            - "./env/mongodb.env"
 
     create_chat:
         build: './create_chat'
@@ -57,6 +68,8 @@ services:
             - "3008:3000"
         volumes: 
             - ./uploads:/src/uploads
+        env_file: 
+            - "./env/mongodb.env"
 
     change_info:
         build: './change_info'
@@ -64,6 +77,8 @@ services:
             - "3009:3000"
         volumes: 
             - ./change_info/public:/src/public
+        env_file: 
+            - "./env/mongodb.env"
 
     chat:
         build: './chat'
@@ -71,6 +86,8 @@ services:
             - "3010:3000"
         volumes: 
             - ./uploads:/src/uploads
+        env_file: 
+            - "./env/mongodb.env"
 
     send_message:
         build: './send_message'
