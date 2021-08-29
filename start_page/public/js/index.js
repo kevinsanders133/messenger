@@ -4,7 +4,19 @@ const fistForm = document.getElementById('form1');
 const secondForm = document.getElementById('form2');
 const forgotPassword = document.getElementById('forgotPassword')
 const container = document.querySelector('.container');
+const password = document.querySelector('input[name="password_signup"]');
+const password_repeat = document.querySelector('input[name="password_check_signup"]');
 
+function validatePassword(){
+    if(password.value != password_repeat.value) {
+        password_repeat.setCustomValidity("Passwords don't match");
+    } else {
+        password_repeat.setCustomValidity('');
+    }
+  }
+  
+password.onchange = validatePassword;
+password_repeat.onkeyup = validatePassword;
 
 signInBtn.addEventListener("click", () => {
     container.classList.remove('right-panel-active');
