@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const multer = require('multer');
 const axios = require('axios');
+const { randomBytes } = require('crypto');
 
 app.use(express.json({limit: '200mb'}));
 app.use(express.urlencoded({limit: '200mb', extended: false}));
@@ -33,7 +34,7 @@ app.post('/send_files_info', async (req, res) => {
 });
 
 app.post('/send_files', (req, res) => {
-    const milis = String(Date.now());
+    const milis = randomBytes(4).toString("hex");
 
     if (req.query.chat_name.split("_")[0] == "private") {
         var path = `${__dirname}/uploads/privatechats/${req.query.chat_name}/files`;

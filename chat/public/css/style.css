@@ -369,9 +369,9 @@ aside {
 }
 
 #chat-info-container {
-    width: 300px;
-    height: 300px; 
-    margin: 20px auto;
+    max-width: 300px;
+    max-height: 500px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     background-color: rgb(21, 151, 226);
@@ -396,6 +396,7 @@ aside {
 }
 
 #upload-avatar-container {
+    margin-top: 10px;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -502,6 +503,7 @@ aside {
     width: 250px;
     margin: 0 auto;
     margin-top: 10px;
+    padding: 5px;
 }
 
 .members-container-image {

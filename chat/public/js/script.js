@@ -28,14 +28,16 @@ window.onload = () => {
 
 let file = document.querySelector(".avatar_input");
 let label = document.querySelector(".button-avatar");
-file.addEventListener("change", () => {
-    console.log(file.value);
-    if (file.value !== "") {
-        label.style["color"] = "rgb(51, 250, 51)";
-    } else {
-        label.style.removeProperty("color");
-    }
-});
+if (file != null) {
+	file.addEventListener("change", () => {
+		console.log(file.value);
+		if (file.value !== "") {
+			label.style["color"] = "rgb(51, 250, 51)";
+		} else {
+			label.style.removeProperty("color");
+		}
+	});
+}
 
 let overlay_2;
 let close_2;
@@ -304,8 +306,10 @@ socket.on('updatechat', function (messages, type) {
 				elements_to_append += `<div class="left-image-container image-container">`;
 			}
 			for (var i = 0; i < images.length - 1; i++) {
-				elements_to_append += `<a href="${images[i]}" target="_blank" download><img src="${images[i]}" class="uploaded-image"></a>\n`;
-				images_container += `<a href="${images[i]}" target="_blank" download><img src="${images[i]}" class="images-container-image"></a>\n`;
+				let file_name = images[i].split("/")[images[i].split("/").length - 1];
+				let download_name = file_name.slice(8);
+				elements_to_append += `<a href="${images[i]}" target="_blank" download="${download_name}"><img src="${images[i]}" class="uploaded-image"></a>\n`;
+				images_container += `<a href="${images[i]}" target="_blank" download="${download_name}"><img src="${images[i]}" class="images-container-image"></a>\n`;
 			}
 			elements_to_append += `</div>\n</div>`;
 			$("#images-container").append(images_container);
@@ -324,9 +328,10 @@ socket.on('updatechat', function (messages, type) {
 				elements_to_append += `<div class="left-message-container message-container">`;
 			}
 			for (var i = 0; i < others.length - 1; i++) {
-				splited_link = others[i].split("/");
-				elements_to_append += `<a href="${others[i]}" target="_blank">${splited_link[splited_link.length - 1]}</a><br>\n`;
-				files_container += `<a href="${others[i]}" target="_blank" class="files-container-file" download>${splited_link[splited_link.length - 1]}</a>\n`;
+				let file_name = others[i].split("/")[others[i].split("/").length - 1];
+				let download_name = file_name.slice(8);
+				elements_to_append += `<a href="${others[i]}" target="_blank" download="${download_name}">${download_name}</a><br>\n`;
+				files_container += `<a href="${others[i]}" target="_blank" class="files-container-file" download="${download_name}">${download_name}</a>\n`;
 			}
 			elements_to_append += `</div>\n</div>`;
 			$("#files-container").append(files_container);
@@ -467,13 +472,16 @@ function uploadAvatar() {
 		if (res.status == 200) {
 			var name = `/main_page/uploads/groupchats/${roomName}/avatar/${roomName}.png?date=${(+new Date())}`;
 			var image = `<img id="avatar" src="${name}">`;
+			if (label != null) {
+				label.style.removeProperty("color");
+			}
 			socket.emit('changeAvatar', image);
 		}
 	})
 	.catch(function (err) {
 		console.log(err)
 	})
-};
+}
 
 if (leave_chat != null) {
 	leave_chat.addEventListener('click', async (e) => {
