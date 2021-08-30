@@ -26,8 +26,8 @@ window.onload = () => {
 	files_container.style["display"] = "none";
 }
 
-let file = document.querySelector(".file");
-let label = document.querySelector("#label-for-file");
+let file = document.querySelector(".avatar_input");
+let label = document.querySelector(".button-avatar");
 file.addEventListener("change", () => {
     console.log(file.value);
     if (file.value !== "") {
