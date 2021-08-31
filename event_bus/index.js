@@ -7,13 +7,14 @@ app.use(cors());
 app.use(express.json());
 
 const services = [  
-                    {name: 'login', dbs: ["users"]}, // users
-                    {name: 'add_friend', dbs: ["users", "user_chat"]}, // users user_chat
-                    {name: 'change_info', dbs: ["users"]}, // users
-                    {name: 'delete_chat', dbs: ["user_chat"]}, // user_chat
-                    {name: 'main_page', dbs: ["users", "user_chat"]}, // users user_chat
-                    {name: 'registration', dbs: ["users"]}, // users
-                    {name: 'chat', dbs: ["users", "user_chat"]} // users user_chat
+                    {name: 'login', dbs: ["users"]},
+                    {name: 'add_friend', dbs: ["users", "user_chat"]},
+                    {name: 'change_info', dbs: ["users"]},
+                    {name: 'delete_chat', dbs: ["user_chat"]},
+                    {name: 'main_page', dbs: ["users", "user_chat"]},
+                    {name: 'registration', dbs: ["users"]},
+                    {name: 'chat', dbs: ["users", "user_chat"]},
+                    {name: 'forgot_pass', dbs: ["users"]}
                 ];
 
 app.post('/events', async (req, res) => {

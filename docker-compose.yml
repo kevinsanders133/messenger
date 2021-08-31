@@ -23,12 +23,13 @@ services:
             - "./env/mongodb.env"
             - "./env/email.env"
 
-    #send_email:
-    #    build: './send_email'
-    #    ports:
-    #        - "3003:3000"
-    #    env_file:
-    #        - "./env/email.env"
+    forgot_pass:
+        build: './forgot_pass'
+        ports:
+            - "3003:3000"
+        env_file:
+            - "./env/email.env"
+            - "./env/mongodb.env"
 
     main_page:
         build: './main_page'
@@ -121,7 +122,7 @@ services:
             - start_page
             - login
             - registration
-            #- send_email
+            - forgot_pass
             - main_page
             - upload_avatar
             - add_friend

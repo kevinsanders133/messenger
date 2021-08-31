@@ -1,5 +1,5 @@
 {
-  "name": "send_email",
+  "name": "forgot_pass",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",

@@ -42,6 +42,8 @@ app.post('/delete_chat', async function (req, res) {
 
 	var members = await user_chat_schema.find({ user_id: { $ne: _id }, chat_id: chat_id }, '-_id user_id').exec();
 
+    await user_chat_schema.deleteMany({chat_id: chat_id});
+
 	await axios.post('http://event_bus:3000/events', {
         service: "delete_chat", 
         collection: "user_chat", 
