@@ -6,6 +6,7 @@ const { randomBytes } = require("crypto");
 const cors = require('cors');
 const app = express();
 const fs = require("fs");
+const CryptoJS = require("crypto-js");
 
 app.use(cors());
 app.use(express.json());
@@ -94,11 +95,14 @@ app.post('/registration', async (req, res) => {
 
     const tag = randomBytes(3).toString("hex").toUpperCase();
 
+    const passphrase = process.env.PHRASE;
+    const cypher = CryptoJS.AES.encrypt(req.body.password_signup, passphrase).toString();
+
     const user = await new User({
         nickname: req.body.nickname_signup,
         tag: "#" + String(tag),
         email: req.body.email_signup,
-        password: req.body.password_signup
+        password: cypher
     });
 
     await user.save();

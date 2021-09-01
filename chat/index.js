@@ -81,8 +81,7 @@ app.post('/chat', function (req, res) {
 
 app.post('/events', async (req, res) => {
     const content = req.body;
-	console.log("events");
-    console.log(content + "   /events");
+    console.log(content);
     if (content.collection == 'users') {
         if (content.type == 'insert') {
             const user = await new user_schema(content.data);
@@ -119,7 +118,6 @@ app.post('/events', async (req, res) => {
 
 		await record.save();
 	}
-	console.log("end");
     res.send(true);
 });
 

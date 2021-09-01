@@ -29,6 +29,7 @@ app.post('/events', async (req, res) => {
     for (var i = 0; i < temp.length; i++) {
         if (temp[i].dbs.includes(content.collection) || 
             (content.collection != 'users' && content.collection != 'user_chat' && temp[i].name == 'chat')) {
+            console.log(content.type + " --- " + temp[i].name);
             await axios.post(`http://${temp[i].name}:3000/events`, {
                 collection: content.collection,    
                 type: content.type,

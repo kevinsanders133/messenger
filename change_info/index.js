@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const axios = require('axios');
+const CryptoJS = require('crypto-js');
 const app = express();
 
 app.use(express.json());
@@ -36,6 +37,10 @@ app.post('/change_info_form', async (req, res) => {
     var email = user.email;
     var password = user.password;
 
+    const passphrase = process.env.PHRASE;
+    const bytes = CryptoJS.AES.decrypt(password, passphrase);
+    password = bytes.toString(CryptoJS.enc.Utf8);
+
     res.render("index", {
         id: id,
 		nickname: nickname,
@@ -50,10 +55,13 @@ app.post('/change_info', async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
+    const passphrase = process.env.PHRASE;
+    const cypher = CryptoJS.AES.encrypt(password, passphrase).toString();
+
     const user = {
         nickname: nickname,
         email: email,
-        password: password
+        password: cypher
     };
 
     await User.findOneAndUpdate({_id: id}, user, {upsert: true}).exec();

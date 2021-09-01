@@ -12,6 +12,7 @@ services:
             - "3001:3000"
         env_file: 
             - "./env/mongodb.env"
+            - "./env/crypto.env"
 
     registration:
         build: './registration'
@@ -22,6 +23,7 @@ services:
         env_file: 
             - "./env/mongodb.env"
             - "./env/email.env"
+            - "./env/crypto.env"
 
     forgot_pass:
         build: './forgot_pass'
@@ -30,6 +32,7 @@ services:
         env_file:
             - "./env/email.env"
             - "./env/mongodb.env"
+            - "./env/crypto.env"
 
     main_page:
         build: './main_page'
@@ -80,6 +83,7 @@ services:
             - ./change_info/public:/src/public
         env_file: 
             - "./env/mongodb.env"
+            - "./env/crypto.env"
 
     chat:
         build: './chat'

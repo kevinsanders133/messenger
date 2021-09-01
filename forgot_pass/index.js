@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
+const CryptoJS = require('crypto-js');
 const app = express();
 
 app.use(express.urlencoded({ extended: false }));
@@ -21,12 +22,18 @@ const User = require("./models/User");
 
 app.set('view engine', 'ejs');
 app.use('views', express.static(`${__dirname}/views`));
+app.use(express.json({limit: '200mb'}));
+app.use(express.urlencoded({ extended: false }));
 
 app.post('/forgot_pass', async (req, res) => {
 
     const email = req.body.email_forgot;
-    const password_encrypted = await User.findOne({email: email}, '-_id password');
-    const password = "123";
+    const cyphertext = await User.findOne({email: email}, '-_id password');
+    console.log(cyphertext);
+
+    const passphrase = process.env.PHRASE;
+    const bytes = CryptoJS.AES.decrypt(cyphertext, passphrase);
+    const password = bytes.toString(CryptoJS.enc.Utf8);
 
     var transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -53,7 +60,9 @@ app.post('/forgot_pass', async (req, res) => {
             message: message
         });
     });
-    res.send("OK");
+    res.render("index", {
+        message: "Check your email."
+    });
 });
 
 app.post('/events', async (req, res) => {
@@ -63,9 +72,9 @@ app.post('/events', async (req, res) => {
         const user = await new User(content.data);
         await user.save();
     } else if (content.type == 'delete') {
-
+        await User.deleteOne({$and: content.data}).exec();
     } else {
-        await User.findOneAndUpdate({_id: content.data._id}, content.data.new_data, {upsert: true}).exec();
+        await User.findOneAndUpdate({_id: content.data._id}, content.data, {upsert: true}).exec();
     }
     res.send(true);
 });

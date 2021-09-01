@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const CryptoJS = require('crypto-js');
 const app = express();
 
 app.use(express.json());
@@ -23,11 +24,15 @@ app.post('/login', async (req, res) => {
     var email = req.body.email_signin;
     var password = req.body.password_signin;
 
-    var _id = await User.findOne({email: email, password: password}, '_id');
+    var obj = await User.findOne({email: email}, '_id password');
 
-    if (_id) {
-        console.log(_id);
-        res.redirect(`/main_page?id=${_id._id}`);
+    const passphrase = process.env.PHRASE;
+    const bytes = CryptoJS.AES.decrypt(obj.password, passphrase);
+    decrypted_password = bytes.toString(CryptoJS.enc.Utf8);
+
+    if (password == decrypted_password) {
+        console.log(decrypted_password);
+        res.redirect(`/main_page?id=${obj._id}`);
     } else {
         res.redirect('/');
     }
