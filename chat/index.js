@@ -94,9 +94,8 @@ app.post('/events', async (req, res) => {
     } else if (content.collection == 'user_chat') {
 		if (content.type == 'insert') {
 			await user_chat_schema.insertMany(content.data);
-		} else if (content.type == 'delete') {
+		} else {
 			await user_chat_schema.deleteMany({$and: content.data});
-
 			if (content.data.length == 1) {
 				var collections = await mongoose.connection.db.listCollections().toArray();
 				for (i = 0; i < collections.length; i++) {
@@ -107,9 +106,6 @@ app.post('/events', async (req, res) => {
 					}
 				}
 			}
-
-		} else {
-			
 		}
     } else {
 		let chat_schema = mongoose.model(content.collection, schema, content.collection);
@@ -188,7 +184,6 @@ io.sockets.on('connection', function (socket) {
 	
 	socket.on('sendDeleteMember', async function(member) {
 		console.log("sendDeleteMember");
-		//await io.to(users[member.id]).emit("disconnectOrder");
 		await io.sockets.in(socket.room).emit("removeMember", member);
 	});
 

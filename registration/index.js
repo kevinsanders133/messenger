@@ -131,8 +131,6 @@ app.post('/events', async (req, res) => {
     if (content.type == 'insert') {
         const user = await new User(content.data);
         await user.save();
-    } else if (content.type == 'delete') {
-
     } else {
         await User.findOneAndUpdate({_id: content.data._id}, content.data.new_data, {upsert: true}).exec();
     }

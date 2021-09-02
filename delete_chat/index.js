@@ -22,7 +22,6 @@ try {
 	console.log("could not connect");
 }
 
-
 app.post('/delete_chat', async function (req, res) {
 	var _id = req.body.id;
 	var chat_id = req.body.chat_id;
@@ -59,10 +58,8 @@ app.post('/events', async (req, res) => {
     console.log(content);
     if (content.type == 'insert') {
         await user_chat_schema.insertMany(content.data);
-    } else if (content.type == 'delete') {
-        await user_chat_schema.deleteMany({$and: content.data});
     } else {
-        
+        await user_chat_schema.deleteMany({$and: content.data});
     }
     res.send(true);
 });

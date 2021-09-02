@@ -19,7 +19,7 @@ app.post('/upload_avatar', express.json({limit: '1000mb'}), (req, res) => {
         filename: function (req, file, cb) {
             cb(null, `${nickname}.png`);
         }
-    })
+    });
        
     var upload = multer({ storage: storage }).array("myFile", 1);
 
@@ -29,11 +29,9 @@ app.post('/upload_avatar', express.json({limit: '1000mb'}), (req, res) => {
         } else if (err) {
             console.log("An unknown error occurred when uploading.")
         }
-     
         console.log("Everything went fine.", req.files)
         res.send("Everything went fine.")
     });
-
 });
 
 app.post('/upload_group_avatar', (req, res) => {
@@ -48,7 +46,7 @@ app.post('/upload_group_avatar', (req, res) => {
         filename: function (req, file, cb) {
             cb(null, `${chat_id}.png`);
         }
-    })
+    });
        
     var upload = multer({ storage: storage }).array("myFile", 1);
 
@@ -60,8 +58,7 @@ app.post('/upload_group_avatar', (req, res) => {
         }
         console.log("Everything went fine.", req.files)
         res.send("Everything went fine.")
-    })
-
+    });
 });
 
 app.listen(3000, () => {

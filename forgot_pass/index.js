@@ -26,7 +26,6 @@ app.use(express.json({limit: '200mb'}));
 app.use(express.urlencoded({ extended: false }));
 
 app.post('/forgot_pass', async (req, res) => {
-
     const email = req.body.email_forgot;
     const cyphertext = await User.findOne({email: email}, '-_id password');
     console.log(cyphertext);
