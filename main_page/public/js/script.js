@@ -134,6 +134,8 @@ document.querySelector(".addFriendSubmit").addEventListener("click", function (e
 	request.addEventListener("load", function () {
 
 		let response = JSON.parse(request.response);
+		registerForm.elements["reciever_nickname"].value = "";
+		registerForm.elements["reciever_tag"].value = "";
 		if (response.reciever_id != null) {
 			$("#chats > ul").append(
 				`
@@ -191,6 +193,10 @@ document.querySelector(".create-chat-submit").addEventListener("click", function
 	request.addEventListener("load", function () {
 
 		let response = JSON.parse(request.response);
+		registerForm.elements["name"].value = "";
+		checked_checkboxes.forEach(element => {
+			element.checked = false;
+		});
 		$("#chats > ul").append(
 			`
 			<li> 
