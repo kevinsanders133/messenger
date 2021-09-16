@@ -2,7 +2,7 @@
 
 # Technologies used
 ## Front-end
-HTML5, CSS3, JavaScript.
+HTML5, CSS3, JavaScript, EJS.
 ## Back-end
 Microservices are written in JavaScript on the Node.js platform. I used the Express framework and socket.io library. All microservices are dockerized. 
 To create and orchestrate the containers, I used the docker-compose.yml file in which all microservices settings and dependencies are defined. 
