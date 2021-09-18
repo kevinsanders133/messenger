@@ -1,4 +1,4 @@
-# messenger
+# messenger (libchat)
 
 # Technologies used
 ## Front-end
