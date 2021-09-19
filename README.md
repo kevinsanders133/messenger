@@ -1,6 +1,6 @@
 # messenger
 
-# Technologies used
+# Used technologies
 ## Front-end
 HTML5, CSS3, JavaScript, EJS.
 ## Back-end
